@@ -7,7 +7,7 @@
   "activationCommands": {
     "atom-workspace": "activate-power-mode:toggle"
   },
-  "repository": "https://github.com/atom/activate-power-mode",
+  "repository": "https://github.com/JoelBesada/activate-power-mode",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
