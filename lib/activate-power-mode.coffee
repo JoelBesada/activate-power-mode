@@ -1,4 +1,3 @@
-ActivatePowerModeView = require './activate-power-mode-view'
 throttle = require "lodash.throttle"
 {CompositeDisposable} = require 'atom'
 
@@ -8,14 +7,10 @@ module.exports = ActivatePowerMode =
   subscriptions: null
 
   activate: (state) ->
-    @activatePowerModeView = new ActivatePowerModeView(state.activatePowerModeViewState)
-    @modalPanel = atom.workspace.addModalPanel(item: @activatePowerModeView.getElement(), visible: false)
-
-    # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
 
-    # Register command that toggles this view
-    @subscriptions.add atom.commands.add 'atom-workspace', 'activate-power-mode:toggle': => @toggle()
+    @subscriptions.add atom.commands.add "atom-workspace",
+      "activate-power-mode:toggle": => @toggle()
 
     @throttledShake = throttle @shake.bind(this), 100, trailing: false
     @throttledSpawnParticles = throttle @spawnParticles.bind(this), 25, trailing: false
@@ -23,9 +18,6 @@ module.exports = ActivatePowerMode =
     @editor = atom.workspace.getActiveTextEditor()
     @editorElement = atom.views.getView @editor
     @editorElement.classList.add "power-mode"
-
-    @cursorOffset = @calculatecursorOffset()
-    console.log "off", @cursorOffset
 
     @subscriptions.add @editor.getBuffer().onDidChange(@onChange.bind(this))
     @setupCanvas()
@@ -38,24 +30,22 @@ module.exports = ActivatePowerMode =
     @canvas.height = @editorElement.offsetHeight
     @editorElement.parentNode.appendChild @canvas
 
-  calculatecursorOffset: ->
+  calculateCursorOffset: ->
     editorRect = @editorElement.getBoundingClientRect()
     scrollViewRect = @editorElement.shadowRoot.querySelector(".scroll-view").getBoundingClientRect()
 
-    top: 10
+    top: scrollViewRect.top - editorRect.top + @editor.getLineHeightInPixels() / 2
     left: scrollViewRect.left - editorRect.left
 
-  deactivate: ->
-    @modalPanel.destroy()
-    @subscriptions.dispose()
-    @activatePowerModeView.destroy()
-
-  serialize: ->
-    activatePowerModeViewState: @activatePowerModeView.serialize()
-
   onChange: (e) ->
-    console.log "on change", e
-    @throttledSpawnParticles @editor.pixelPositionForScreenPosition(e.newRange.end)
+    spawnParticles = true
+    if e.newText
+      spawnParticles = e.newText isnt "\n"
+      range = e.newRange.end
+    else
+      range = e.newRange.start
+
+    @throttledSpawnParticles(range) if spawnParticles
     @throttledShake()
 
   shake: ->
@@ -71,26 +61,35 @@ module.exports = ActivatePowerMode =
       @editorElement.style.left = ""
     , 75
 
-  spawnParticles: ({left, top}) ->
-    offset = @editorElement.getBoundingClientRect()
-    # console.log(
-    #   left + offset.left + @parti
-    #   top + offset.top + 5
-    # )
-    el = atom.views.getView(@editor).shadowRoot.elementFromPoint(
-      left + offset.left + @cursorOffset.left
-      top + offset.top + 5
-    )
-    color = getComputedStyle(el).color
-    console.log color
-    numParticles = 10
+  spawnParticles: (range) ->
+    cursorOffset = @calculateCursorOffset()
+
+    {left, top} = @editor.pixelPositionForScreenPosition range
+    left += cursorOffset.left - @editor.getScrollLeft()
+    top += cursorOffset.top - @editor.getScrollTop()
+
+    color = @getColorAtPosition left, top
+    numParticles = 5 + Math.round(Math.random() * 10)
     while numParticles--
-      @particles[@particlePointer] = @createParticle left, top, color
+      part =  @createParticle left, top, color
+      @particles[@particlePointer] = part
       @particlePointer = (@particlePointer + 1) % 500
 
+  getColorAtPosition: (left, top) ->
+    offset = @editorElement.getBoundingClientRect()
+    el = atom.views.getView(@editor).shadowRoot.elementFromPoint(
+      left + offset.left
+      top + offset.top
+    )
+
+    if el
+      getComputedStyle(el).color
+    else
+      "rgb(255, 255, 255)"
+
   createParticle: (x, y, color) ->
-    x: x + @cursorOffset.left
-    y: y + @cursorOffset.top
+    x: x
+    y: y
     alpha: 1
     color: color
     velocity:
@@ -111,8 +110,8 @@ module.exports = ActivatePowerMode =
 
       @context.fillStyle = "rgba(#{particle.color[4...-1]}, #{particle.alpha})"
       @context.fillRect(
-        Math.round(particle.x - 1)
-        Math.round(particle.y - 1)
+        Math.round(particle.x - 1.5)
+        Math.round(particle.y - 1.5)
         3, 3
       )
 
