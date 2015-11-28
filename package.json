@@ -1,7 +1,7 @@
 {
   "name": "activate-power-mode",
   "main": "./lib/activate-power-mode",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Activate POWER MODE to write your code in style.",
   "keywords": [],
   "activationCommands": {
