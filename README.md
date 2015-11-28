@@ -1,5 +1,7 @@
-# activate-power-mode package
+# activate-power-mode atom package
+A work in progress package for Atom to replicate https://github.com/codeinthedark/editor/pull/1 by popular demand. 
 
-A short description of your package.
+**NOTE THAT THIS VERSION IS VERY BUGGY AS OF NOW**
 
-![A screenshot of your package](https://f.cloud.github.com/assets/69169/2290250/c35d867a-a017-11e3-86be-cd7c5bf3ff9b.gif)
+
+![activate-power-mode](https://cloud.githubusercontent.com/assets/688415/11453297/b8f249ec-9605-11e5-978c-eb3bb21eecd8.gif)
