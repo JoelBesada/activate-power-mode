@@ -1,8 +1,8 @@
 {
   "name": "activate-power-mode",
   "main": "./lib/activate-power-mode",
-  "version": "0.0.0",
-  "description": "A short description of your package",
+  "version": "0.0.1",
+  "description": "Activate POWER MODE to write your code in style.",
   "keywords": [],
   "activationCommands": {
     "atom-workspace": "activate-power-mode:toggle"
