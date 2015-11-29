@@ -12,10 +12,22 @@ module.exports = ActivatePowerMode =
     @subscriptions.add atom.commands.add "atom-workspace",
       "activate-power-mode:toggle": => @toggle()
 
+    @activeItemSubscription = atom.workspace.onDidChangeActivePaneItem =>
+      @subscribeToActiveTextEditor()
+
+    @subscribeToActiveTextEditor()
+
+  destroy: ->
+    @activeItemSubscription?.dispose()
+    @tile?.destroy()
+
+  subscribeToActiveTextEditor: ->
     @throttledShake = throttle @shake.bind(this), 100, trailing: false
     @throttledSpawnParticles = throttle @spawnParticles.bind(this), 25, trailing: false
 
     @editor = atom.workspace.getActiveTextEditor()
+    return unless @editor
+
     @editorElement = atom.views.getView @editor
     @editorElement.classList.add "power-mode"
 
