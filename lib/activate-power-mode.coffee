@@ -6,6 +6,13 @@ module.exports = ActivatePowerMode =
   modalPanel: null
   subscriptions: null
 
+  config:
+    effect:
+      type: 'number'
+      default: 1
+
+  effectType: 2
+
   activate: (state) ->
     @subscriptions = new CompositeDisposable
 
@@ -21,6 +28,12 @@ module.exports = ActivatePowerMode =
 
     @subscriptions.add @editor.getBuffer().onDidChange(@onChange.bind(this))
     @setupCanvas()
+
+  random: (min, max) ->
+    if !max
+      max = min; min = 0;
+
+    min + ~~(Math.random() * (max - min + 1))
 
   setupCanvas: ->
     @canvas = document.createElement "canvas"
@@ -88,32 +101,66 @@ module.exports = ActivatePowerMode =
       "rgb(255, 255, 255)"
 
   createParticle: (x, y, color) ->
-    x: x
-    y: y
-    alpha: 1
-    color: color
-    velocity:
-      x: -1 + Math.random() * 2
-      y: -3.5 + Math.random() * 2
+    particle =
+      x: x
+      y: y
+      alpha: 1
+      color: color
+
+    if atom.config.get('activate-power-mode.effect') == 1
+      particle.size = @random(2, 4)
+      particle.vx = -1 + Math.random() * 2
+      particle.vy = -3.5 + Math.random() * 2
+    else if atom.config.get('activate-power-mode.effect') == 2
+      particle.size = @random(2, 8)
+      particle.drag = 0.92
+      particle.vx = @random(-3, 3)
+      particle.vy = @random(-3, 3)
+      particle.wander = 0.15
+      particle.theta = @random(0, 360) * Math.PI / 180;
+
+    particle;
 
   drawParticles: ->
     requestAnimationFrame @drawParticles.bind(this)
     @context.clearRect 0, 0, @canvas.width, @canvas.height
 
     for particle in @particles
-      continue if particle.alpha <= 0.1
+      continue if particle.alpha <= 0.1 or particle.size < 0.5
 
-      particle.velocity.y += 0.075
-      particle.x += particle.velocity.x
-      particle.y += particle.velocity.y
-      particle.alpha *= 0.96
+      if atom.config.get('activate-power-mode.effect') == 1
+        @effect1(particle)
+      else if atom.config.get('activate-power-mode.effect') == 2
+        @effect2(particle)
 
-      @context.fillStyle = "rgba(#{particle.color[4...-1]}, #{particle.alpha})"
-      @context.fillRect(
-        Math.round(particle.x - 1.5)
-        Math.round(particle.y - 1.5)
-        3, 3
-      )
+  effect1: (particle) ->
+    particle.vy += 0.075
+    particle.x += particle.vx
+    particle.y += particle.vy
+    particle.alpha *= 0.96
+
+    @context.fillStyle = "rgba(#{particle.color[4...-1]}, #{particle.alpha})"
+    @context.fillRect(
+      Math.round(particle.x - 1.5)
+      Math.round(particle.y - 1.5)
+      particle.size, particle.size
+    )
+
+  # Effect based on Soulwire's demo: http://codepen.io/soulwire/pen/foktm
+  effect2: (particle) ->
+    particle.x += particle.vx;
+    particle.y += particle.vy;
+    particle.vx *= particle.drag
+    particle.vy *= particle.drag
+    particle.theta += @random( -0.5, 0.5 )
+    particle.vx += Math.sin( particle.theta ) * 0.1
+    particle.vy += Math.cos( particle.theta ) * 0.1
+    particle.size *= 0.96
+
+    @context.fillStyle = "rgba(#{particle.color[4...-1]}, #{particle.alpha})"
+    @context.beginPath()
+    @context.arc(Math.round(particle.x - 1), Math.round(particle.y - 1), particle.size, 0, 2 * Math.PI)
+    @context.fill()
 
   toggle: ->
     console.log 'ActivatePowerMode was toggled!'
