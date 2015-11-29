@@ -6,6 +6,14 @@ module.exports = ActivatePowerMode =
   modalPanel: null
   subscriptions: null
 
+  config:
+    shake:
+      type: 'boolean'
+      default: true
+    animation:
+      type: 'boolean'
+      default: true
+
   activate: (state) ->
     @subscriptions = new CompositeDisposable
 
@@ -57,8 +65,10 @@ module.exports = ActivatePowerMode =
     else
       range = e.newRange.start
 
-    @throttledSpawnParticles(range) if spawnParticles
-    @throttledShake()
+    if atom.config.get('activate-power-mode.animation')
+      @throttledSpawnParticles(range) if spawnParticles
+    if atom.config.get('activate-power-mode.shake')
+      @throttledShake()
 
   shake: ->
     intensity = 1 + 2 * Math.random()
