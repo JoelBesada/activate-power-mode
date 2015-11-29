@@ -8,10 +8,9 @@ module.exports = ActivatePowerMode =
 
   config:
     effect:
-      type: 'number'
+      type: 'integer'
       default: 1
-
-  effectType: 2
+      enum: [1, 2]
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
