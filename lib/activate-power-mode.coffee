@@ -27,7 +27,6 @@ module.exports = ActivatePowerMode =
 
   destroy: ->
     @activeItemSubscription?.dispose()
-    @tile?.destroy()
 
   subscribeToActiveTextEditor: ->
     @throttledShake = throttle @shake.bind(this), 100, trailing: false
