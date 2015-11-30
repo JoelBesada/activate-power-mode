@@ -3,6 +3,12 @@ throttle = require "lodash.throttle"
 
 module.exports = ActivatePowerMode =
   config:
+    minShake:
+      type: 'number'
+      default: 1.0
+      minimum: 0
+      maximum: 100
+      description: 'The minimum intensity of the shake.'
     intensity:
       type: 'number'
       default: 2.0
@@ -56,7 +62,7 @@ module.exports = ActivatePowerMode =
     @throttledShake()
 
   shake: ->
-    intensity = 1 + (atom.config.get 'activate-power-mode.intensity') * Math.random()
+    intensity = (atom.config.get 'activate-power-mode.minShake') + (atom.config.get 'activate-power-mode.intensity') * Math.random()
     x = intensity * (if Math.random() > 0.5 then -1 else 1)
     y = intensity * (if Math.random() > 0.5 then -1 else 1)
 
