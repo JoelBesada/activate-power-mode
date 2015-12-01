@@ -1,4 +1,6 @@
 throttle = require "lodash.throttle"
+path = require "path"
+
 {CompositeDisposable} = require 'atom'
 
 module.exports = ActivatePowerMode =
@@ -38,6 +40,9 @@ module.exports = ActivatePowerMode =
     left: scrollViewRect.left - editorRect.left
 
   onChange: (e) ->
+    audioFile = path.join __dirname, '../assets/type.mp3'
+    sound = new Audio(audioFile)
+    sound.play()
     spawnParticles = true
     if e.newText
       spawnParticles = e.newText isnt "\n"
