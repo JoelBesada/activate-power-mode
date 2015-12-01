@@ -7,12 +7,90 @@
   "activationCommands": {
     "atom-workspace": "activate-power-mode:toggle"
   },
-  "repository": "https://github.com/JoelBesada/activate-power-mode",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoelBesada/activate-power-mode.git"
+  },
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
   },
   "dependencies": {
     "lodash.throttle": "^3.0.4"
+  },
+  "readme": "# activate-power-mode atom package\nA work in progress package for Atom to replicate https://github.com/codeinthedark/editor/pull/1 by popular demand.\n\nActivate with `ctrl-alt-o` or through the command panel with `Activate Power Mode: Toggle`. In this\nearly version it only affects the current tab, to run it in a new tab you need to run `Window: Reload` first.\n\n**NOTE THAT THIS VERSION IS VERY BUGGY RIGHT NOW**\n\n![activate-power-mode](https://cloud.githubusercontent.com/assets/688415/11453297/b8f249ec-9605-11e5-978c-eb3bb21eecd8.gif)\n",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/JoelBesada/activate-power-mode/issues"
+  },
+  "homepage": "https://github.com/JoelBesada/activate-power-mode#readme",
+  "_id": "activate-power-mode@0.3.2",
+  "_shasum": "4f832638f75311688cdf4912b46a9af9048dc0df",
+  "_resolved": "file:../d-115111-41165-14x2l3g/package.tgz",
+  "_from": "../d-115111-41165-14x2l3g/package.tgz",
+  "_atomModuleCache": {
+    "version": 1,
+    "dependencies": [
+      {
+        "name": "lodash.throttle",
+        "version": "3.0.4",
+        "path": "node_modules/lodash.throttle/index.js"
+      },
+      {
+        "name": "lodash.debounce",
+        "version": "3.1.1",
+        "path": "node_modules/lodash.throttle/node_modules/lodash.debounce/index.js"
+      },
+      {
+        "name": "lodash._getnative",
+        "version": "3.9.1",
+        "path": "node_modules/lodash.throttle/node_modules/lodash.debounce/node_modules/lodash._getnative/index.js"
+      }
+    ],
+    "extensions": {
+      ".coffee": [
+        "lib/activate-power-mode.coffee",
+        "lib/settings.coffee"
+      ],
+      ".js": [
+        "node_modules/lodash.throttle/index.js",
+        "node_modules/lodash.throttle/node_modules/lodash.debounce/index.js",
+        "node_modules/lodash.throttle/node_modules/lodash.debounce/node_modules/lodash._getnative/index.js"
+      ],
+      ".json": [
+        "node_modules/lodash.throttle/node_modules/lodash.debounce/node_modules/lodash._getnative/package.json",
+        "node_modules/lodash.throttle/node_modules/lodash.debounce/package.json",
+        "node_modules/lodash.throttle/package.json",
+        "package.json"
+      ]
+    },
+    "folders": [
+      {
+        "paths": [
+          "lib",
+          "",
+          "spec"
+        ],
+        "dependencies": {
+          "lodash.throttle": "^3.0.4"
+        }
+      },
+      {
+        "paths": [
+          "node_modules/lodash.throttle"
+        ],
+        "dependencies": {
+          "lodash.debounce": "^3.0.0"
+        }
+      },
+      {
+        "paths": [
+          "node_modules/lodash.throttle/node_modules/lodash.debounce"
+        ],
+        "dependencies": {
+          "lodash._getnative": "^3.0.0"
+        }
+      }
+    ]
   }
 }
