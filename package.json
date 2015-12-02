@@ -8,6 +8,7 @@
     "atom-workspace": "activate-power-mode:toggle"
   },
   "repository": "https://github.com/JoelBesada/activate-power-mode",
+  "author": "Joel Besada <joel@joelb.me> (http://joelb.me)",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
