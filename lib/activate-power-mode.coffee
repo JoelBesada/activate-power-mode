@@ -98,7 +98,9 @@ module.exports = ActivatePowerMode =
 
   drawParticles: ->
     requestAnimationFrame @drawParticles.bind(this)
+    gco = @context.globalCompositeOperation
     @context.clearRect 0, 0, @canvas.width, @canvas.height
+    @context.globalCompositeOperation = "lighter"
 
     for particle in @particles
       continue if particle.alpha <= 0.1
@@ -114,6 +116,7 @@ module.exports = ActivatePowerMode =
         Math.round(particle.y - 1.5)
         3, 3
       )
+    @context.globalCompositeOperation = gco
 
   toggle: ->
     console.log 'ActivatePowerMode was toggled!'
