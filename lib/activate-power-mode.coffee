@@ -5,6 +5,7 @@ module.exports = ActivatePowerMode =
   activatePowerModeView: null
   modalPanel: null
   subscriptions: null
+  active: false
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
@@ -17,10 +18,25 @@ module.exports = ActivatePowerMode =
 
     @editor = atom.workspace.getActiveTextEditor()
     @editorElement = atom.views.getView @editor
-    @editorElement.classList.add "power-mode"
 
-    @subscriptions.add @editor.getBuffer().onDidChange(@onChange.bind(this))
+    atom.workspace.onDidChangeActivePaneItem(@changeEditor.bind(this))
     @setupCanvas()
+    @bindEditor()
+
+  changeEditor: (@editor) ->
+    @subscriptions.dispose();
+    @subscriptions = new CompositeDisposable
+    @editorElement.parentNode.removeChild @canvas
+    @editorElement.classList.remove "power-mode"
+    @bindEditor()
+
+  bindEditor: ->
+    @editorElement = atom.views.getView @editor
+    @editorElement.parentNode.appendChild(@canvas)
+    @editorElement.classList.add "power-mode"
+    @editorElement.parentNode.appendChild @canvas
+    @canvas.style.display = "block"
+    @subscriptions.add @editor.getBuffer().onDidChange(@onChange.bind(this))
 
   setupCanvas: ->
     @canvas = document.createElement "canvas"
@@ -28,7 +44,6 @@ module.exports = ActivatePowerMode =
     @canvas.classList.add "power-mode-canvas"
     @canvas.width = @editorElement.offsetWidth
     @canvas.height = @editorElement.offsetHeight
-    @editorElement.parentNode.appendChild @canvas
 
   calculateCursorOffset: ->
     editorRect = @editorElement.getBoundingClientRect()
@@ -38,6 +53,8 @@ module.exports = ActivatePowerMode =
     left: scrollViewRect.left - editorRect.left
 
   onChange: (e) ->
+    return if not @active
+
     spawnParticles = true
     if e.newText
       spawnParticles = e.newText isnt "\n"
@@ -97,7 +114,9 @@ module.exports = ActivatePowerMode =
       y: -3.5 + Math.random() * 2
 
   drawParticles: ->
-    requestAnimationFrame @drawParticles.bind(this)
+    if @active
+      requestAnimationFrame @drawParticles.bind(this)
+
     @context.clearRect 0, 0, @canvas.width, @canvas.height
 
     for particle in @particles
@@ -117,6 +136,7 @@ module.exports = ActivatePowerMode =
 
   toggle: ->
     console.log 'ActivatePowerMode was toggled!'
+    @active = !@active
     @particlePointer = 0
     @particles = []
     requestAnimationFrame @drawParticles.bind(this)
