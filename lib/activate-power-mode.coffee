@@ -2,6 +2,19 @@ throttle = require "lodash.throttle"
 {CompositeDisposable} = require 'atom'
 
 module.exports = ActivatePowerMode =
+  config:
+    minShake:
+      type: 'number'
+      default: 1.0
+      minimum: 0
+      maximum: 100
+      description: 'The minimum intensity of the shake.'
+    intensity:
+      type: 'number'
+      default: 2.0
+      minimum: 0
+      maximum: 100
+      description: 'The intensity of the shake.'
   activatePowerModeView: null
   modalPanel: null
   subscriptions: null
@@ -49,7 +62,7 @@ module.exports = ActivatePowerMode =
     @throttledShake()
 
   shake: ->
-    intensity = 1 + 2 * Math.random()
+    intensity = (atom.config.get 'activate-power-mode.minShake') + (atom.config.get 'activate-power-mode.intensity') * Math.random()
     x = intensity * (if Math.random() > 0.5 then -1 else 1)
     y = intensity * (if Math.random() > 0.5 then -1 else 1)
 
