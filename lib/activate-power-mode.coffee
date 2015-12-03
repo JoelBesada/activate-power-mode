@@ -1,7 +1,11 @@
 throttle = require "lodash.throttle"
 {CompositeDisposable} = require 'atom'
 
+configSchema = require './config-schema'
+
 module.exports = ActivatePowerMode =
+  config: configSchema
+
   activatePowerModeView: null
   modalPanel: null
   subscriptions: null
@@ -46,7 +50,7 @@ module.exports = ActivatePowerMode =
       range = e.newRange.start
 
     @throttledSpawnParticles(range) if spawnParticles
-    @throttledShake()
+    @throttledShake() if atom.config.get 'activate-power-mode.shakeEditor'
 
   shake: ->
     intensity = 1 + 2 * Math.random()
