@@ -5,6 +5,7 @@ module.exports = ActivatePowerMode =
   activatePowerModeView: null
   modalPanel: null
   subscriptions: null
+  active: false
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
@@ -38,6 +39,7 @@ module.exports = ActivatePowerMode =
     left: scrollViewRect.left - editorRect.left
 
   onChange: (e) ->
+    return if not @active
     spawnParticles = true
     if e.newText
       spawnParticles = e.newText isnt "\n"
@@ -97,7 +99,7 @@ module.exports = ActivatePowerMode =
       y: -3.5 + Math.random() * 2
 
   drawParticles: ->
-    requestAnimationFrame @drawParticles.bind(this)
+    requestAnimationFrame @drawParticles.bind(this) if @active
     @context.clearRect 0, 0, @canvas.width, @canvas.height
 
     for particle in @particles
@@ -117,6 +119,7 @@ module.exports = ActivatePowerMode =
 
   toggle: ->
     console.log 'ActivatePowerMode was toggled!'
+    @active = !@active
     @particlePointer = 0
     @particles = []
     requestAnimationFrame @drawParticles.bind(this)
