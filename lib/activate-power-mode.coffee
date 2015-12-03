@@ -41,25 +41,13 @@ module.exports = ActivatePowerMode =
     left: scrollViewRect.left - editorRect.left
 
   onChange: (e) ->
-    currentPath = ""
     soundVersions =
       1: '.wav'
       2: '-high.wav'
       3: '-high2.wav'
       4: '-low.wav'
       5: '-low2.wav'
-    soundVersion = Math.floor((Math.random() * 5) + 1)
-    switch soundVersion
-      when 1
-        currentPath = audioPath + soundVersions[1]
-      when 2
-        currentPath = audioPath + soundVersions[2]
-      when 3
-        currentPath = audioPath + soundVersions[3]
-      when 4
-        currentPath = audioPath + soundVersions[4]
-      when 5
-        currentPath = audioPath + soundVersions[5]
+    currentPath = audioPath + soundVersions[Math.floor((Math.random() * 5) + 1)]
     sound = new Audio(currentPath)
     sound.play()
     spawnParticles = true
