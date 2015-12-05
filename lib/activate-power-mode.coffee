@@ -24,6 +24,7 @@ module.exports = ActivatePowerMode =
       @subscribeToActiveTextEditor()
 
     @subscribeToActiveTextEditor()
+    @setupCanvas()
 
   destroy: ->
     @activeItemSubscription?.dispose()
@@ -39,7 +40,7 @@ module.exports = ActivatePowerMode =
     @editorElement.classList.add "power-mode"
 
     @subscriptions.add @editor.getBuffer().onDidChange(@onChange.bind(this))
-    @setupCanvas()
+    @canvas.style.display = "block" if @canvas
 
   setupCanvas: ->
     @canvas = document.createElement "canvas"
