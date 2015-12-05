@@ -16,7 +16,6 @@ module.exports = ActivatePowerMode =
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
-
     @subscriptions.add atom.commands.add "atom-workspace",
       "activate-power-mode:toggle": => @toggle()
 
@@ -39,7 +38,8 @@ module.exports = ActivatePowerMode =
     @editorElement = atom.views.getView @editor
     @editorElement.classList.add "power-mode"
 
-    @subscriptions.add @editor.getBuffer().onDidChange(@onChange.bind(this))
+    @editorChangeSubscription?.dispose()
+    @editorChangeSubscription = @editor.getBuffer().onDidChange @onChange.bind(this)
     @canvas.style.display = "block" if @canvas
 
   setupCanvas: ->
