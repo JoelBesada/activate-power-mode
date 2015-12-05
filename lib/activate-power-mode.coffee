@@ -1,6 +1,8 @@
 throttle = require "lodash.throttle"
 {CompositeDisposable} = require 'atom'
 
+configSchema = require './config-schema'
+
 module.exports = ActivatePowerMode =
   config:
     minShake:
