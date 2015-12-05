@@ -24,6 +24,9 @@ module.exports = ActivatePowerMode =
   destroy: ->
     @activeItemSubscription?.dispose()
 
+  getConfig: (config) ->
+    atom.config.get "activate-power-mode.#{config}"
+
   subscribeToActiveTextEditor: ->
     @throttledShake = throttle @shake.bind(this), 100, trailing: false
     @throttledSpawnParticles = throttle @spawnParticles.bind(this), 25, trailing: false
@@ -37,6 +40,7 @@ module.exports = ActivatePowerMode =
     @editorChangeSubscription?.dispose()
     @editorChangeSubscription = @editor.getBuffer().onDidChange @onChange.bind(this)
     @canvas.style.display = "block" if @canvas
+
 
   setupCanvas: ->
     @canvas = document.createElement "canvas"
@@ -60,15 +64,17 @@ module.exports = ActivatePowerMode =
     else
       range = e.newRange.start
 
-    if atom.config.get('activate-power-mode.animation')
-      @throttledSpawnParticles(range) if spawnParticles
-    if atom.config.get('activate-power-mode.shake')
+    if spawnParticles and @getConfig "particles.enabled"
+      @throttledSpawnParticles range
+    if @getConfig "screenShake.enabled"
       @throttledShake()
 
   shake: ->
-    intensity = (atom.config.get 'activate-power-mode.minShake') + (atom.config.get 'activate-power-mode.intensity') * Math.random()
-    x = intensity * @intensity_factor()
-    y = intensity * @intensity_factor()
+    min = @getConfig "screenShake.minIntensity"
+    max = @getConfig "screenShake.maxIntensity"
+
+    x = @shakeIntensity min, max
+    y = @shakeIntensity min, max
 
     @editorElement.style.top = "#{y}px"
     @editorElement.style.left = "#{x}px"
@@ -78,8 +84,10 @@ module.exports = ActivatePowerMode =
       @editorElement.style.left = ""
     , 75
 
-  intensity_factor: ->
-    if Math.random() > 0.5 then -1 else 1
+  shakeIntensity: (min, max) ->
+    intensity = min + (max - min) * Math.random()
+    direction = if Math.random() > 0.5 then -1 else 1
+    intensity * direction
 
   spawnParticles: (range) ->
     cursorOffset = @calculateCursorOffset()
