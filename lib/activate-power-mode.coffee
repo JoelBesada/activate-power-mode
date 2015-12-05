@@ -6,16 +6,35 @@ module.exports = ActivatePowerMode =
   modalPanel: null
   subscriptions: null
 
+  config:
+    shake:
+      type: 'boolean'
+      default: true
+    animation:
+      type: 'boolean'
+      default: true
+
   activate: (state) ->
     @subscriptions = new CompositeDisposable
 
     @subscriptions.add atom.commands.add "atom-workspace",
       "activate-power-mode:toggle": => @toggle()
 
+    @activeItemSubscription = atom.workspace.onDidChangeActivePaneItem =>
+      @subscribeToActiveTextEditor()
+
+    @subscribeToActiveTextEditor()
+
+  destroy: ->
+    @activeItemSubscription?.dispose()
+
+  subscribeToActiveTextEditor: ->
     @throttledShake = throttle @shake.bind(this), 100, trailing: false
     @throttledSpawnParticles = throttle @spawnParticles.bind(this), 25, trailing: false
 
     @editor = atom.workspace.getActiveTextEditor()
+    return unless @editor
+
     @editorElement = atom.views.getView @editor
     @editorElement.classList.add "power-mode"
 
@@ -45,8 +64,10 @@ module.exports = ActivatePowerMode =
     else
       range = e.newRange.start
 
-    @throttledSpawnParticles(range) if spawnParticles
-    @throttledShake()
+    if atom.config.get('activate-power-mode.animation')
+      @throttledSpawnParticles(range) if spawnParticles
+    if atom.config.get('activate-power-mode.shake')
+      @throttledShake()
 
   shake: ->
     intensity = 1 + 2 * Math.random()
