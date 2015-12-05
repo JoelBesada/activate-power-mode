@@ -45,8 +45,6 @@ module.exports = ActivatePowerMode =
     @canvas = document.createElement "canvas"
     @context = @canvas.getContext "2d"
     @canvas.classList.add "power-mode-canvas"
-    @canvas.width = @editorElement.offsetWidth
-    @canvas.height = @editorElement.offsetHeight
     @editorElement.parentNode.appendChild @canvas
 
   calculateCursorOffset: ->
@@ -119,7 +117,8 @@ module.exports = ActivatePowerMode =
 
   drawParticles: ->
     requestAnimationFrame @drawParticles.bind(this)
-    @context.clearRect 0, 0, @canvas.width, @canvas.height
+    @canvas.width = @editorElement.offsetWidth
+    @canvas.height = @editorElement.offsetHeight
 
     for particle in @particles
       continue if particle.alpha <= 0.1
