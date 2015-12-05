@@ -72,8 +72,8 @@ module.exports = ActivatePowerMode =
 
   shake: ->
     intensity = 1 + 2 * Math.random()
-    x = intensity * (if Math.random() > 0.5 then -1 else 1)
-    y = intensity * (if Math.random() > 0.5 then -1 else 1)
+    x = intensity * @intensity_factor()
+    y = intensity * @intensity_factor()
 
     @editorElement.style.top = "#{y}px"
     @editorElement.style.left = "#{x}px"
@@ -82,6 +82,9 @@ module.exports = ActivatePowerMode =
       @editorElement.style.top = ""
       @editorElement.style.left = ""
     , 75
+
+  intensity_factor: ->
+    if Math.random() > 0.5 then -1 else 1
 
   spawnParticles: (range) ->
     cursorOffset = @calculateCursorOffset()
