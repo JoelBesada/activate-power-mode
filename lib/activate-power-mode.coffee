@@ -4,25 +4,7 @@ throttle = require "lodash.throttle"
 configSchema = require './config-schema'
 
 module.exports = ActivatePowerMode =
-  config:
-    minShake:
-      type: 'number'
-      default: 1.0
-      minimum: 0
-      maximum: 100
-      description: 'The minimum intensity of the shake.'
-    intensity:
-      type: 'number'
-      default: 2.0
-      minimum: 0
-      maximum: 100
-      description: 'The intensity of the shake.'
-    shake:
-      type: 'boolean'
-      default: true
-    animation:
-      type: 'boolean'
-      default: true
+  config: configSchema
   activatePowerModeView: null
   modalPanel: null
   subscriptions: null
