@@ -1,3 +1,6 @@
+### 0.4.1 2015-12-06
+Version bump to update description on atom.io/packages.
+
 ### 0.4.0 2015-12-06
 Related PR: https://github.com/JoelBesada/activate-power-mode/pull/76
 
