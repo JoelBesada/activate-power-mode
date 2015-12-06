@@ -95,10 +95,10 @@ module.exports = ActivatePowerMode =
     top += cursorOffset.top - @editor.getScrollTop()
 
     color = @getColorAtPosition left, top
-    numParticles = random @getConfig("particles.min"), @getConfig("particles.max")
+    numParticles = random @getConfig("particles.spawnCount.min"), @getConfig("particles.spawnCount.max")
     while numParticles--
       @particles[@particlePointer] = @createParticle left, top, color
-      @particlePointer = (@particlePointer + 1) % @getConfig("particles.maxTotal")
+      @particlePointer = (@particlePointer + 1) % @getConfig("particles.totalCount.max")
 
   getColorAtPosition: (left, top) ->
     offset = @editorElement.getBoundingClientRect()
@@ -137,10 +137,11 @@ module.exports = ActivatePowerMode =
       particle.alpha *= 0.96
 
       @context.fillStyle = "rgba(#{particle.color[4...-1]}, #{particle.alpha})"
+      size = random @getConfig("particles.size.min"), @getConfig("particles.size.max"), true
       @context.fillRect(
-        Math.round(particle.x - 1.5)
-        Math.round(particle.y - 1.5)
-        3, 3
+        Math.round(particle.x - size / 2)
+        Math.round(particle.y - size / 2)
+        size, size
       )
 
     @context.globalCompositeOperation = gco
