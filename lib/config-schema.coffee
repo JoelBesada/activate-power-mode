@@ -4,7 +4,7 @@ module.exports =
     properties:
       minIntensity:
         title: "Screen Shake - Minimum Intensity"
-        description: "The minimum (randomized) intensity of the shake"
+        description: "The minimum (randomized) intensity of the shake."
         type: "integer"
         default: 1
         minimum: 0
@@ -12,7 +12,7 @@ module.exports =
 
       maxIntensity:
         title: "Screen Shake - Maximum Intensity"
-        description: "The maximum (randomized) intensity of the shake"
+        description: "The maximum (randomized) intensity of the shake."
         type: "integer"
         default: 3
         minimum: 0
@@ -20,7 +20,7 @@ module.exports =
 
       enabled:
         title: "Screen Shake - Enabled"
-        description: "Turn the shaking on/off"
+        description: "Turn the shaking on/off."
         type: "boolean"
         default: true
 
@@ -29,7 +29,7 @@ module.exports =
     properties:
       enabled:
         title: "Particles - Enabled"
-        description: "Turn the particles on/off"
+        description: "Turn the particles on/off."
         type: "boolean"
         default: true
 
@@ -38,7 +38,7 @@ module.exports =
         properties:
           max:
             title: "Particles - Max Total"
-            description: "The maximum total number of particles on the screen"
+            description: "The maximum total number of particles on the screen."
             type: "integer"
             default: 500
             minimum: 0
@@ -48,13 +48,13 @@ module.exports =
         properties:
           min:
             title: "Particles - Minimum Spawned"
-            description: "The minimum (randomized) number of particles spawned on input"
+            description: "The minimum (randomized) number of particles spawned on input."
             type: "integer"
             default: 5
 
           max:
             title: "Particles - Maximum Spawned"
-            description: "The maximum (randomized) number of particles spawned on input"
+            description: "The maximum (randomized) number of particles spawned on input."
             type: "integer"
             default: 15
 
@@ -63,14 +63,14 @@ module.exports =
         properties:
           min:
             title: "Particles - Minimum Size"
-            description: "The minimum (randomized) size of the particles"
+            description: "The minimum (randomized) size of the particles."
             type: "integer"
             default: 2
             minimum: 0
 
           max:
             title: "Particles - Maximum Size"
-            description: "The maximum (randomized) size of the particles"
+            description: "The maximum (randomized) size of the particles."
             type: "integer"
             default: 4
             minimum: 0
