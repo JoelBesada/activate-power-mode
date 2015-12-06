@@ -1,14 +1,12 @@
 throttle = require "lodash.throttle"
 random = require "lodash.random"
 
-{CompositeDisposable} = require 'atom'
+{CompositeDisposable} = require "atom"
 
-configSchema = require './config-schema'
+configSchema = require "./config-schema"
 
 module.exports = ActivatePowerMode =
   config: configSchema
-  activatePowerModeView: null
-  modalPanel: null
   subscriptions: null
   active: false
 
@@ -42,7 +40,6 @@ module.exports = ActivatePowerMode =
     @editorChangeSubscription?.dispose()
     @editorChangeSubscription = @editor.getBuffer().onDidChange @onChange.bind(this)
     @canvas.style.display = "block" if @canvas
-
 
   setupCanvas: ->
     @canvas = document.createElement "canvas"
@@ -149,8 +146,8 @@ module.exports = ActivatePowerMode =
     @context.globalCompositeOperation = gco
 
   toggle: ->
-    console.log 'ActivatePowerMode was toggled!'
-    @active = !@active
+    @active = not @active
     @particlePointer = 0
     @particles = []
+
     requestAnimationFrame @drawParticles.bind(this)
