@@ -5,16 +5,16 @@ module.exports =
       minIntensity:
         title: "Screen Shake - Minimum Intensity"
         description: "The minimum (randomized) intensity of the shake"
-        type: "number"
-        default: 1.0
+        type: "integer"
+        default: 1
         minimum: 0
         maximum: 100
 
       maxIntensity:
         title: "Screen Shake - Maximum Intensity"
         description: "The maximum (randomized) intensity of the shake"
-        type: "number"
-        default: 3.0
+        type: "integer"
+        default: 3
         minimum: 0
         maximum: 100
 
@@ -32,3 +32,22 @@ module.exports =
         description: "Turn the particles on/off"
         type: "boolean"
         default: true
+
+      maxTotal:
+        title: "Particles - Max Total"
+        description: "The maximum total number of particles on the screen"
+        type: "integer"
+        default: 500
+        minimum: 0
+
+      min:
+        title: "Particles - Minimum Spawned"
+        description: "The minimum (randomized) number of particles spawned on input"
+        type: "integer"
+        default: 5
+
+      max:
+        title: "Particles - Maximum Spawned"
+        description: "The maximum (randomized) number of particles spawned on input"
+        type: "integer"
+        default: 15

@@ -1,4 +1,6 @@
 throttle = require "lodash.throttle"
+random = require "lodash.random"
+
 {CompositeDisposable} = require 'atom'
 
 configSchema = require './config-schema'
@@ -85,9 +87,8 @@ module.exports = ActivatePowerMode =
     , 75
 
   shakeIntensity: (min, max) ->
-    intensity = min + (max - min) * Math.random()
     direction = if Math.random() > 0.5 then -1 else 1
-    intensity * direction
+    random(min, max, true) * direction
 
   spawnParticles: (range) ->
     cursorOffset = @calculateCursorOffset()
@@ -97,11 +98,10 @@ module.exports = ActivatePowerMode =
     top += cursorOffset.top - @editor.getScrollTop()
 
     color = @getColorAtPosition left, top
-    numParticles = 5 + Math.round(Math.random() * 10)
+    numParticles = random @getConfig("particles.min"), @getConfig("particles.max")
     while numParticles--
-      part =  @createParticle left, top, color
-      @particles[@particlePointer] = part
-      @particlePointer = (@particlePointer + 1) % 500
+      @particles[@particlePointer] = @createParticle left, top, color
+      @particlePointer = (@particlePointer + 1) % @getConfig("particles.maxTotal")
 
   getColorAtPosition: (left, top) ->
     offset = @editorElement.getBoundingClientRect()

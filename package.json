@@ -14,6 +14,7 @@
     "atom": ">=1.0.0 <2.0.0"
   },
   "dependencies": {
+    "lodash.random": "^3.0.1",
     "lodash.throttle": "^3.0.4"
   }
 }
