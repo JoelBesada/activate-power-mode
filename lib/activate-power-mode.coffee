@@ -21,6 +21,9 @@ module.exports = ActivatePowerMode =
     @subscribeToActiveTextEditor()
     @setupCanvas()
 
+    if @getConfig "autoToggle"
+      @toggle()
+
   destroy: ->
     @activeItemSubscription?.dispose()
 
