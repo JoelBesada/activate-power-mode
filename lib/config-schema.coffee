@@ -74,3 +74,7 @@ module.exports =
             type: "integer"
             default: 4
             minimum: 0
+  effect:
+      type: 'integer'
+      default: 1
+      enum: [1, 2]

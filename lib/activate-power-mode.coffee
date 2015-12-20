@@ -5,16 +5,13 @@ random = require "lodash.random"
 
 configSchema = require "./config-schema"
 
+effect1 = require "./effects/effect-1-default"
+effect2 = require "./effects/effect-2-circles"
+
 module.exports = ActivatePowerMode =
   config: configSchema
   subscriptions: null
   active: false
-
-  config:
-    effect:
-      type: 'integer'
-      default: 1
-      enum: [1, 2]
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
@@ -46,12 +43,6 @@ module.exports = ActivatePowerMode =
     @editorChangeSubscription?.dispose()
     @editorChangeSubscription = @editor.getBuffer().onDidChange @onChange.bind(this)
     @canvas.style.display = "block" if @canvas
-
-  random: (min, max) ->
-    if !max
-      max = min; min = 0;
-
-    min + ~~(Math.random() * (max - min + 1))
 
   setupCanvas: ->
     @canvas = document.createElement "canvas"
@@ -131,18 +122,10 @@ module.exports = ActivatePowerMode =
       alpha: 1
       color: color
 
-    if atom.config.get('activate-power-mode.effect') == 1
-      particle.size = @random(2, 4)
-      particle.vx = -1 + Math.random() * 2
-      particle.vy = -3.5 + Math.random() * 2
+    if false #atom.config.get('activate-power-mode.effect') == 1
+      effect1.init(particle)
     else if atom.config.get('activate-power-mode.effect') == 2
-      particle.size = @random(2, 8)
-      particle.drag = 0.92
-      particle.vx = @random(-3, 3)
-      particle.vy = @random(-3, 3)
-      particle.wander = 0.15
-      particle.theta = @random(0, 360) * Math.PI / 180;
-
+      effect2.init(particle)
     particle;
 
   drawParticles: ->
@@ -155,42 +138,14 @@ module.exports = ActivatePowerMode =
     for particle in @particles
       continue if particle.alpha <= 0.1 or particle.size < 0.5
 
-      if atom.config.get('activate-power-mode.effect') == 1
-        @effect1(particle)
+      if false #atom.config.get('activate-power-mode.effect') == 1
+        effect1.update(particle, @context)
       else if atom.config.get('activate-power-mode.effect') == 2
-        @effect2(particle)
-
-  effect1: (particle) ->
-    particle.vy += 0.075
-    particle.x += particle.vx
-    particle.y += particle.vy
-    particle.alpha *= 0.96
-
-    @context.fillStyle = "rgba(#{particle.color[4...-1]}, #{particle.alpha})"
-    size = random @getConfig("particles.size.min"), @getConfig("particles.size.max"), true
-    @context.fillRect(
-      Math.round(particle.x - size / 2)
-      Math.round(particle.y - size / 2)
-      particle.size, particle.size
-    )
-
-  # Effect based on Soulwire's demo: http://codepen.io/soulwire/pen/foktm
-  effect2: (particle) ->
-    particle.x += particle.vx;
-    particle.y += particle.vy;
-    particle.vx *= particle.drag
-    particle.vy *= particle.drag
-    particle.theta += @random( -0.5, 0.5 )
-    particle.vx += Math.sin( particle.theta ) * 0.1
-    particle.vy += Math.cos( particle.theta ) * 0.1
-    particle.size *= 0.96
-
-    @context.fillStyle = "rgba(#{particle.color[4...-1]}, #{particle.alpha})"
-    @context.beginPath()
-    @context.arc(Math.round(particle.x - 1), Math.round(particle.y - 1), particle.size, 0, 2 * Math.PI)
-    @context.fill()
+        effect2.update(particle, @context)
 
     @context.globalCompositeOperation = gco
+
+
 
   toggle: ->
     @active = not @active
