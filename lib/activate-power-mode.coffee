@@ -1,10 +1,14 @@
 throttle = require "lodash.throttle"
-{CompositeDisposable} = require 'atom'
+random = require "lodash.random"
+
+{CompositeDisposable} = require "atom"
+
+configSchema = require "./config-schema"
 
 module.exports = ActivatePowerMode =
-  activatePowerModeView: null
-  modalPanel: null
+  config: configSchema
   subscriptions: null
+  active: false
 
   config:
     effect:
@@ -14,19 +18,34 @@ module.exports = ActivatePowerMode =
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
-
     @subscriptions.add atom.commands.add "atom-workspace",
       "activate-power-mode:toggle": => @toggle()
 
+    @activeItemSubscription = atom.workspace.onDidChangeActivePaneItem =>
+      @subscribeToActiveTextEditor()
+
+    @subscribeToActiveTextEditor()
+    @setupCanvas()
+
+  destroy: ->
+    @activeItemSubscription?.dispose()
+
+  getConfig: (config) ->
+    atom.config.get "activate-power-mode.#{config}"
+
+  subscribeToActiveTextEditor: ->
     @throttledShake = throttle @shake.bind(this), 100, trailing: false
     @throttledSpawnParticles = throttle @spawnParticles.bind(this), 25, trailing: false
 
     @editor = atom.workspace.getActiveTextEditor()
+    return unless @editor
+
     @editorElement = atom.views.getView @editor
     @editorElement.classList.add "power-mode"
 
-    @subscriptions.add @editor.getBuffer().onDidChange(@onChange.bind(this))
-    @setupCanvas()
+    @editorChangeSubscription?.dispose()
+    @editorChangeSubscription = @editor.getBuffer().onDidChange @onChange.bind(this)
+    @canvas.style.display = "block" if @canvas
 
   random: (min, max) ->
     if !max
@@ -38,8 +57,6 @@ module.exports = ActivatePowerMode =
     @canvas = document.createElement "canvas"
     @context = @canvas.getContext "2d"
     @canvas.classList.add "power-mode-canvas"
-    @canvas.width = @editorElement.offsetWidth
-    @canvas.height = @editorElement.offsetHeight
     @editorElement.parentNode.appendChild @canvas
 
   calculateCursorOffset: ->
@@ -50,6 +67,7 @@ module.exports = ActivatePowerMode =
     left: scrollViewRect.left - editorRect.left
 
   onChange: (e) ->
+    return if not @active
     spawnParticles = true
     if e.newText
       spawnParticles = e.newText isnt "\n"
@@ -57,13 +75,17 @@ module.exports = ActivatePowerMode =
     else
       range = e.newRange.start
 
-    @throttledSpawnParticles(range) if spawnParticles
-    @throttledShake()
+    if spawnParticles and @getConfig "particles.enabled"
+      @throttledSpawnParticles range
+    if @getConfig "screenShake.enabled"
+      @throttledShake()
 
   shake: ->
-    intensity = 1 + 2 * Math.random()
-    x = intensity * (if Math.random() > 0.5 then -1 else 1)
-    y = intensity * (if Math.random() > 0.5 then -1 else 1)
+    min = @getConfig "screenShake.minIntensity"
+    max = @getConfig "screenShake.maxIntensity"
+
+    x = @shakeIntensity min, max
+    y = @shakeIntensity min, max
 
     @editorElement.style.top = "#{y}px"
     @editorElement.style.left = "#{x}px"
@@ -73,6 +95,10 @@ module.exports = ActivatePowerMode =
       @editorElement.style.left = ""
     , 75
 
+  shakeIntensity: (min, max) ->
+    direction = if Math.random() > 0.5 then -1 else 1
+    random(min, max, true) * direction
+
   spawnParticles: (range) ->
     cursorOffset = @calculateCursorOffset()
 
@@ -81,11 +107,10 @@ module.exports = ActivatePowerMode =
     top += cursorOffset.top - @editor.getScrollTop()
 
     color = @getColorAtPosition left, top
-    numParticles = 5 + Math.round(Math.random() * 10)
+    numParticles = random @getConfig("particles.spawnCount.min"), @getConfig("particles.spawnCount.max")
     while numParticles--
-      part =  @createParticle left, top, color
-      @particles[@particlePointer] = part
-      @particlePointer = (@particlePointer + 1) % 500
+      @particles[@particlePointer] = @createParticle left, top, color
+      @particlePointer = (@particlePointer + 1) % @getConfig("particles.totalCount.max")
 
   getColorAtPosition: (left, top) ->
     offset = @editorElement.getBoundingClientRect()
@@ -121,8 +146,11 @@ module.exports = ActivatePowerMode =
     particle;
 
   drawParticles: ->
-    requestAnimationFrame @drawParticles.bind(this)
-    @context.clearRect 0, 0, @canvas.width, @canvas.height
+    requestAnimationFrame @drawParticles.bind(this) if @active
+    @canvas.width = @editorElement.offsetWidth
+    @canvas.height = @editorElement.offsetHeight
+    gco = @context.globalCompositeOperation
+    @context.globalCompositeOperation = "lighter"
 
     for particle in @particles
       continue if particle.alpha <= 0.1 or particle.size < 0.5
@@ -139,9 +167,10 @@ module.exports = ActivatePowerMode =
     particle.alpha *= 0.96
 
     @context.fillStyle = "rgba(#{particle.color[4...-1]}, #{particle.alpha})"
+    size = random @getConfig("particles.size.min"), @getConfig("particles.size.max"), true
     @context.fillRect(
-      Math.round(particle.x - 1.5)
-      Math.round(particle.y - 1.5)
+      Math.round(particle.x - size / 2)
+      Math.round(particle.y - size / 2)
       particle.size, particle.size
     )
 
@@ -161,8 +190,11 @@ module.exports = ActivatePowerMode =
     @context.arc(Math.round(particle.x - 1), Math.round(particle.y - 1), particle.size, 0, 2 * Math.PI)
     @context.fill()
 
+    @context.globalCompositeOperation = gco
+
   toggle: ->
-    console.log 'ActivatePowerMode was toggled!'
+    @active = not @active
     @particlePointer = 0
     @particles = []
+
     requestAnimationFrame @drawParticles.bind(this)

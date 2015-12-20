@@ -1,9 +1,8 @@
 # activate-power-mode atom package
-A work in progress package for Atom to replicate https://github.com/codeinthedark/editor/pull/1 by popular demand.
+A package for Atom to replicate the effects from [codeinthedark/editor](https://github.com/codeinthedark/editor). Available through the Atom package installer (https://atom.io/packages/activate-power-mode). 
 
-Activate with `ctrl-alt-o` or through the command panel with `Activate Power Mode: Toggle`. In this
-early version it only affects the current tab, to run it in a new tab you need to run `Window: Reload` first.
+Activate with <kbd>Ctrl</kbd>-<kbd>Alt</kbd>-<kbd>O</kbd> or through the command panel with `Activate Power Mode: Toggle`. Use the command again to deactivate. 
 
-**NOTE THAT THIS VERSION IS VERY BUGGY RIGHT NOW**
+![activate-power-mode-0 4 0](https://cloud.githubusercontent.com/assets/688415/11615565/10f16456-9c65-11e5-8af4-265f01fc83a0.gif)
 
-![activate-power-mode](https://cloud.githubusercontent.com/assets/688415/11453297/b8f249ec-9605-11e5-978c-eb3bb21eecd8.gif)
+**For a list of power mode packages to other editors, check out [codeinthedark/awesome-power-mode](https://github.com/codeinthedark/awesome-power-mode).**
