@@ -74,3 +74,7 @@ module.exports =
             type: "integer"
             default: 4
             minimum: 0
+  effect:
+      type: 'string'
+      description: "Effect name (You can find/add more effects in the effects folder)"
+      default: 'default-blast'

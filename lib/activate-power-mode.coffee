@@ -9,6 +9,7 @@ module.exports = ActivatePowerMode =
   config: configSchema
   subscriptions: null
   active: false
+  effect: null
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
@@ -19,7 +20,19 @@ module.exports = ActivatePowerMode =
       @subscribeToActiveTextEditor()
 
     @subscribeToActiveTextEditor()
+
+    # Subscribe to config change to change the effect.
+    # This will also get called once initially.
+    atom.config.observe 'activate-power-mode.effect', (newValue) =>
+      @changeEffect newValue
     @setupCanvas()
+
+  changeEffect: (effectName) ->
+    try
+      @effect = require "./effects/" + effectName
+    catch e
+      # Just incase user puts invalid effect name in config, revert to default effect.
+      @effect = require "./effects/default-blast"
 
   destroy: ->
     @activeItemSubscription?.dispose()
@@ -113,13 +126,14 @@ module.exports = ActivatePowerMode =
       "rgb(255, 255, 255)"
 
   createParticle: (x, y, color) ->
-    x: x
-    y: y
-    alpha: 1
-    color: color
-    velocity:
-      x: -1 + Math.random() * 2
-      y: -3.5 + Math.random() * 2
+    particle =
+      x: x
+      y: y
+      alpha: 1
+      color: color
+
+    @effect.init(particle)
+    particle;
 
   drawParticles: ->
     requestAnimationFrame @drawParticles.bind(this) if @active
@@ -129,20 +143,8 @@ module.exports = ActivatePowerMode =
     @context.globalCompositeOperation = "lighter"
 
     for particle in @particles
-      continue if particle.alpha <= 0.1
-
-      particle.velocity.y += 0.075
-      particle.x += particle.velocity.x
-      particle.y += particle.velocity.y
-      particle.alpha *= 0.96
-
-      @context.fillStyle = "rgba(#{particle.color[4...-1]}, #{particle.alpha})"
-      size = random @getConfig("particles.size.min"), @getConfig("particles.size.max"), true
-      @context.fillRect(
-        Math.round(particle.x - size / 2)
-        Math.round(particle.y - size / 2)
-        size, size
-      )
+      continue if particle.alpha <= 0.1 or particle.size < 0.5
+      @effect.update(particle, @context)
 
     @context.globalCompositeOperation = gco
 
