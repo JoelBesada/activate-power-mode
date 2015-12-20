@@ -75,6 +75,6 @@ module.exports =
             default: 4
             minimum: 0
   effect:
-      type: 'integer'
-      default: 1
-      enum: [1, 2]
+      type: 'string'
+      description: "Effect name (You can find/add more effects in the effects folder)"
+      default: 'default-blast'

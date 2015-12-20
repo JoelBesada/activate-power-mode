@@ -5,13 +5,11 @@ random = require "lodash.random"
 
 configSchema = require "./config-schema"
 
-effect1 = require "./effects/effect-1-default"
-effect2 = require "./effects/effect-2-circles"
-
 module.exports = ActivatePowerMode =
   config: configSchema
   subscriptions: null
   active: false
+  effect: null
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
@@ -22,7 +20,19 @@ module.exports = ActivatePowerMode =
       @subscribeToActiveTextEditor()
 
     @subscribeToActiveTextEditor()
+
+    # Subscribe to config change to change the effect.
+    # This will also get called once initially.
+    atom.config.observe 'activate-power-mode.effect', (newValue) =>
+      @changeEffect newValue
     @setupCanvas()
+
+  changeEffect: (effectName) ->
+    try
+      @effect = require "./effects/" + effectName
+    catch e
+      # Just incase user puts invalid effect name in config, revert to default effect.
+      @effect = require "./effects/default-blast"
 
   destroy: ->
     @activeItemSubscription?.dispose()
@@ -122,10 +132,7 @@ module.exports = ActivatePowerMode =
       alpha: 1
       color: color
 
-    if false #atom.config.get('activate-power-mode.effect') == 1
-      effect1.init(particle)
-    else if atom.config.get('activate-power-mode.effect') == 2
-      effect2.init(particle)
+    @effect.init(particle)
     particle;
 
   drawParticles: ->
@@ -137,15 +144,9 @@ module.exports = ActivatePowerMode =
 
     for particle in @particles
       continue if particle.alpha <= 0.1 or particle.size < 0.5
-
-      if false #atom.config.get('activate-power-mode.effect') == 1
-        effect1.update(particle, @context)
-      else if atom.config.get('activate-power-mode.effect') == 2
-        effect2.update(particle, @context)
+      @effect.update(particle, @context)
 
     @context.globalCompositeOperation = gco
-
-
 
   toggle: ->
     @active = not @active
