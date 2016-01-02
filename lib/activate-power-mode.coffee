@@ -154,7 +154,7 @@ module.exports = ActivatePowerMode =
 
     requestAnimationFrame @drawParticles.bind(this)
 
-  provideActivePowerModeServiceV1: ->
+  provideActivatePowerModeServiceV1: ->
     this
 
   registerEffect: (name, effect) ->
