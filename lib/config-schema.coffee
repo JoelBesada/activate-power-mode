@@ -2,7 +2,7 @@ module.exports =
   effect:
     title: "Effect"
     type: "string"
-    enum: ["default"]
+    # enum: ["default"]
     default: "default"
 
   screenShake:

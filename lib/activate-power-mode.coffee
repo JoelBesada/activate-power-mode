@@ -31,13 +31,16 @@ module.exports = ActivatePowerMode =
     @setupCanvas()
 
   changeEffect: (effectName) ->
-    @effect = @effects[effectName]
+    @effect = @effects[effectName] or @effects["default"]
 
   destroy: ->
     @activeItemSubscription?.dispose()
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.#{config}"
+
+  setConfig: (config, value) ->
+    atom.config.set "activate-power-mode.#{config}", value
 
   subscribeToActiveTextEditor: ->
     @throttledShake = throttle @shake.bind(this), 100, trailing: false
@@ -159,4 +162,6 @@ module.exports = ActivatePowerMode =
 
   registerEffect: (name, effect) ->
     @effects[name] = effect
-    @config.effect.enum.push name
+    if (@getConfig "effect") == name
+      @changeEffect name
+    # @config.effect.enum.push name
