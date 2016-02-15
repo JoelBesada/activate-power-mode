@@ -2,7 +2,7 @@
 'context-menu':
   'atom-text-editor': [
     {
-      'label': 'Toggle activate-power-mode'
+      'label': 'Toggle Power Mode'
       'command': 'activate-power-mode:toggle'
     }
   ]
@@ -10,7 +10,7 @@
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'activate-power-mode'
+      'label': 'Activate Power Mode'
       'submenu': [
         {
           'label': 'Toggle'
