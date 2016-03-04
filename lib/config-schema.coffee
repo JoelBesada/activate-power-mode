@@ -74,3 +74,11 @@ module.exports =
             type: "integer"
             default: 4
             minimum: 0
+  excludedFileTypes:
+    type: "object"
+    properties:
+      excluded:
+        title: "Prohibit activate-power-mode from enabling on these file types:"
+        description: "Use comma separated, lowercase values (i.e. \"html, cpp, css\")"
+        type: "array"
+        default: ["."]

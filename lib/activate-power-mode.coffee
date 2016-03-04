@@ -33,6 +33,7 @@ module.exports = ActivatePowerMode =
 
     @editor = atom.workspace.getActiveTextEditor()
     return unless @editor
+    return if @editor.getGrammar().name.toLowerCase() in @getConfig "excludedFileTypes.excluded"
 
     @editorElement = atom.views.getView @editor
     @editorElement.classList.add "power-mode"
