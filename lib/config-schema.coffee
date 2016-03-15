@@ -2,8 +2,8 @@ module.exports =
   effect:
     title: "Effect"
     type: "string"
-    # enum: ["default"]
     default: "default"
+    description: "Options: default"
 
   screenShake:
     type: "object"

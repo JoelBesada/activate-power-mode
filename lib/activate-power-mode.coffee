@@ -164,4 +164,4 @@ module.exports = ActivatePowerMode =
     @effects[name] = effect
     if (@getConfig "effect") == name
       @changeEffect name
-    # @config.effect.enum.push name
+    @config.effect.description += ", " + name
