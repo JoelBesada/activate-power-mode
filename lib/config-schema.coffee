@@ -1,4 +1,10 @@
 module.exports =
+  effect:
+    title: "Effect"
+    type: "string"
+    default: "default"
+    description: "Options: default"
+
   screenShake:
     type: "object"
     properties:

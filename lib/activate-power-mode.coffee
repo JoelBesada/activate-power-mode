@@ -4,11 +4,14 @@ random = require "lodash.random"
 {CompositeDisposable} = require "atom"
 
 configSchema = require "./config-schema"
+defaultEffect = require "./effect/default.coffee"
 
 module.exports = ActivatePowerMode =
   config: configSchema
   subscriptions: null
   active: false
+  effects: []
+  effect: null
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
@@ -19,13 +22,25 @@ module.exports = ActivatePowerMode =
       @subscribeToActiveTextEditor()
 
     @subscribeToActiveTextEditor()
+
+    @effects["default"] = defaultEffect
+
+    atom.config.observe 'activate-power-mode.effect', (newValue) =>
+      @changeEffect newValue
+
     @setupCanvas()
+
+  changeEffect: (effectName) ->
+    @effect = @effects[effectName] or @effects["default"]
 
   destroy: ->
     @activeItemSubscription?.dispose()
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.#{config}"
+
+  setConfig: (config, value) ->
+    atom.config.set "activate-power-mode.#{config}", value
 
   subscribeToActiveTextEditor: ->
     @throttledShake = throttle @shake.bind(this), 100, trailing: false
@@ -113,13 +128,14 @@ module.exports = ActivatePowerMode =
       "rgb(255, 255, 255)"
 
   createParticle: (x, y, color) ->
-    x: x
-    y: y
-    alpha: 1
-    color: color
-    velocity:
-      x: -1 + Math.random() * 2
-      y: -3.5 + Math.random() * 2
+    particle =
+      x: x
+      y: y
+      alpha: 1
+      color: color
+
+    @effect.init(particle)
+    particle
 
   drawParticles: ->
     requestAnimationFrame @drawParticles.bind(this) if @active
@@ -129,20 +145,8 @@ module.exports = ActivatePowerMode =
     @context.globalCompositeOperation = "lighter"
 
     for particle in @particles
-      continue if particle.alpha <= 0.1
-
-      particle.velocity.y += 0.075
-      particle.x += particle.velocity.x
-      particle.y += particle.velocity.y
-      particle.alpha *= 0.96
-
-      @context.fillStyle = "rgba(#{particle.color[4...-1]}, #{particle.alpha})"
-      size = random @getConfig("particles.size.min"), @getConfig("particles.size.max"), true
-      @context.fillRect(
-        Math.round(particle.x - size / 2)
-        Math.round(particle.y - size / 2)
-        size, size
-      )
+      continue if particle.alpha <= 0.1 or particle.size < 0.5
+      @effect.update(particle, @context)
 
     @context.globalCompositeOperation = gco
 
@@ -152,3 +156,12 @@ module.exports = ActivatePowerMode =
     @particles = []
 
     requestAnimationFrame @drawParticles.bind(this)
+
+  provideActivatePowerModeServiceV1: ->
+    this
+
+  registerEffect: (name, effect) ->
+    @effects[name] = effect
+    if (@getConfig "effect") == name
+      @changeEffect name
+    @config.effect.description += ", " + name
