@@ -59,12 +59,9 @@ module.exports = ActivatePowerMode =
     spawnParticles = true
     if e.newText
       spawnParticles = e.newText isnt "\n"
-      range = e.newRange.end
-    else
-      range = e.newRange.start
 
     if spawnParticles and @getConfig "particles.enabled"
-      @throttledSpawnParticles range
+      @throttledSpawnParticles()
     if @getConfig "screenShake.enabled"
       @throttledShake()
 
@@ -87,10 +84,11 @@ module.exports = ActivatePowerMode =
     direction = if Math.random() > 0.5 then -1 else 1
     random(min, max, true) * direction
 
-  spawnParticles: (range) ->
+  spawnParticles: ->
+    cursorPos = @editor.getCursorScreenPosition()
     cursorOffset = @calculateCursorOffset()
 
-    {left, top} = @editorElement.pixelPositionForScreenPosition range
+    {left, top} = @editorElement.pixelPositionForScreenPosition cursorPos
     left += cursorOffset.left - @editorElement.getScrollLeft()
     top += cursorOffset.top - @editorElement.getScrollTop()
 
