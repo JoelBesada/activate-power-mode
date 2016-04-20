@@ -90,9 +90,9 @@ module.exports = ActivatePowerMode =
   spawnParticles: (range) ->
     cursorOffset = @calculateCursorOffset()
 
-    {left, top} = @editor.pixelPositionForScreenPosition range
-    left += cursorOffset.left - @editor.getScrollLeft()
-    top += cursorOffset.top - @editor.getScrollTop()
+    {left, top} = @editorElement.pixelPositionForScreenPosition range
+    left += cursorOffset.left - @editorElement.getScrollLeft()
+    top += cursorOffset.top - @editorElement.getScrollTop()
 
     color = @getColorAtPosition left, top
     numParticles = random @getConfig("particles.spawnCount.min"), @getConfig("particles.spawnCount.max")
