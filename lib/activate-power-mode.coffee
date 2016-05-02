@@ -88,9 +88,10 @@ module.exports = ActivatePowerMode =
     random(min, max, true) * direction
 
   spawnParticles: (range) ->
+    screenPosition = @editor.screenPositionForBufferPosition range
     cursorOffset = @calculateCursorOffset()
 
-    {left, top} = @editorElement.pixelPositionForScreenPosition range
+    {left, top} = @editorElement.pixelPositionForScreenPosition screenPosition
     left += cursorOffset.left - @editorElement.getScrollLeft()
     top += cursorOffset.top - @editorElement.getScrollTop()
 
