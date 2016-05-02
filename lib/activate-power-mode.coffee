@@ -43,13 +43,13 @@ module.exports = ActivatePowerMode =
     @editorChangeSubscription = @editor.getBuffer().onDidChange @onChange.bind(this)
 
     @setupCanvas() if not @canvas
+    @editorElement.parentNode.appendChild @canvas
     @canvas.style.display = "block"
 
   setupCanvas: ->
     @canvas = document.createElement "canvas"
     @context = @canvas.getContext "2d"
     @canvas.classList.add "power-mode-canvas"
-    @editorElement.parentNode.appendChild @canvas
 
   calculateCursorOffset: ->
     editorRect = @editorElement.getBoundingClientRect()
