@@ -1,4 +1,8 @@
 throttle = require "lodash.throttle"
+path = require "path"
+audioPath = path.join __dirname, '../assets/type'
+
+{CompositeDisposable} = require 'atom'
 random = require "lodash.random"
 
 {CompositeDisposable} = require "atom"
@@ -63,6 +67,15 @@ module.exports = ActivatePowerMode =
     left: scrollViewRect.left - editorRect.left
 
   onChange: (e) ->
+    soundVersions =
+      1: '.wav'
+      2: '-high.wav'
+      3: '-high2.wav'
+      4: '-low.wav'
+      5: '-low2.wav'
+    currentPath = audioPath + soundVersions[Math.floor((Math.random() * 5) + 1)]
+    sound = new Audio(currentPath)
+    sound.play()
     return if not @active
     spawnParticles = true
     if e.newText
