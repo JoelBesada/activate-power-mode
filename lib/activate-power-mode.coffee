@@ -21,8 +21,14 @@ module.exports = ActivatePowerMode =
     if @getConfig "autoToggle"
       @toggle()
 
-  destroy: ->
+  deactivate: ->
+    @editorChangeSubscription?.dispose()
     @activeItemSubscription?.dispose()
+    @subscriptions?.dispose()
+    @subscriptions = null
+    @active = false
+    @canvas?.parentNode.removeChild @canvas
+    @canvas = null
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.#{config}"
