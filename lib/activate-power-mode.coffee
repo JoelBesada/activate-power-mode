@@ -19,7 +19,9 @@ module.exports = ActivatePowerMode =
       @subscribeToActiveTextEditor()
 
     @subscribeToActiveTextEditor()
-    @setupCanvas()
+
+    if @getConfig "autoToggle"
+      @toggle()
 
   destroy: ->
     @activeItemSubscription?.dispose()
@@ -39,13 +41,15 @@ module.exports = ActivatePowerMode =
 
     @editorChangeSubscription?.dispose()
     @editorChangeSubscription = @editor.getBuffer().onDidChange @onChange.bind(this)
-    @canvas.style.display = "block" if @canvas
+
+    @setupCanvas() if not @canvas
+    @editorElement.parentNode.appendChild @canvas
+    @canvas.style.display = "block"
 
   setupCanvas: ->
     @canvas = document.createElement "canvas"
     @context = @canvas.getContext "2d"
     @canvas.classList.add "power-mode-canvas"
-    @editorElement.parentNode.appendChild @canvas
 
   calculateCursorOffset: ->
     editorRect = @editorElement.getBoundingClientRect()
@@ -124,6 +128,8 @@ module.exports = ActivatePowerMode =
 
   drawParticles: ->
     requestAnimationFrame @drawParticles.bind(this) if @active
+    return unless @canvas
+
     @canvas.width = @editorElement.offsetWidth
     @canvas.height = @editorElement.offsetHeight
     gco = @context.globalCompositeOperation

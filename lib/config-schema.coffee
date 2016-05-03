@@ -1,4 +1,10 @@
 module.exports =
+  autoToggle:
+    title: "Auto Toggle"
+    description: "Toggle on start."
+    type: "boolean"
+    default: true
+
   screenShake:
     type: "object"
     properties:
