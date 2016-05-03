@@ -4,9 +4,6 @@
   "version": "0.4.1",
   "description": "Activate POWER MODE to write your code in style.",
   "keywords": [],
-  "activationCommands": {
-    "atom-workspace": "activate-power-mode:toggle"
-  },
   "repository": "https://github.com/JoelBesada/activate-power-mode",
   "author": "Joel Besada <joel@joelb.me> (http://joelb.me)",
   "license": "MIT",
