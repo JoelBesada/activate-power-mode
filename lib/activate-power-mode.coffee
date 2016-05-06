@@ -13,7 +13,7 @@ module.exports = ActivatePowerMode =
   activate: (state) ->
     @subscriptions = new CompositeDisposable
     @subscriptions.add atom.commands.add "atom-workspace",
-      "activate-power-mode:toggle": => @toggle()
+      "activate-power-mode-delete:toggle": => @toggle()
 
     @activeItemSubscription = atom.workspace.onDidStopChangingActivePaneItem =>
       @subscribeToActiveTextEditor()
@@ -31,7 +31,7 @@ module.exports = ActivatePowerMode =
     @canvas = null
 
   getConfig: (config) ->
-    atom.config.get "activate-power-mode.#{config}"
+    atom.config.get "activate-power-mode-delete.#{config}"
 
   subscribeToActiveTextEditor: ->
     @throttledShake = throttle @shake.bind(this), 100, trailing: false
@@ -63,18 +63,19 @@ module.exports = ActivatePowerMode =
     left: scrollViewRect.left - editorRect.left
 
   onChange: (e) ->
-    return if not @active
-    spawnParticles = true
-    if e.newText
-      spawnParticles = e.newText isnt "\n"
-      range = e.newRange.end
-    else
-      range = e.newRange.start
+    if e.newText is ""
+      return if not @active
+      spawnParticles = true
+      if e.newText
+        spawnParticles = e.newText isnt "\n"
+        range = e.newRange.end
+      else
+        range = e.newRange.start
 
-    if spawnParticles and @getConfig "particles.enabled"
-      @throttledSpawnParticles range
-    if @getConfig "screenShake.enabled"
-      @throttledShake()
+      if spawnParticles and @getConfig "particles.enabled"
+        @throttledSpawnParticles range
+      if @getConfig "screenShake.enabled"
+        @throttledShake()
 
   shake: ->
     min = @getConfig "screenShake.minIntensity"

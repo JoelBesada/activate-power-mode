@@ -2,19 +2,19 @@
 'context-menu':
   'atom-text-editor': [
     {
-      'label': 'Toggle activate-power-mode'
-      'command': 'activate-power-mode:toggle'
+      'label': 'Toggle activate-power-mode-delete'
+      'command': 'activate-power-mode-delete:toggle'
     }
   ]
 'menu': [
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'activate-power-mode'
+      'label': 'activate-power-mode-delete'
       'submenu': [
         {
           'label': 'Toggle'
-          'command': 'activate-power-mode:toggle'
+          'command': 'activate-power-mode-delete:toggle'
         }
       ]
     ]
