@@ -1,7 +1,7 @@
 {
   "name": "activate-power-mode-delete",
   "main": "./lib/activate-power-mode",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "description": "Activate POWER MODE to write your code in style.",
   "keywords": [],
   "repository": {
