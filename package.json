@@ -2,7 +2,7 @@
   "name": "activate-power-mode-delete",
   "main": "./lib/activate-power-mode",
   "version": "0.6.0",
-  "description": "Activate POWER MODE to write your code in style.",
+  "description": "Activate POWER MODE to DELETE powerfully. Original package was overwhelming, these effects are on delete only.",
   "keywords": [],
   "repository": {
     "type": "git",
@@ -21,7 +21,7 @@
     "lodash.random": "^3.0.1",
     "lodash.throttle": "^3.0.4"
   },
-  "readme": "# activate-power-mode-delete atom package\nA package for Atom to replicate the effects from [codeinthedark/editor](https://github.com/codeinthedark/editor). Available through the Atom package installer (https://atom.io/packages/activate-power-mode-delete). \n\nActivate with <kbd>Ctrl</kbd>-<kbd>Alt</kbd>-<kbd>O</kbd> or through the command panel with `Activate Power Mode: Toggle`. Use the command again to deactivate. \n\n![activate-power-mode-delete-0 4 0](https://cloud.githubusercontent.com/assets/688415/11615565/10f16456-9c65-11e5-8af4-265f01fc83a0.gif)\n\n**For a list of power mode packages to other editors, check out [codeinthedark/awesome-power-mode](https://github.com/codeinthedark/awesome-power-mode).**\n",
+  "readme": "# activate-power-mode-delete atom package\nA package forked from [activate-power-mode](https://atom.io/packages/activate-power-mode). Original package was overwhelming, these effects are on delete only. Available through the Atom package installer (https://atom.io/packages/activate-power-mode-delete). \n\nActivate with <kbd>Ctrl</kbd>-<kbd>Alt</kbd>-<kbd>o</kbd> or through the command panel with `Activate Power Mode: Toggle`. Use the command again to deactivate. \n\n![activate-power-mode-delete-0 4 0](https://cloud.githubusercontent.com/assets/688415/11615565/10f16456-9c65-11e5-8af4-265f01fc83a0.gif)\n",
   "readmeFilename": "README.md",
   "bugs": {
     "url": ""
