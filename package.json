@@ -1,7 +1,7 @@
 {
   "name": "activate-power-mode-delete",
   "main": "./lib/activate-power-mode",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Activate POWER MODE to DELETE powerfully. Original package was overwhelming, these effects are on delete only.",
   "keywords": [],
   "repository": {
