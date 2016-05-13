@@ -15,16 +15,20 @@ module.exports = ActivatePowerMode =
     @subscriptions.add atom.commands.add "atom-workspace",
       "activate-power-mode:toggle": => @toggle()
 
-    @activeItemSubscription = atom.workspace.onDidChangeActivePaneItem =>
+    @activeItemSubscription = atom.workspace.onDidStopChangingActivePaneItem =>
       @subscribeToActiveTextEditor()
-
-    @subscribeToActiveTextEditor()
 
     if @getConfig "autoToggle"
       @toggle()
 
-  destroy: ->
+  deactivate: ->
+    @editorChangeSubscription?.dispose()
     @activeItemSubscription?.dispose()
+    @subscriptions?.dispose()
+    @subscriptions = null
+    @active = false
+    @canvas?.parentNode.removeChild @canvas
+    @canvas = null
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.#{config}"
