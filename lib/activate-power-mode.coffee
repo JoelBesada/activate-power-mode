@@ -4,14 +4,17 @@ random = require "lodash.random"
 {CompositeDisposable} = require "atom"
 
 configSchema = require "./config-schema"
+screenShake = require './screen-shake'
 
 module.exports = ActivatePowerMode =
   config: configSchema
+  screenShake: screenShake
   subscriptions: null
   active: false
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
+
     @subscriptions.add atom.commands.add "atom-workspace",
       "activate-power-mode:toggle": => @toggle()
 
@@ -34,7 +37,7 @@ module.exports = ActivatePowerMode =
     atom.config.get "activate-power-mode.#{config}"
 
   subscribeToActiveTextEditor: ->
-    @throttledShake = throttle @shake.bind(this), 100, trailing: false
+    @throttledShake = throttle @screenShake.shake.bind(@screenShake), 100, trailing: false
     @throttledSpawnParticles = throttle @spawnParticles.bind(this), 25, trailing: false
 
     @editor = atom.workspace.getActiveTextEditor()
@@ -74,26 +77,7 @@ module.exports = ActivatePowerMode =
     if spawnParticles and @getConfig "particles.enabled"
       @throttledSpawnParticles range
     if @getConfig "screenShake.enabled"
-      @throttledShake()
-
-  shake: ->
-    min = @getConfig "screenShake.minIntensity"
-    max = @getConfig "screenShake.maxIntensity"
-
-    x = @shakeIntensity min, max
-    y = @shakeIntensity min, max
-
-    @editorElement.style.top = "#{y}px"
-    @editorElement.style.left = "#{x}px"
-
-    setTimeout =>
-      @editorElement.style.top = ""
-      @editorElement.style.left = ""
-    , 75
-
-  shakeIntensity: (min, max) ->
-    direction = if Math.random() > 0.5 then -1 else 1
-    random(min, max, true) * direction
+      @throttledShake(@editorElement)
 
   spawnParticles: (range) ->
     screenPosition = @editor.screenPositionForBufferPosition range
