@@ -8,7 +8,7 @@ module.exports =
 
   enable: ->
     @throttledShake = throttle @screenShake.shake.bind(@screenShake), 100, trailing: false
-    @throttledSpawnParticles = throttle @powerCanvas.spawnParticles.bind(@powerCanvas), 25, trailing: false
+    @throttledOnChange = throttle @onChange.bind(this), 25, trailing: false
 
     @activeItemSubscription = atom.workspace.onDidStopChangingActivePaneItem =>
       @subscribeToActiveTextEditor()
@@ -34,7 +34,7 @@ module.exports =
 
     @powerCanvas.setupCanvas @editor, @editorElement
 
-    @editorChangeSubscription = @editor.getBuffer().onDidChange @onChange.bind(this)
+    @editorChangeSubscription = @editor.getBuffer().onDidChange @throttledOnChange
 
   onChange: (e) ->
     spawnParticles = true
@@ -45,9 +45,9 @@ module.exports =
       range = e.newRange.start
 
     if spawnParticles and @getConfig "particles.enabled"
-      @throttledSpawnParticles range
+      @powerCanvas.spawnParticles range
     if @getConfig "screenShake.enabled"
-      @throttledShake(@editorElement)
+      @throttledShake @editorElement
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.#{config}"
