@@ -1,26 +1,37 @@
 random = require "lodash.random"
 
 module.exports =
-  activate: (active) ->
-    @active = active
-    @particlePointer = 0
-    @particles = []
+  init: ->
+    @resetParticles()
 
-    requestAnimationFrame @drawParticles.bind(this) if @active
+    @animationFrame = requestAnimationFrame @drawParticles.bind(this)
 
   resetCanvas: ->
     @editor = null
     @editorElement = null
+    cancelAnimationFrame(@animationFrame)
+
+  resetParticles: ->
+    @particlePointer = 0
+    @particles = []
+
+  destroy: ->
+    @resetCanvas()
+    @resetParticles()
+    @canvas?.parentNode.removeChild @canvas
 
   setupCanvas: (editor, editorElement) ->
     if not @canvas
       @canvas = document.createElement "canvas"
       @context = @canvas.getContext "2d"
       @canvas.classList.add "power-mode-canvas"
+
     editorElement.parentNode.appendChild @canvas
     @canvas.style.display = "block"
     @editorElement = editorElement
     @editor = editor
+
+    @init()
 
   spawnParticles: (range) ->
     screenPosition = @editor.screenPositionForBufferPosition range
@@ -65,7 +76,7 @@ module.exports =
       y: -3.5 + Math.random() * 2
 
   drawParticles: ->
-    requestAnimationFrame @drawParticles.bind(this) if @active
+    @animationFrame = requestAnimationFrame @drawParticles.bind(this) if @editor
     return unless @canvas and @editorElement
 
     @canvas.width = @editorElement.offsetWidth
