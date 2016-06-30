@@ -8,7 +8,6 @@ module.exports =
 
   enable: ->
     @throttledShake = throttle @screenShake.shake.bind(@screenShake), 100, trailing: false
-    @throttledOnChange = throttle @onChange.bind(this), 25, trailing: false
 
     @activeItemSubscription = atom.workspace.onDidStopChangingActivePaneItem =>
       @subscribeToActiveTextEditor()
@@ -18,6 +17,7 @@ module.exports =
   disable: ->
     @activeItemSubscription?.dispose()
     @editorChangeSubscription?.dispose()
+    @editorAddCursor?.dispose()
     @powerCanvas.destroy()
 
   subscribeToActiveTextEditor: ->
@@ -26,6 +26,7 @@ module.exports =
 
   prepareEditor: ->
     @editorChangeSubscription?.dispose()
+    @editorAddCursor?.dispose()
     @editor = atom.workspace.getActiveTextEditor()
     return unless @editor
 
@@ -34,7 +35,11 @@ module.exports =
 
     @powerCanvas.setupCanvas @editor, @editorElement
 
-    @editorChangeSubscription = @editor.getBuffer().onDidChange @throttledOnChange
+    @editorChangeSubscription = @editor.getBuffer().onDidChange @onChange.bind(this)
+    @editorAddCursor = @editor.observeCursors @handleCursor.bind(this)
+
+  handleCursor: (cursor) ->
+    cursor.throttleSpawnParticles = throttle @powerCanvas.spawnParticles.bind(@powerCanvas), 25, trailing: false
 
   onChange: (e) ->
     spawnParticles = true
@@ -44,8 +49,12 @@ module.exports =
     else
       range = e.newRange.start
 
+    screenPosition = @editor.screenPositionForBufferPosition range
+    cursor = @editor.getCursorAtScreenPosition screenPosition
+    return unless cursor
+
     if spawnParticles and @getConfig "particles.enabled"
-      @powerCanvas.spawnParticles range
+      cursor.throttleSpawnParticles screenPosition
     if @getConfig "screenShake.enabled"
       @throttledShake @editorElement
 
