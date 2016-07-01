@@ -49,7 +49,7 @@ module.exports =
   getColorAtPosition: (left, top) ->
     offset = @editorElement.getBoundingClientRect()
     el = (@editorElement.shadowRoot ? document).elementFromPoint(
-      left + offset.left
+      left + offset.left - 3
       top + offset.top
     )
 
