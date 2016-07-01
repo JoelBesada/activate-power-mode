@@ -33,8 +33,7 @@ module.exports =
 
     @init()
 
-  spawnParticles: (range) ->
-    screenPosition = @editor.screenPositionForBufferPosition range
+  spawnParticles: (screenPosition) ->
     cursorOffset = @calculateCursorOffset()
 
     {left, top} = @editorElement.pixelPositionForScreenPosition screenPosition
