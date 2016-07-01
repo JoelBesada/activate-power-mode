@@ -49,7 +49,7 @@ module.exports =
 
   getColorAtPosition: (left, top) ->
     offset = @editorElement.getBoundingClientRect()
-    el = atom.views.getView(@editor).shadowRoot.elementFromPoint(
+    el = (@editorElement.shadowRoot ? document).elementFromPoint(
       left + offset.left
       top + offset.top
     )
@@ -61,7 +61,7 @@ module.exports =
 
   calculateCursorOffset: ->
     editorRect = @editorElement.getBoundingClientRect()
-    scrollViewRect = @editorElement.shadowRoot.querySelector(".scroll-view").getBoundingClientRect()
+    scrollViewRect = (@editorElement.shadowRoot ? @editorElement).querySelector(".scroll-view").getBoundingClientRect()
 
     top: scrollViewRect.top - editorRect.top + @editor.getLineHeightInPixels() / 2
     left: scrollViewRect.left - editorRect.left
