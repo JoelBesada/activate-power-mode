@@ -1,3 +1,21 @@
+### 0.7.0 2016-07-01
+* Fix issue with plugin not working when Shadow DOM is disabled in Atom
+* Add support for multiple cursors
+* Add better color detection to prevent getting gray particles when writing at the end of the line
+
+### 0.6.0 2016-06-30
+* Code refactor, no user-facing changes. 
+
+### 0.5.2 2016-05-03
+* Properly dispose event listeners when disabling the plugin.
+
+### 0.5.1 2016-05-03
+* Fix issue with the plugin not always initializing correctly when opening a new window.
+
+### 0.5.0 2016-05-03
+* Added an option to automatically toggle the plugin when starting Atom.
+* Various fixes for particle positioning.
+
 ### 0.4.1 2015-12-06
 Version bump to update description on atom.io/packages.
 
