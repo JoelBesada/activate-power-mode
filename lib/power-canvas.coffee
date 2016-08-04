@@ -26,7 +26,7 @@ module.exports =
       @context = @canvas.getContext "2d"
       @canvas.classList.add "power-mode-canvas"
 
-    editorElement.parentNode.appendChild @canvas
+    (editorElement.shadowRoot ? editorElement).appendChild @canvas
     @canvas.style.display = "block"
     @editorElement = editorElement
     @editor = editor
