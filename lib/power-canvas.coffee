@@ -40,18 +40,17 @@ module.exports =
     left += cursorOffset.left - @editorElement.getScrollLeft()
     top += cursorOffset.top - @editorElement.getScrollTop()
 
-    color = @getColorAtPosition left, top
+    color = @getColorAtPosition [screenPosition.row, screenPosition.column - 1]
     numParticles = random @getConfig("spawnCount.min"), @getConfig("spawnCount.max")
     while numParticles--
       @particles[@particlePointer] = @createParticle left, top, color
       @particlePointer = (@particlePointer + 1) % @getConfig("totalCount.max")
 
-  getColorAtPosition: (left, top) ->
-    offset = @editorElement.getBoundingClientRect()
-    el = (@editorElement.shadowRoot ? document).elementFromPoint(
-      left + offset.left - 3
-      top + offset.top
-    )
+  getColorAtPosition: (screenPosition) ->
+    bufferPosition = @editor.bufferPositionForScreenPosition screenPosition
+    [..., scope] = @editor.scopeDescriptorForBufferPosition(bufferPosition).scopes
+
+    el = (@editorElement.shadowRoot ? @editorElement).querySelector('.' + scope)
 
     if el
       getComputedStyle(el).color
