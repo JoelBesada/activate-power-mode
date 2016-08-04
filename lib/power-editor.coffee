@@ -31,7 +31,6 @@ module.exports =
     return unless @editor
 
     @editorElement = atom.views.getView @editor
-    @editorElement.classList.add "power-mode"
 
     @powerCanvas.setupCanvas @editor, @editorElement
 
