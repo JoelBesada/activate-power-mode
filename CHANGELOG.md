@@ -1,3 +1,6 @@
+### 0.7.2 2016-08-04
+* Fix issue with split panes on atom 1.9.*
+
 ### 0.7.1 2016-08-04
 * Fix issue with autocomplete and linter messages positions on atom 1.9.*
 * Fix issue with getting color, changed color detection logic.
