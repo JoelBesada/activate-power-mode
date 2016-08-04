@@ -1,3 +1,10 @@
+### 0.7.1 2016-08-04
+* Fix issue with autocomplete and linter messages positions on atom 1.9.*
+* Fix issue with getting color, changed color detection logic.
+* Update activate-power-mode.cson for menus
+* Update README
+* Update CHANGELOG
+
 ### 0.7.0 2016-07-01
 * Fix issue with plugin not working when Shadow DOM is disabled in Atom
 * Add support for multiple cursors
