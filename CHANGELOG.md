@@ -1,3 +1,7 @@
+### 0.7.3 2016-08-06
+* Fix when scope descriptor is a invalid selector
+* Uses more specific selectors
+
 ### 0.7.2 2016-08-04
 * Fix issue with split panes on atom 1.9.*
 
