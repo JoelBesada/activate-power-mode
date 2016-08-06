@@ -48,9 +48,12 @@ module.exports =
 
   getColorAtPosition: (screenPosition) ->
     bufferPosition = @editor.bufferPositionForScreenPosition screenPosition
-    [..., scope] = @editor.scopeDescriptorForBufferPosition(bufferPosition).scopes
+    scope = @editor.scopeDescriptorForBufferPosition bufferPosition
 
-    el = (@editorElement.shadowRoot ? @editorElement).querySelector('.' + scope)
+    try
+      el = (@editorElement.shadowRoot ? @editorElement).querySelector scope.toString()
+    catch error
+      "rgb(255, 255, 255)"
 
     if el
       getComputedStyle(el).color
