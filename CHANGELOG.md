@@ -1,3 +1,6 @@
+### 0.7.4 2016-08-10
+* Fix when canvas has no parent
+
 ### 0.7.3 2016-08-06
 * Fix when scope descriptor is a invalid selector
 * Uses more specific selectors
