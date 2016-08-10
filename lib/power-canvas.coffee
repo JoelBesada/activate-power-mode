@@ -19,6 +19,7 @@ module.exports =
     @resetCanvas()
     @resetParticles()
     @canvas?.parentNode.removeChild @canvas
+    @canvas = null
 
   setupCanvas: (editor, editorElement) ->
     if not @canvas
