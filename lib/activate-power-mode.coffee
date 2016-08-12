@@ -12,7 +12,9 @@ module.exports = ActivatePowerMode =
     @subscriptions = new CompositeDisposable
 
     @subscriptions.add atom.commands.add "atom-workspace",
-      "activate-power-mode:toggle": => @toggle()
+      "activate-power-mode:toggle":  => @toggle()
+      "activate-power-mode:enable":  => @enable()
+      "activate-power-mode:disable": => @disable()
 
     if @getConfig "autoToggle"
       @toggle()
@@ -26,5 +28,12 @@ module.exports = ActivatePowerMode =
     atom.config.get "activate-power-mode.#{config}"
 
   toggle: ->
-    @active = not @active
-    if @active then @powerEditor.enable() else @powerEditor.disable()
+    if @active then @disable() else @enable()
+
+  enable: ->
+    @active = true
+    @powerEditor.enable()
+
+  disable: ->
+    @active = false
+    @powerEditor.disable()
