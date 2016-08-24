@@ -1,4 +1,10 @@
 module.exports =
+  autoToggle:
+    title: "Auto Toggle"
+    description: "Toggle on start."
+    type: "boolean"
+    default: true
+
   screenShake:
     type: "object"
     properties:
@@ -74,6 +80,7 @@ module.exports =
             type: "integer"
             default: 4
             minimum: 0
+
   excludedFileTypes:
     type: "object"
     properties:

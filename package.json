@@ -1,12 +1,9 @@
 {
   "name": "activate-power-mode",
   "main": "./lib/activate-power-mode",
-  "version": "0.4.1",
+  "version": "0.7.4",
   "description": "Activate POWER MODE to write your code in style.",
   "keywords": [],
-  "activationCommands": {
-    "atom-workspace": "activate-power-mode:toggle"
-  },
   "repository": "https://github.com/JoelBesada/activate-power-mode",
   "author": "Joel Besada <joel@joelb.me> (http://joelb.me)",
   "license": "MIT",
@@ -14,7 +11,7 @@
     "atom": ">=1.0.0 <2.0.0"
   },
   "dependencies": {
-    "lodash.random": "^3.0.1",
-    "lodash.throttle": "^3.0.4"
+    "lodash.random": "^3.1.5",
+    "lodash.throttle": "^4.0.1"
   }
 }
