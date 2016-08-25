@@ -1,3 +1,7 @@
+### 0.8.0 2016-08-24
+* Exclude file types feature
+* Add enable/disable commands
+
 ### 0.7.4 2016-08-10
 * Fix when canvas has no parent
 
