@@ -1,3 +1,6 @@
+### 0.8.1 2016-08-25
+* Fix error on untitled files
+
 ### 0.8.0 2016-08-24
 * Exclude file types feature
 * Add enable/disable commands
