@@ -29,7 +29,7 @@ module.exports =
     @editorAddCursor?.dispose()
     @editor = atom.workspace.getActiveTextEditor()
     return unless @editor
-    return if @editor.getPath().split('.').pop() in @getConfig "excludedFileTypes.excluded"
+    return if @editor.getPath()?.split('.').pop() in @getConfig "excludedFileTypes.excluded"
 
     @editorElement = atom.views.getView @editor
 
