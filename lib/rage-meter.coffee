@@ -1,18 +1,25 @@
 module.exports =
-
   rage: 0
   enraged: false
   rageMeter: null
   statusBarTile: null
 
   init: (statusBar) ->
-    @div = document.createElement "div"
-    @rageMeter = document.createElement "span"
-    @div.classList.add "meter"
-    @div.appendChild @rageMeter
-    @rageMeter.style.width = "#{@rage/10}%"
-    @statusBarTile = statusBar.addLeftTile(item: @div, priority: 100)
-    @decayRage()
+    self = @
+    atom.config.observe "activate-power-mode.rage.enabled", (value) ->
+      if value
+        self.div = document.createElement "div"
+        self.rageMeter = document.createElement "span"
+        self.div.classList.add "meter"
+        self.div.appendChild self.rageMeter
+        self.rageMeter.style.width = "#{self.rage/10}%"
+        self.statusBarTile = statusBar.addLeftTile(item: self.div, priority: 100)
+
+        self.decayRage()
+      else
+        self.enraged = false
+        self.rage = 0
+        self.dispose()
 
   decayRage: ->
     if @getConfig "enabled"
@@ -24,13 +31,14 @@ module.exports =
       @enraged = false
 
   addRage: ->
-    @rage += 100
+    if @getConfig "enabled"
+      @rage += 100
 
-    if @rage >= 1000
-      @rage = 1000
-      @enraged = true
+      if @rage >= 1000
+        @rage = 1000
+        @enraged = true
 
-    @rageMeter.style.width = "#{@rage/10}%"
+      @rageMeter.style.width = "#{@rage/10}%"
 
   isEnraged: ->
     return @enraged
