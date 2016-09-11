@@ -90,6 +90,12 @@ module.exports =
         type: "boolean"
         default: true
 
+      visible:
+        title: "Show Rage meter"
+        description: "Turn showing rage meter on/off."
+        type: "boolean"
+        default: true
+
   excludedFileTypes:
     type: "object"
     properties:
