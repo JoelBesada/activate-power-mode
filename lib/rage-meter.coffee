@@ -2,24 +2,41 @@ module.exports =
   rage: 0
   enraged: false
   rageMeter: null
+  statusBar: null
   statusBarTile: null
+  visibleObserver: null
+  enabledObserver: null
 
-  init: (statusBar) ->
+  enable: (statusBar) ->
     self = @
-    atom.config.observe "activate-power-mode.rage.visible", ->
-      if self.getConfig "enabled"
-        if self.addRageMeter(statusBar)
-          return
-      self.dispose()
+    if !self.statusBar
+      self.statusBar = statusBar
+    if !self.statusBar
+      return
 
-    atom.config.observe "activate-power-mode.rage.enabled", ->
-      if self.getConfig "enabled"
-        self.addRageMeter(statusBar)
-        self.decayRage()
-      else
-        self.enraged = false
-        self.rage = 0
-        self.dispose()
+    if !@visibleObserver
+      @visibleObserver = atom.config.observe "activate-power-mode.rage.visible", ->
+        if self.getConfig "enabled"
+          if self.addRageMeter(self.statusBar)
+            return
+        self.removeRageMeter()
+
+    if !@enabledObserver
+      @enabledObserver = atom.config.observe "activate-power-mode.rage.enabled", ->
+        if self.getConfig "enabled"
+          self.addRageMeter(self.statusBar)
+          self.decayRage()
+        else
+          self.enraged = false
+          self.rage = 0
+          self.removeRageMeter()
+
+  disable: ->
+    @removeRageMeter()
+    @visibleObserver?.dispose()
+    @visibleObserver = null
+    @enabledObserver?.dispose()
+    @enabledObserver = null
 
   decayRage: ->
     if @getConfig "enabled"
@@ -51,9 +68,9 @@ module.exports =
         @div.classList.add "meter"
         @div.appendChild @rageMeter
         @rageMeter.style.width = "#{@rage/10}%"
-        @statusBarTile = statusBar.addLeftTile(item: @div, priority: 100)
+        @statusBarTile = statusBar?.addLeftTile(item: @div, priority: 100)
 
-  dispose: ->
+  removeRageMeter: ->
     @statusBarTile?.destroy()
     @statusBarTile = null
 

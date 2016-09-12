@@ -22,13 +22,13 @@ module.exports = ActivatePowerMode =
       @toggle()
 
   consumeStatusBar: (statusBar) ->
-    @rageMeter.init(statusBar)
+    @rageMeter.enable(statusBar)
 
   deactivate: ->
     @subscriptions?.dispose()
     @active = false
     @powerEditor.disable()
-    @rageMeter.dispose()
+    @rageMeter.disable()
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.#{config}"
@@ -39,7 +39,9 @@ module.exports = ActivatePowerMode =
   enable: ->
     @active = true
     @powerEditor.enable()
+    @rageMeter.enable()
 
   disable: ->
     @active = false
     @powerEditor.disable()
+    @rageMeter.disable()
