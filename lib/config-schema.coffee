@@ -38,6 +38,11 @@ module.exports =
         description: "Turn the particles on/off."
         type: "boolean"
         default: true
+      colours:
+        title: "Colours - Enabled"
+        description: "Turn colours on/off"
+        type: "boolean"
+        default: false
 
       totalCount:
         type: "object"

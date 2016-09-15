@@ -33,6 +33,7 @@ module.exports =
     @editor = editor
 
     @init()
+
   hsvToRgb: (h,s,v) -> # HSV to RGB algorithm, as per wikipedia
     c = v * s
     h2 = (360.0*h) /60.0 # According to wikipedia, 0<h<360...
@@ -54,22 +55,27 @@ module.exports =
     left += cursorOffset.left - @editorElement.getScrollLeft()
     top += cursorOffset.top - @editorElement.getScrollTop()
 
-    #color = @getColorAtPosition [screenPosition.row, screenPosition.column - 1]
-    #color = "rgb(0, 255, 0)"
-    seed = Math.random()
-    # Use the golden ratio to keep colours distinct
-    golden_ratio_conjugate = 0.618033988749895
     numParticles = random @getConfig("spawnCount.min"), @getConfig("spawnCount.max")
-    while numParticles--
-      seed += golden_ratio_conjugate
-      seed = seed - (seed//1)
-      rgb = @hsvToRgb(seed,1,1)
-      r = (rgb[0]*255)//1
-      g = (rgb[1]*255)//1
-      b = (rgb[2]*255)//1
-      color = "rgb(#{r},#{g},#{b})"
-      @particles[@particlePointer] = @createParticle left, top, color
-      @particlePointer = (@particlePointer + 1) % @getConfig("totalCount.max")
+    if @getConfig("colours") # If colours are turned on
+      seed = Math.random()
+      # Use the golden ratio to keep colours distinct
+      golden_ratio_conjugate = 0.618033988749895
+
+      while numParticles--
+        seed += golden_ratio_conjugate
+        seed = seed - (seed//1)
+        rgb = @hsvToRgb(seed,1,1)
+        r = (rgb[0]*255)//1
+        g = (rgb[1]*255)//1
+        b = (rgb[2]*255)//1
+        color = "rgb(#{r},#{g},#{b})"
+        @particles[@particlePointer] = @createParticle left, top, color
+        @particlePointer = (@particlePointer + 1) % @getConfig("totalCount.max")
+    else
+      color = @getColorAtPosition [screenPosition.row, screenPosition.column - 1]
+      while numParticles--
+        @particles[@particlePointer] = @createParticle left, top, color
+        @particlePointer = (@particlePointer + 1) % @getConfig("totalCount.max")
 
   getColorAtPosition: (screenPosition) ->
     bufferPosition = @editor.bufferPositionForScreenPosition screenPosition
