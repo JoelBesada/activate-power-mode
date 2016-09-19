@@ -56,7 +56,7 @@ module.exports =
     top += cursorOffset.top - @editorElement.getScrollTop()
 
     numParticles = random @getConfig("spawnCount.min"), @getConfig("spawnCount.max")
-    if @getConfig("colours") # If colours are turned on
+    if (@getConfig("colours") == "random") # If colours are turned on
       seed = Math.random()
       # Use the golden ratio to keep colours distinct
       golden_ratio_conjugate = 0.618033988749895
