@@ -1,4 +1,5 @@
 random = require "lodash.random"
+rageMeter = require "./rage-meter"
 
 module.exports =
   init: ->
@@ -130,6 +131,10 @@ module.exports =
 
       @context.fillStyle = "rgba(#{particle.color[4...-1]}, #{particle.alpha})"
       size = random @getConfig("size.min"), @getConfig("size.max"), true
+
+      if rageMeter.isEnraged()
+        size = size * 2
+
       @context.fillRect(
         Math.round(particle.x - size / 2)
         Math.round(particle.y - size / 2)

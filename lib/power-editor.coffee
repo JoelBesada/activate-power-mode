@@ -1,10 +1,12 @@
 throttle = require "lodash.throttle"
 screenShake = require "./screen-shake"
 powerCanvas = require "./power-canvas"
+rageMeter = require "./rage-meter"
 
 module.exports =
   screenShake: screenShake
   powerCanvas: powerCanvas
+  rageMeter: rageMeter
 
   enable: ->
     @throttledShake = throttle @screenShake.shake.bind(@screenShake), 100, trailing: false
@@ -48,6 +50,9 @@ module.exports =
       range = e.newRange.end
     else
       range = e.newRange.start
+
+    if e.oldText != ""
+      rageMeter.addRage()
 
     screenPosition = @editor.screenPositionForBufferPosition range
     cursor = @editor.getCursorAtScreenPosition screenPosition
