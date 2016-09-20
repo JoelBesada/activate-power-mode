@@ -47,7 +47,6 @@ module.exports =
     if 4<=h2<5 then return [x+m,m,c+m]
     if 5<=h2<6 then return [c+m,m,x+m]
 
-
   spawnParticles: (screenPosition) ->
     cursorOffset = @calculateCursorOffset()
 
@@ -56,7 +55,8 @@ module.exports =
     top += cursorOffset.top - @editorElement.getScrollTop()
 
     numParticles = random @getConfig("spawnCount.min"), @getConfig("spawnCount.max")
-    if (@getConfig("colours") == "random") # If colours are turned on
+    colorType = @getConfig "colours.type"
+    if (colorType == "random") # If colours are random
       seed = Math.random()
       # Use the golden ratio to keep colours distinct
       golden_ratio_conjugate = 0.618033988749895
@@ -72,7 +72,11 @@ module.exports =
         @particles[@particlePointer] = @createParticle left, top, color
         @particlePointer = (@particlePointer + 1) % @getConfig("totalCount.max")
     else
-      color = @getColorAtPosition [screenPosition.row, screenPosition.column - 1]
+      if colorType == "fixed"
+        c = @getConfig "colours.fixed"
+        color = "rgb(#{c.red},#{c.green},#{c.blue})"
+      else
+        color = @getColorAtPosition [screenPosition.row, screenPosition.column - 1]
       while numParticles--
         @particles[@particlePointer] = @createParticle left, top, color
         @particlePointer = (@particlePointer + 1) % @getConfig("totalCount.max")
