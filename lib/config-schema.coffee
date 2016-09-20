@@ -38,15 +38,28 @@ module.exports =
         description: "Turn the particles on/off."
         type: "boolean"
         default: true
+        order: 1
+
       colours:
-        title: "Colours"
-        description: "Configure colour options"
-        type: "string"
-        default: "cursor"
-        enum: [
-          {value: 'cursor', description: 'Particles will be the colour at the cursor.'}
-          {value: 'random', description: 'Particles will have random colours.'}
-        ]
+        type: "object"
+        properties:
+          type:
+            title: "Colours"
+            description: "Configure colour options"
+            type: "string"
+            default: "cursor"
+            enum: [
+              {value: 'cursor', description: 'Particles will be the colour at the cursor.'}
+              {value: 'random', description: 'Particles will have random colours.'}
+              {value: 'fixed', description: 'Particles will have a fixed colour.'}
+            ]
+            order: 1
+
+          fixed:
+            title: "Fixed colour"
+            description: "Colour when fixed colour is selected"
+            type: "color"
+            default: "#fff"
 
       totalCount:
         type: "object"

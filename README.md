@@ -29,6 +29,10 @@ Auto enable power mode on atom start.
 
 ### Particles
 * **Enable/Disable**
+* Colour
+
+With this option you can select if use the color at cursor position, random colors or a fixed one.
+
 * Total Count
 * Spawn Count
 * Size
