@@ -1,3 +1,7 @@
+### 0.9.0 2016-09-19
+* Random colours setting
+* Fixed colour setting
+
 ### 0.8.1 2016-08-25
 * Fix error on untitled files
 
