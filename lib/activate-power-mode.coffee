@@ -1,4 +1,5 @@
 {CompositeDisposable} = require "atom"
+
 configSchema = require "./config-schema"
 powerEditor = require "./power-editor"
 
