@@ -5,6 +5,46 @@ module.exports =
     type: "boolean"
     default: true
 
+  comboMode:
+    type: "object"
+    properties:
+      enabled:
+        title: "Combo Mode - Enabled"
+        description: "When enabled effects won't appear until reach the activation threshold."
+        type: "boolean"
+        default: true
+        order: 1
+
+      activationThreshold:
+        title: "Combo Mode - Activation Threshold"
+        description: "Streak threshold to activate the power mode."
+        type: "integer"
+        default: 50
+        minimum: 1
+        maximum: 1000
+
+      streakTimeout:
+        title: "Combo Mode - Streak Timeout"
+        description: "Timeout to reset the streak counter. In seconds."
+        type: "integer"
+        default: 10
+        minimum: 1
+        maximum: 100
+
+      exclamationEvery:
+        title: "Combo Mode - Exclamation Every"
+        description: "Shows an exclamation every streak count."
+        type: "integer"
+        default: 10
+        minimum: 1
+        maximum: 100
+
+      exclamationTexts:
+        title: "Combo Mode - Exclamation Texts"
+        description: "Exclamations to show (randomized)."
+        type: "array"
+        default: ["Super!", "Radical!", "Fantastic!", "Great!", "OMG", "Whoah!", ":O", "Nice!", "Splendid!", "Wild!", "Grand!", "Impressive!", "Stupendous!", "Extreme!", "Awesome!"]
+
   screenShake:
     type: "object"
     properties:
