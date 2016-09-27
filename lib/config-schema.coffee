@@ -45,6 +45,14 @@ module.exports =
         type: "array"
         default: ["Super!", "Radical!", "Fantastic!", "Great!", "OMG", "Whoah!", ":O", "Nice!", "Splendid!", "Wild!", "Grand!", "Impressive!", "Stupendous!", "Extreme!", "Awesome!"]
 
+      opacity:
+        title: "Combo Mode - Opacity"
+        description: "Opacity of the streak counter."
+        type: "number"
+        default: 0.6
+        minimum: 0
+        maximum: 1
+
   screenShake:
     type: "object"
     properties:

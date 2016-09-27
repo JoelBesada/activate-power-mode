@@ -15,6 +15,7 @@ module.exports =
     @debouncedEndStreak?.cancel()
     @debouncedEndStreak = null
     @streakTimeoutObserver?.dispose()
+    @opacityObserver?.dispose()
     @currentStreak = 0
     reached = false
 
@@ -39,6 +40,10 @@ module.exports =
         @endStreak()
         @debouncedEndStreak?.cancel()
         @debouncedEndStreak = debounce @endStreak.bind(this), @streakTimeout
+
+      @opacityObserver?.dispose()
+      @opacityObserver = atom.config.observe 'activate-power-mode.comboMode.opacity', (value) =>
+        @container?.style.opacity = value
 
     @exclamations.innerHTML = ''
 
