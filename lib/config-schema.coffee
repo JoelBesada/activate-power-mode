@@ -30,29 +30,6 @@ module.exports =
         type: "boolean"
         default: true
 
-  screenFlash:
-    type: "object"
-    properties:
-      enabled:
-        title: "Screen Flash - Enabled"
-        description: "Flash the screen on/off."
-        type: "boolean"
-        default: true
-
-      duration:
-        title: "Screen Flash - Duration"
-        description: "Duration of which the flash should last."
-        type: "integer"
-        default: 66
-        minimum: 0
-        maximum: 100
-
-      color:
-        title: "Screen Flash - Color"
-        description: "Color of the flash"
-        type: "color"
-        default: "#fff"
-
   playAudio:
     type: "object"
     properties:
