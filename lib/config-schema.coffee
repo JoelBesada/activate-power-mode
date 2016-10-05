@@ -30,6 +30,23 @@ module.exports =
         type: "boolean"
         default: true
 
+  playAudio:
+    type: "object"
+    properties:
+      enabled:
+        title: "Play Audio - Enabled"
+        description: "Play audio clip on/off."
+        type: "boolean"
+        default: true
+
+      volume:
+        title: "Play Audio - Volume"
+        description: "Volume of the audio clip played at keystroke."
+        type: "number"
+        default: 0.42
+        minimum: 0.0
+        maximum: 1.0
+
   particles:
     type: "object"
     properties:

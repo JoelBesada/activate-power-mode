@@ -1,13 +1,16 @@
 throttle = require "lodash.throttle"
 screenShake = require "./screen-shake"
+playAudio = require "./play-audio"
 powerCanvas = require "./power-canvas"
 
 module.exports =
   screenShake: screenShake
+  playAudio: playAudio
   powerCanvas: powerCanvas
 
   enable: ->
     @throttledShake = throttle @screenShake.shake.bind(@screenShake), 100, trailing: false
+    @throttledPlayAudio = throttle @playAudio.play.bind(@playAudio), 100, trailing: false
 
     @activeItemSubscription = atom.workspace.onDidStopChangingActivePaneItem =>
       @subscribeToActiveTextEditor()
@@ -57,6 +60,9 @@ module.exports =
       cursor.throttleSpawnParticles screenPosition
     if @getConfig "screenShake.enabled"
       @throttledShake @editorElement
+    if @getConfig "playAudio.enabled"
+      @throttledPlayAudio()
+
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.#{config}"
