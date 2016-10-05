@@ -85,7 +85,7 @@ module.exports =
         title: "Play Audio - Enabled"
         description: "Play audio clip on/off."
         type: "boolean"
-        default: true
+        default: false
 
       volume:
         title: "Play Audio - Volume"
