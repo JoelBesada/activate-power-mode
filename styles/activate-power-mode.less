@@ -4,6 +4,11 @@
 // for a full listing of what's available.
 @import "ui-variables";
 
+@font-face {
+  font-family: "Press Start 2P";
+  src: url("~fonts/PressStart2P-Regular.ttf")  format("truetype");
+}
+
 atom-text-editor::shadow .power-mode-canvas,
 .power-mode-canvas {
   position: absolute;
@@ -11,4 +16,76 @@ atom-text-editor::shadow .power-mode-canvas,
   top: 0;
   left: 0;
   pointer-events: none;
+}
+
+atom-text-editor::shadow .streak-container,
+.streak-container {
+  font-family: "Press Start 2P", sans-serif;
+  position: absolute;
+  z-index: 10;
+  right: 20px;
+  top: 5px;
+  text-align: right;
+
+  .title {
+    color: white;
+    text-shadow: 2px 2px 2px #4EFFA1;
+    font-size: 16px;
+  }
+
+  .bar {
+    position: relative;
+    opacity: 0.5;
+    margin-top: 10px;
+    height: 8px;
+    background: #4EFFA1;
+    width: 100%;
+    transform: scaleX(0);
+  }
+
+  .counter {
+    margin-top: 30px;
+    font-size: 80px;
+    color: #4EFFA1;
+    line-height: 1;
+
+    &.bump {
+      animation: grow 0.25s both;
+    }
+  }
+
+  .exclamations {
+    position: absolute;
+    bottom: -20px;
+    right: 0;
+    display: block;
+    color: #4EFFA1;
+    opacity: 0.75;
+    font-size: 20px;
+    text-align: right;
+
+    .exclamation {
+      right: 0;
+      top: 0;
+      display: block;
+      position: absolute;
+      min-width: 200px;
+      animation: exclamation 1.5s ease-out both;
+    }
+  }
+
+  &.reached {
+    .title {
+      text-shadow: 2px 2px 2px #00DDFF;
+    }
+
+    .counter,
+    .exclamations {
+      color: #00DDFF;
+    }
+
+    .bar {
+      background: #00DDFF;
+    }
+  }
 }
