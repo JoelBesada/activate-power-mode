@@ -1,3 +1,7 @@
+### 1.0.0 2016-10-05
+* Audio on keystroke
+* Combo mode, **if enabled effects won't appear**.
+
 ### 0.9.0 2016-09-19
 * Random colours setting
 * Fixed colour setting
