@@ -39,6 +39,23 @@ module.exports =
         type: "boolean"
         default: true
 
+      audioclip:
+        title: "Play Audio - Audioclip"
+        description: "Which audio clip played at keystroke."
+        type: "string"
+        default: '../audioclips/gun.wav'
+        enum: [
+          {value: '../audioclips/gun.wav', description: 'Gun'}
+          {value: '../audioclips/typewriter-key-1.wav', description: 'Type Writer'}
+          {value: 'customAudioclip', description: 'PathTo..'}
+        ]
+
+      customAudioclip:
+        title: "Play Audio - Path to Audioclip"
+        description: "Path to audioclip played at keystroke."
+        type: "string"
+        default: 'rocksmash.wav'
+
       volume:
         title: "Play Audio - Volume"
         description: "Volume of the audio clip played at keystroke."
