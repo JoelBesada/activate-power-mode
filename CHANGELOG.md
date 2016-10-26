@@ -1,3 +1,6 @@
+### 1.1.0 2016-10-26
+* Saves max streak
+
 ### 1.0.2 2016-10-05
 * Fix combo font
 
