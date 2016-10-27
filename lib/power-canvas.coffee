@@ -19,6 +19,7 @@ module.exports =
     @resetCanvas()
     @resetParticles()
     @canvas?.parentNode.removeChild @canvas
+    @canvas = null
 
   setupCanvas: (editor, editorElement) ->
     if not @canvas
@@ -26,12 +27,25 @@ module.exports =
       @context = @canvas.getContext "2d"
       @canvas.classList.add "power-mode-canvas"
 
-    editorElement.parentNode.appendChild @canvas
+    (editorElement.shadowRoot ? editorElement).appendChild @canvas
     @canvas.style.display = "block"
     @editorElement = editorElement
     @editor = editor
 
     @init()
+
+  hsvToRgb: (h,s,v) -> # HSV to RGB algorithm, as per wikipedia
+    c = v * s
+    h2 = (360.0*h) /60.0 # According to wikipedia, 0<h<360...
+    h3 = Math.abs((h2%2) - 1.0)
+    x = c * (1.0 - h3)
+    m = v - c
+    if 0<=h2<1 then return [c+m,x+m,m]
+    if 1<=h2<2 then return [x+m,c+m,m]
+    if 2<=h2<3 then return [m,c+m,x+m]
+    if 3<=h2<4 then return [m,x+m,c+m]
+    if 4<=h2<5 then return [x+m,m,c+m]
+    if 5<=h2<6 then return [c+m,m,x+m]
 
   spawnParticles: (screenPosition) ->
     cursorOffset = @calculateCursorOffset()
@@ -40,18 +54,41 @@ module.exports =
     left += cursorOffset.left - @editorElement.getScrollLeft()
     top += cursorOffset.top - @editorElement.getScrollTop()
 
-    color = @getColorAtPosition left, top
     numParticles = random @getConfig("spawnCount.min"), @getConfig("spawnCount.max")
-    while numParticles--
-      @particles[@particlePointer] = @createParticle left, top, color
-      @particlePointer = (@particlePointer + 1) % @getConfig("totalCount.max")
+    colorType = @getConfig "colours.type"
+    if (colorType == "random") # If colours are random
+      seed = Math.random()
+      # Use the golden ratio to keep colours distinct
+      golden_ratio_conjugate = 0.618033988749895
 
-  getColorAtPosition: (left, top) ->
-    offset = @editorElement.getBoundingClientRect()
-    el = (@editorElement.shadowRoot ? document).elementFromPoint(
-      left + offset.left - 3
-      top + offset.top
-    )
+      while numParticles--
+        seed += golden_ratio_conjugate
+        seed = seed - (seed//1)
+        rgb = @hsvToRgb(seed,1,1)
+        r = (rgb[0]*255)//1
+        g = (rgb[1]*255)//1
+        b = (rgb[2]*255)//1
+        color = "rgb(#{r},#{g},#{b})"
+        @particles[@particlePointer] = @createParticle left, top, color
+        @particlePointer = (@particlePointer + 1) % @getConfig("totalCount.max")
+    else
+      if colorType == "fixed"
+        c = @getConfig "colours.fixed"
+        color = "rgb(#{c.red},#{c.green},#{c.blue})"
+      else
+        color = @getColorAtPosition [screenPosition.row, screenPosition.column - 1]
+      while numParticles--
+        @particles[@particlePointer] = @createParticle left, top, color
+        @particlePointer = (@particlePointer + 1) % @getConfig("totalCount.max")
+
+  getColorAtPosition: (screenPosition) ->
+    bufferPosition = @editor.bufferPositionForScreenPosition screenPosition
+    scope = @editor.scopeDescriptorForBufferPosition bufferPosition
+
+    try
+      el = (@editorElement.shadowRoot ? @editorElement).querySelector scope.toString()
+    catch error
+      "rgb(255, 255, 255)"
 
     if el
       getComputedStyle(el).color

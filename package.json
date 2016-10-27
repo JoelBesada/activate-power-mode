@@ -1,7 +1,7 @@
 {
   "name": "activate-power-mode",
   "main": "./lib/activate-power-mode",
-  "version": "0.7.0",
+  "version": "1.1.0",
   "description": "Activate POWER MODE to write your code in style.",
   "keywords": [],
   "repository": "https://github.com/JoelBesada/activate-power-mode",
@@ -11,7 +11,10 @@
     "atom": ">=1.0.0 <2.0.0"
   },
   "dependencies": {
+    "lodash.debounce": "^4.0.8",
+    "lodash.defer": "^4.1.0",
     "lodash.random": "^3.1.5",
+    "lodash.sample": "^4.2.1",
     "lodash.throttle": "^4.0.1"
   }
 }
