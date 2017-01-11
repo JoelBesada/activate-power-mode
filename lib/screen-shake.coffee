@@ -8,13 +8,10 @@ module.exports =
     x = @shakeIntensity min, max
     y = @shakeIntensity min, max
 
-    editorElement.style.top = "#{y}px"
-    editorElement.style.left = "#{x}px"
+    editorElement.style.transform = "translate(#{x}, #{y})"
 
-    setTimeout ->
-      editorElement.style.top = ""
-      editorElement.style.left = ""
-    , 75
+    requestAnimationFrame ->
+      editorElement.style.transform = "translate(0, 0)"
 
   shakeIntensity: (min, max) ->
     direction = if Math.random() > 0.5 then -1 else 1
