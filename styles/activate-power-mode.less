@@ -9,7 +9,6 @@
   src: url("atom://activate-power-mode/fonts/PressStart2P-Regular.ttf")  format("truetype");
 }
 
-atom-text-editor::shadow .power-mode-canvas,
 .power-mode-canvas {
   position: absolute;
   z-index: 10;
@@ -18,7 +17,6 @@ atom-text-editor::shadow .power-mode-canvas,
   pointer-events: none;
 }
 
-atom-text-editor::shadow .streak-container,
 .streak-container {
   font-family: "Press Start 2P", sans-serif;
   position: absolute;
@@ -93,5 +91,22 @@ atom-text-editor::shadow .streak-container,
     .bar {
       background: #00DDFF;
     }
+  }
+}
+
+@keyframes grow {
+  0% {
+    animation-timing-function: ease-out;
+  }
+  50% {
+    transform: scale(1.3);
+    animation-timing-function: ease-in;
+  }
+}
+
+@keyframes exclamation {
+  100% {
+    opacity: 0;
+    transform: translate3D(0, 100px, 0);
   }
 }

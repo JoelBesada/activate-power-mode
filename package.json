@@ -8,7 +8,7 @@
   "author": "Joel Besada <joel@joelb.me> (http://joelb.me)",
   "license": "MIT",
   "engines": {
-    "atom": ">=1.0.0 <2.0.0"
+    "atom": ">=1.13.0 <2.0.0"
   },
   "dependencies": {
     "lodash.debounce": "^4.0.8",
