@@ -98,7 +98,7 @@ module.exports =
     @bar.style.transition = "none"
     @bar.style.transform = "scaleX(#{scale})"
 
-    requestAnimationFrame =>
+    setTimeout =>
       @bar.style.transform = ""
       @bar.style.transition = "transform #{leftTimeout}ms linear"
     , 100
@@ -110,7 +110,7 @@ module.exports =
     exclamation.textContent = text
 
     @exclamations.insertBefore exclamation, @exclamations.childNodes[0]
-    requestAnimationFrame =>
+    setTimeout =>
       @exclamations.removeChild exclamation if @exclamations.firstChild
     , 3000
 
