@@ -27,7 +27,7 @@ module.exports =
       @context = @canvas.getContext "2d"
       @canvas.classList.add "power-mode-canvas"
 
-    (editorElement.shadowRoot ? editorElement).appendChild @canvas
+    editorElement.appendChild @canvas
     @canvas.style.display = "block"
     @editorElement = editorElement
     @editor = editor
@@ -84,9 +84,10 @@ module.exports =
   getColorAtPosition: (screenPosition) ->
     bufferPosition = @editor.bufferPositionForScreenPosition screenPosition
     scope = @editor.scopeDescriptorForBufferPosition bufferPosition
+    scope = scope.toString().replace(/\./g, '.syntax--')
 
     try
-      el = (@editorElement.shadowRoot ? @editorElement).querySelector scope.toString()
+      el = @editorElement.querySelector scope
     catch error
       "rgb(255, 255, 255)"
 
@@ -97,7 +98,7 @@ module.exports =
 
   calculateCursorOffset: ->
     editorRect = @editorElement.getBoundingClientRect()
-    scrollViewRect = (@editorElement.shadowRoot ? @editorElement).querySelector(".scroll-view").getBoundingClientRect()
+    scrollViewRect = @editorElement.querySelector(".scroll-view").getBoundingClientRect()
 
     top: scrollViewRect.top - editorRect.top + @editor.getLineHeightInPixels() / 2
     left: scrollViewRect.left - editorRect.left
