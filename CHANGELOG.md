@@ -1,3 +1,8 @@
+### 1.2.0 2017-01-10
+* Fix deprecations related to the removed Shadow DOM
+* Compatible with only >=1.13.0
+* Try to change for requestAnimationFrame and 2D translate for screen shake, but has to be reverted
+
 ### 1.1.0 2016-10-26
 * Saves max streak
 
