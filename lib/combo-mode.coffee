@@ -129,5 +129,12 @@ module.exports =
     @showExclamation "NEW MAX!!!" if @maxStreakReached is false
     @maxStreakReached = true
 
+  resetMaxStreak: ->
+    localStorage.setItem "activate-power-mode.maxStreak", 0
+    @maxStreakReached = false
+    @maxStreak = 0
+    if @max
+      @max.textContent = "Max 0"
+
   getConfig: (config) ->
     atom.config.get "activate-power-mode.comboMode.#{config}"

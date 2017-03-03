@@ -20,7 +20,9 @@ Or Settings ➔ Packages ➔ Search for `activate-power-mode`
 
 ## Usage
 
-Activate with <kbd>Ctrl</kbd>-<kbd>Alt</kbd>-<kbd>O</kbd> or through the command panel with `Activate Power Mode: Toggle`. Use the command again to deactivate.
+- Activate with <kbd>Ctrl</kbd>-<kbd>Alt</kbd>-<kbd>O</kbd> or through the command panel with `Activate Power Mode: Toggle`. Use the command again to deactivate.
+
+- Reset the max combo streak with the command `Activate Power Mode: Reset Max Combo`
 
 ## Settings
 
