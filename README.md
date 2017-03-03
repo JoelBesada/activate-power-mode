@@ -22,6 +22,8 @@ Or Settings ➔ Packages ➔ Search for `activate-power-mode`
 
 - Activate with <kbd>Ctrl</kbd>-<kbd>Alt</kbd>-<kbd>O</kbd> or through the command panel with `Activate Power Mode: Toggle`. Use the command again to deactivate.
 
+**IMPORTANT: When `Combo Mode` is enabled, particles and other effects won't appear until you reach the activation threshold.**
+
 - Reset the max combo streak with the command `Activate Power Mode: Reset Max Combo`
 
 ## Settings
@@ -32,7 +34,7 @@ Auto enable power mode on atom start.
 ### Combo Mode
 * **Enable/Disable**
 
-When enabled effects won't appear until reach the activation threshold.
+**When enabled effects won't appear until reach the activation threshold.**
 
 * Activation Threshold
 * Streak Timeout
