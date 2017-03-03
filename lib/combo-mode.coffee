@@ -31,6 +31,7 @@ module.exports =
     if not @container
       @maxStreak = @getMaxStreak()
       @container = @createElement "streak-container"
+      @container.classList.add "combo-zero"
       @title = @createElement "title", @container
       @title.textContent = "Combo"
       @max = @createElement "max", @container
@@ -66,6 +67,7 @@ module.exports =
 
     @currentStreak++
 
+    @container.classList.remove "combo-zero"
     if @currentStreak > @maxStreak
       @increaseMaxStreak()
 
@@ -83,6 +85,7 @@ module.exports =
     @currentStreak = 0
     @reached = false
     @maxStreakReached = false
+    @container.classList.add "combo-zero"
     @container.classList.remove "reached"
     @renderStreak()
 
