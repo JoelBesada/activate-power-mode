@@ -86,6 +86,7 @@ module.exports =
         description: "Play audio clip on/off."
         type: "boolean"
         default: false
+        order: 1
 
       audioclip:
         title: "Play Audio - Audioclip"
@@ -94,15 +95,17 @@ module.exports =
         default: '../audioclips/gun.wav'
         enum: [
           {value: '../audioclips/gun.wav', description: 'Gun'}
-          {value: '../audioclips/typewriter-key-1.wav', description: 'Type Writer'}
-          {value: 'customAudioclip', description: 'PathTo..'}
+          {value: '../audioclips/typewriter.wav', description: 'Type Writer'}
+          {value: 'customAudioclip', description: 'Custom Path'}
         ]
+        order: 3
 
       customAudioclip:
         title: "Play Audio - Path to Audioclip"
         description: "Path to audioclip played at keystroke."
         type: "string"
         default: 'rocksmash.wav'
+        order: 4
 
       volume:
         title: "Play Audio - Volume"
@@ -111,6 +114,7 @@ module.exports =
         default: 0.42
         minimum: 0.0
         maximum: 1.0
+        order: 2
 
   particles:
     type: "object"
