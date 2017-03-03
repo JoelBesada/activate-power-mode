@@ -45,6 +45,11 @@ Auto enable power mode on atom start.
 * **Enable/Disable**
 * Intensity
 
+### Play Audio
+* **Enable/Disable**
+* Volume
+* Audioclip (Gun, Typewriter, Custom)
+
 ### Particles
 * **Enable/Disable**
 * Colour
