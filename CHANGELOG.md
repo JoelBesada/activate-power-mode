@@ -1,3 +1,12 @@
+### 1.3.0 2017-03-02
+* Added typewriter and custom path to audio settings
+* Allow custom audio path to be an absolute path
+* Added reset max combo streak command
+* Add class (`combo-zero`) to combo when 0
+* Move color logic to new color helper
+* Remark particles and effects flow when combo mode on readme
+* Mention audio settings on readme
+
 ### 1.2.0 2017-01-10
 * Fix deprecations related to the removed Shadow DOM
 * Compatible with only >=1.13.0
