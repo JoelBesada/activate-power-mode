@@ -81,6 +81,8 @@ module.exports =
     if @getConfig "playAudio.enabled"
       @throttledPlayAudio()
 
+  getCombo: ->
+    @comboMode
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.#{config}"
