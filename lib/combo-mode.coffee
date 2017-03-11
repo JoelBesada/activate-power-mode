@@ -1,11 +1,16 @@
 debounce = require "lodash.debounce"
 defer = require "lodash.defer"
 sample = require "lodash.sample"
+ExclamationAudio = require "./play-exclamation-audio"
+BackgroundAudio = require "./play-background-audio"
 
 module.exports =
+  leftTimeout: 1
   currentStreak: 0
   reached: false
   maxStreakReached: false
+  BackgroundAudio: BackgroundAudio
+  ExclamationAudio: ExclamationAudio
 
   reset: ->
     @container?.parentNode?.removeChild @container
@@ -39,6 +44,7 @@ module.exports =
       @counter = @createElement "counter", @container
       @bar = @createElement "bar", @container
       @exclamations = @createElement "exclamations", @container
+      @BackgroundAudio.setup() if @getConfigM "playBackgroundMusic.enabled"
 
       @streakTimeoutObserver?.dispose()
       @streakTimeoutObserver = atom.config.observe 'activate-power-mode.comboMode.streakTimeout', (value) =>
@@ -56,8 +62,8 @@ module.exports =
     editorElement.querySelector(".scroll-view").appendChild @container
 
     if @currentStreak
-      leftTimeout = @streakTimeout - (performance.now() - @lastStreak)
-      @refreshStreakBar leftTimeout
+      @leftTimeout = @streakTimeout - (performance.now() - @lastStreak)
+      @refreshStreakBar @leftTimeout
 
     @renderStreak()
 
@@ -66,6 +72,7 @@ module.exports =
     @debouncedEndStreak()
 
     @currentStreak++
+    @BackgroundAudio.play() if @getConfigM "playBackgroundMusic.enabled"
 
     @container.classList.remove "combo-zero"
     if @currentStreak > @maxStreak
@@ -82,12 +89,15 @@ module.exports =
     @renderStreak()
 
   endStreak: ->
+    @BackgroundAudio.stop() if @getConfigM "playBackgroundMusic.enabled"
+    #@ExclamationAudio.play @currentStreak
     @currentStreak = 0
     @reached = false
     @maxStreakReached = false
     @container.classList.add "combo-zero"
     @container.classList.remove "reached"
     @renderStreak()
+
 
   renderStreak: ->
     @counter.textContent = @currentStreak
@@ -111,6 +121,7 @@ module.exports =
     exclamation.classList.add "exclamation"
     text = sample @getConfig "exclamationTexts" if text is null
     exclamation.textContent = text
+    @ExclamationAudio.play @currentStreak if @getConfigM "playExclamation.enabled"
 
     @exclamations.insertBefore exclamation, @exclamations.childNodes[0]
     setTimeout =>
@@ -141,3 +152,6 @@ module.exports =
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.comboMode.#{config}"
+
+  getConfigM: (config) ->
+    atom.config.get "activate-power-mode.#{config}"

@@ -28,7 +28,7 @@ module.exports =
         description: "Timeout to reset the streak counter. In seconds."
         type: "integer"
         default: 10
-        minimum: 1
+        minimum: 0.5
         maximum: 100
 
       exclamationEvery:
@@ -112,6 +112,87 @@ module.exports =
         description: "Volume of the audio clip played at keystroke."
         type: "number"
         default: 0.42
+        minimum: 0.0
+        maximum: 1.0
+        order: 2
+
+  playBackgroundMusic:
+    type: "object"
+    properties:
+      enabled:
+        title: "Play Background Music - Enabled"
+        description: "Play Music clip on/off."
+        type: "boolean"
+        default: true
+        order: 1
+
+      repeat:
+        title: "Repeat Background Music - Repeat"
+        description: "Repeat Music clip on/off. (if streakTimeout)"
+        type: "boolean"
+        default: false
+        order: 1
+
+      Musicclip:
+        title: "Play Background Music - Musicclip"
+        description: "Which Music clip played at keystroke."
+        type: "string"
+        default: '../audioclips/dubstep.wav'
+        enum: [
+          {value: '../audioclips/dubstep.wav', description: 'dubstep.wav'} #downloaded from http://www.bensound.com/
+          {value: 'customMusicclip', description: 'Custom Path'}
+        ]
+        order: 2
+
+      customMusicclip:
+        title: "Play Background Music - Path to Musicclip"
+        description: "Path to Musicclip played at keystroke."
+        type: "string"
+        default: 'royaltyfreemusic.m4a'
+        order: 4
+
+      backgroundvolume:
+        title: "Background Music - Volume"
+        description: "Volume of the Music clip played at keystroke."
+        type: "number"
+        default: 0.25
+        minimum: 0.0
+        maximum: 1.0
+        order: 2
+
+  playExclamation:
+    type: "object"
+    properties:
+      enabled:
+        title: "Play Exclamation - Enabled"
+        description: "Play Exclamation audio clip on/off."
+        type: "boolean"
+        default: false
+        order: 1
+
+      exclamationPath:
+        title: "Play Exclamation - ExclamationPath"
+        description: "The Exclamation audio path played at keystroke."
+        type: "string"
+        default: '../audioclips/exclamation/'
+        enum: [
+          {value: '../audioclips/exclamation/', description: '../audioclips/exclamation'}
+          {value: 'customExclamationPath', description: 'Custom Path'}
+        ]
+        order: 2
+
+      customExclamationPath:
+        title: "Play Exclamation - My own ExclamationPath"
+        description: "Path to audioclip played at keystroke."
+        type: "string"
+        default: '../audioclips/exclamation'
+        order: 4
+
+      exclamationVolume:
+        title: "Play Exclamation - Volume"
+        description: "Volume of the audio clip played at keystroke."
+        type: "number"
+        default: 0.50
         minimum: 0.0
         maximum: 1.0
         order: 2
