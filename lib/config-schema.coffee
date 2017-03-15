@@ -22,6 +22,7 @@ module.exports =
         default: 50
         minimum: 1
         maximum: 1000
+        order: 2
 
       streakTimeout:
         title: "Combo Mode - Streak Timeout"
@@ -30,20 +31,7 @@ module.exports =
         default: 10
         minimum: 0.5
         maximum: 100
-
-      exclamationEvery:
-        title: "Combo Mode - Exclamation Every"
-        description: "Shows an exclamation every streak count."
-        type: "integer"
-        default: 10
-        minimum: 1
-        maximum: 100
-
-      exclamationTexts:
-        title: "Combo Mode - Exclamation Texts"
-        description: "Exclamations to show (randomized)."
-        type: "array"
-        default: ["Super!", "Radical!", "Fantastic!", "Great!", "OMG", "Whoah!", ":O", "Nice!", "Splendid!", "Wild!", "Grand!", "Impressive!", "Stupendous!", "Extreme!", "Awesome!"]
+        order: 3
 
       opacity:
         title: "Combo Mode - Opacity"
@@ -52,6 +40,71 @@ module.exports =
         default: 0.6
         minimum: 0
         maximum: 1
+        order: 4
+
+  exclamations:
+    type: "object"
+    properties:
+      type:
+        title: "Exclamations - Type"
+        description: "The exclamation displayed in combo mode."
+        type: "string"
+        default: 'onlyText'
+        enum: [
+          {value: 'killerInstint', description: 'Killer Instint'}
+          {value: 'onlyText', description: 'Custom Text Only'}
+          {value: 'onlyAudio', description: 'Custom Audio Only'}
+          {value: 'both', description: 'Both of Custom'}
+        ]
+        order: 1
+
+      exclamationEvery:
+        title: "Exclamations - Custom Exclamation Every"
+        description: "Shows an exclamation every streak count. (left in 0 to display at end of the Streak)"
+        type: "integer"
+        default: 10
+        minimum: 0
+        maximum: 100
+        order: 2
+
+      exclamationTexts:
+        title: "Exclamations - Custom Exclamation Texts"
+        description: "Custom exclamations to show (randomized)."
+        type: "array"
+        default: ["Super!", "Radical!", "Fantastic!", "Great!", "OMG", "Whoah!", ":O", "Nice!", "Splendid!", "Wild!", "Grand!", "Impressive!", "Stupendous!", "Extreme!", "Awesome!"]
+        order: 3
+
+      exclamationPath:
+        title: "Exclamations - Custom Exclamation Audio Path"
+        description: 'Path to exclamations audiofiles. (Add "/" or, "\\" at the end of the path).'
+        type: "string"
+        default: "../audioclips/exclamation/"
+        orden: 4
+
+      exclamationVolume:
+        title: "Exclamations - Exclamation Volume"
+        description: "Volume of the exclamation audio."
+        type: "number"
+        default: 0.50
+        minimum: 0.0
+        maximum: 1.0
+
+  superExclamation:
+    type: "object"
+    properties:
+      lapse:
+        title: "Super Exclamation - Lapse"
+        description: 'Shows a super exclamations every lapse. Could be time lapse (in seconds)  or streak count lapse. Ej: "streak, 100" or "Time, 60". (lpse will reset if streak ends) left in 0 to desable super exclamation.'
+        type: "array"
+        default: [0]
+        order: 3
+
+      texts:
+        title: "Super Exclamation - Texts or File"
+        description: "Super exclamation to show. Could be a text or a file path if is a file will show the file's name"
+        type: "string"
+        default: "../audioclips/exclamations/Yes oh my God.wav"
+        order: 3
 
   screenShake:
     type: "object"
@@ -121,81 +174,58 @@ module.exports =
     properties:
       enabled:
         title: "Play Background Music - Enabled"
-        description: "Play Music clip on/off."
+        description: "Play Background Music on/off."
         type: "boolean"
         default: true
         order: 1
 
-      repeat:
-        title: "Repeat Background Music - Repeat"
-        description: "Repeat Music clip on/off. (if streakTimeout)"
-        type: "boolean"
-        default: false
-        order: 1
-
-      Musicclip:
-        title: "Play Background Music - Musicclip"
-        description: "Which Music clip played at keystroke."
+      reproductionSetting:
+        title: "Play Background Music - Reproduction Settings"
+        description: "Sellect the action of bracground music."
         type: "string"
-        default: '../audioclips/dubstep.wav'
+        default: 'changeEndMusic'
         enum: [
-          {value: '../audioclips/dubstep.wav', description: 'dubstep.wav'} #downloaded from http://www.bensound.com/
-          {value: 'customMusicclip', description: 'Custom Path'}
+          {value: 'repitEndStreak', description: 'Repit at end of streak'}
+          {value: 'repitEndMusic', description: 'Repit at end of music'}
+          {value: 'changeEndMusic', description: 'Change at end of music'}
+          {value: 'changeAtCombo', description: 'Change at streak count'}
+          {value: 'custom', description: 'Custom'}
         ]
         order: 2
 
-      customMusicclip:
-        title: "Play Background Music - Path to Musicclip"
-        description: "Path to Musicclip played at keystroke."
-        type: "string"
-        default: 'royaltyfreemusic.m4a'
+      musicChangeTime:
+        title: "Play Background Music - Change Music After"
+        description: "Timeout to change the music. (In seconds.  left in 0 to disable)."
+        type: "integer"
+        default: 0
+        minimum: 0
+        maximum: 1000
+        order: 3
+
+      changeThreshold:
+        title: "Play Background Music - Change Music at streak"
+        description: "Streak threshold to change the music. (left in 0 to disable)"
+        type: "integer"
+        default: 0
+        minimum: 0
+        maximum: 1000
         order: 4
 
-      backgroundvolume:
-        title: "Background Music - Volume"
-        description: "Volume of the Music clip played at keystroke."
+      musicPath:
+        title: "Play Background Music - Custom Path"
+        description: "Path to Music Tracks played in combo Mode."
+        type: "string"
+        default: '../audioclips/backgroundmusics/'
+        order: 5
+
+      musicVolume:
+        title: "Play Background Music - Volume"
+        description: "Volume of the Music Track played in combo Mode."
         type: "number"
         default: 0.25
         minimum: 0.0
         maximum: 1.0
-        order: 2
-
-  playExclamation:
-    type: "object"
-    properties:
-      enabled:
-        title: "Play Exclamation - Enabled"
-        description: "Play Exclamation audio clip on/off."
-        type: "boolean"
-        default: false
-        order: 1
-
-      exclamationPath:
-        title: "Play Exclamation - ExclamationPath"
-        description: "The Exclamation audio path played at keystroke."
-        type: "string"
-        default: '../audioclips/exclamation/'
-        enum: [
-          {value: '../audioclips/exclamation/', description: '../audioclips/exclamation'}
-          {value: 'customExclamationPath', description: 'Custom Path'}
-        ]
-        order: 2
-
-      customExclamationPath:
-        title: "Play Exclamation - My own ExclamationPath"
-        description: "Path to audioclip played at keystroke."
-        type: "string"
-        default: '../audioclips/exclamation'
-        order: 4
-
-      exclamationVolume:
-        title: "Play Exclamation - Volume"
-        description: "Volume of the audio clip played at keystroke."
-        type: "number"
-        default: 0.50
-        minimum: 0.0
-        maximum: 1.0
-        order: 2
+        order: 6
 
   particles:
     type: "object"

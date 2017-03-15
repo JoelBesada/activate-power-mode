@@ -1,53 +1,81 @@
+#inspired in code-champion
 path = require "path"
 
 module.exports =
-  audioExclamation: new Audio(__dirname + "../audioclips/gun.wav")
+  audioExclamation: null
+  fileName: ""
+  superExclamationLapse: null
   isPlaying: false
 
-  play: (combo) ->
+  setup: ->
+    @superExclamationLapse = (@getConfig "superExclamation.lapse")
 
-    if (@audioExclamation.paused)
-      @isPlaying = false
-
-    if (@isPlaying)
-      return null
-
-    if (@getConfig "exclamationPath") is "customAudioclip"
-      @audioExclamation = new Audio(@selecCustomExclamationAudio())
+    if (@getConfig "exclamations.type") is "killerInstint"
+      pathtoaudio = path.join(__dirname, "../audioclips/Exclamations/")
+      @fileName = @selectExclamationAudio(combo)
+      @audioExclamation = new Audio(pathtoaudio + @fileName + ".wav")
     else
-      @audioExclamation = new Audio(@selectExclamationAudio(combo))
+      if (@getConfig "exclamations.exclamationPath") is "../audioclips/exclamations/"
+        customPath = path.join(__dirname, "../audioclips/Exclamations/")
+      else
+        customPath = @getConfig "exclamations.exclamationPath"
+      @fileName = @selecCustomExclamationAudio(customPath)
+      @audioExclamation = new Audio(customPath + @fileName)
+      @fileName = @fileName.substr(0, @fileName.indexOf('.'))
 
-    @audioExclamation.volume = @getConfig "exclamationVolume"
+  play: (combo) ->
+    if (@superExclamationLapse[0]) != 0
+      return @playSuperExclamation()
+
+    @isPlaying = false if (@audioExclamation.paused)
+    return null if (@isPlaying or combo is 0)
+
+    @setup()
+
+    @audioExclamation.volume = @getConfig "exclamations.exclamationVolume"
     @isPlaying = true
     @audioExclamation.play()
+    return (@fileName + "!")
 
-  selecCustomExclamationAudio: ->
-    pathtoaudio = @getConfig "customExclamationPath"
-
-    #Save all files in the directory
+  selecCustomExclamationAudio: (customPath) ->
+    pathtoaudio = path.join(customPath)
     audioFiles = fs.readdirSync(pathtoaudio.toString())
 
-    #Select a random file
     maxIndex = audioFiles.length - 1
     minIndex = 0
     randomIndex = Math.floor(Math.random() * (maxIndex - minIndex + 1) + minIndex)
 
-    audioPath = (pathtoaudio + audioFiles[randomIndex])
+    fileName = (audioFiles[randomIndex])
 
   selectExclamationAudio: (combo) ->
-    pathtoaudio = path.join(__dirname, "../audioclips/Exclamation/")
-    return audioPath = (pathtoaudio + "Triple-Combo.wav") if combo is 3
-    return audioPath = (pathtoaudio + "Super-Combo.wav") if combo > 3 and combo < 6
-    return audioPath = (pathtoaudio + "Hyper-Combo.wav") if combo > 5 and combo < 9
-    return audioPath = (pathtoaudio + "Brutal-Combo.wav") if combo > 8 and combo < 12
-    return audioPath = (pathtoaudio + "Master-Combo.wav") if combo > 11 and combo < 15
-    return audioPath = (pathtoaudio + "Blaster-Combo.wav") if combo > 14 and combo < 18
-    return audioPath = (pathtoaudio + "Awesome-Combo.wav") if combo > 17 and combo < 21
-    return audioPath = (pathtoaudio + "Monster-Combo.wav") if combo > 20 and combo < 24
-    return audioPath = (pathtoaudio + "King-Combo.wav") if combo > 23 and combo < 27
-    return audioPath = (pathtoaudio + "Killer-Combo.wav") if combo > 26 and combo < 30
-    return audioPath = (pathtoaudio + "Ultra-Combo.wav") if combo >= 30
-    audioPath = null
+    return fileName = ("Triple Combo") if combo is 3
+    return fileName = ("Super Combo") if combo > 3 and combo < 6
+    return fileName = ("Hyper Combo") if combo > 5 and combo < 9
+    return fileName = ("Brutal Combo") if combo > 8 and combo < 12
+    return fileName = ("Master Combo") if combo > 11 and combo < 15
+    return fileName = ("Blaster Combo") if combo > 14 and combo < 18
+    return fileName = ("Awesome Combo") if combo > 17 and combo < 21
+    return fileName = ("Monster Combo") if combo > 20 and combo < 24
+    return fileName = ("King Combo") if combo > 23 and combo < 27
+    return fileName = ("Killer Combo") if combo > 26 and combo < 30
+    return fileName = ("Ultra Combo") if combo >= 30
+    fileName = null
+
+  playSuperExclamation: (combo) ->
+    exclamationFoP = @getConfig "superExclamation.texts"
+    pattern = new RegExp(/^.*[\\\/]/, '')
+
+    if (pattern.text(exclamationFoP))
+      pathtoaudio = exclamationFoP.substring(0, exclamationFoP.lastIndexOf("/"));
+      filename = exclamationFoP.replace(/^.*[\\\/]/, '')
+      ispath = true
+
+    if (@getConfig "exclamations.type") is "onlyText"
+      retur "Yes oh my God.wav" if (ispath)
+    else if (@getConfigE "exclamations.type") is "onlyAudio"
+      retur "Yes oh my God.wav"
+    else
+      return 0
 
   getConfig: (config) ->
-    atom.config.get "activate-power-mode.playExclamation.#{config}"
+    atom.config.get "activate-power-mode.#{config}"

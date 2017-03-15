@@ -1,16 +1,15 @@
 debounce = require "lodash.debounce"
 defer = require "lodash.defer"
 sample = require "lodash.sample"
-ExclamationAudio = require "./play-exclamation-audio"
-BackgroundAudio = require "./play-background-audio"
+exclamationAudio = require "./play-exclamation-audio"
+backgroundMusic = require "./play-background-music"
 
 module.exports =
-  leftTimeout: 1
   currentStreak: 0
   reached: false
   maxStreakReached: false
-  BackgroundAudio: BackgroundAudio
-  ExclamationAudio: ExclamationAudio
+  exclamationAudio: exclamationAudio
+  backgroundMusic: backgroundMusic
 
   reset: ->
     @container?.parentNode?.removeChild @container
@@ -25,6 +24,7 @@ module.exports =
     @currentStreak = 0
     @reached = false
     @maxStreakReached = false
+    @backgroundMusic.destroy()
 
   createElement: (name, parent)->
     @element = document.createElement "div"
@@ -43,8 +43,9 @@ module.exports =
       @max.textContent = "Max #{@maxStreak}"
       @counter = @createElement "counter", @container
       @bar = @createElement "bar", @container
+      @remainingTime = @createElement "text", @container
       @exclamations = @createElement "exclamations", @container
-      @BackgroundAudio.setup() if @getConfigM "playBackgroundMusic.enabled"
+      @backgroundMusic.setup() if @getConfigE "playBackgroundMusic.enabled"
 
       @streakTimeoutObserver?.dispose()
       @streakTimeoutObserver = atom.config.observe 'activate-power-mode.comboMode.streakTimeout', (value) =>
@@ -62,8 +63,8 @@ module.exports =
     editorElement.querySelector(".scroll-view").appendChild @container
 
     if @currentStreak
-      @leftTimeout = @streakTimeout - (performance.now() - @lastStreak)
-      @refreshStreakBar @leftTimeout
+      leftTimeout = @streakTimeout - (performance.now() - @lastStreak)
+      @refreshStreakBar leftTimeout
 
     @renderStreak()
 
@@ -72,13 +73,16 @@ module.exports =
     @debouncedEndStreak()
 
     @currentStreak++
-    @BackgroundAudio.play() if @getConfigM "playBackgroundMusic.enabled"
 
     @container.classList.remove "combo-zero"
     if @currentStreak > @maxStreak
       @increaseMaxStreak()
 
-    @showExclamation() if @currentStreak > 0 and @currentStreak % @getConfig("exclamationEvery") is 0
+    @backgroundMusic.play() if @getConfigE "playBackgroundMusic.enabled"
+
+
+    if @currentStreak > 0 and @currentStreak % @getConfigE("exclamations.exclamationEvery") is 0 and (@getConfigE "exclamations.type") != "killerInstint"
+      @showExclamation @playExclamation()
 
     if @currentStreak >= @getConfig("activationThreshold") and not @reached
       @reached = true
@@ -89,19 +93,24 @@ module.exports =
     @renderStreak()
 
   endStreak: ->
-    @BackgroundAudio.stop() if @getConfigM "playBackgroundMusic.enabled"
-    #@ExclamationAudio.play @currentStreak
+    if ((@getConfigE "exclamations.exclamationEvery") is 0 or (@getConfigE "exclamations.type") is "killerInstint") and @currentStreak > 2
+      @showExclamation @playExclamation()
     @currentStreak = 0
     @reached = false
     @maxStreakReached = false
     @container.classList.add "combo-zero"
     @container.classList.remove "reached"
     @renderStreak()
+    @backgroundMusic.stop()  if @getConfigE "playBackgroundMusic.enabled"
 
 
   renderStreak: ->
     @counter.textContent = @currentStreak
     @counter.classList.remove "bump"
+
+    defer =>
+      @counter.classList.add "bump"
+
 
     defer =>
       @counter.classList.add "bump"
@@ -117,16 +126,25 @@ module.exports =
     , 100
 
   showExclamation: (text = null) ->
-    exclamation = document.createElement "span"
-    exclamation.classList.add "exclamation"
-    text = sample @getConfig "exclamationTexts" if text is null
-    exclamation.textContent = text
-    @ExclamationAudio.play @currentStreak if @getConfigM "playExclamation.enabled"
+    if (@getConfigE "exclamations.type") != "onlyAudio"
+      exclamation = document.createElement "span"
+      exclamation.classList.add "exclamation"
+      text = sample @getConfigE "exclamations.exclamationTexts" if text is null
+      exclamation.textContent = text
 
-    @exclamations.insertBefore exclamation, @exclamations.childNodes[0]
-    setTimeout =>
-      @exclamations.removeChild exclamation if @exclamations.firstChild
-    , 3000
+      @exclamations.insertBefore exclamation, @exclamations.childNodes[0]
+      setTimeout =>
+        @exclamations.removeChild exclamation if @exclamations.firstChild
+      , 3000
+
+  playExclamation: ->
+    if (@getConfigE "exclamations.type") != "onlyText"
+      @exclamationAudio.play @currentStreak
+    else
+      return null
+
+  playSuperExclamation: ->
+      @exclamationAudio.play @currentStreak
 
   hasReached: ->
     @reached
@@ -140,7 +158,8 @@ module.exports =
     localStorage.setItem "activate-power-mode.maxStreak", @currentStreak
     @maxStreak = @currentStreak
     @max.textContent = "Max #{@maxStreak}"
-    @showExclamation "NEW MAX!!!" if @maxStreakReached is false
+    if @maxStreakReached is false and @getConfigE "exclamations.enabled"
+      @showExclamation "NEW MAX!!!"
     @maxStreakReached = true
 
   resetMaxStreak: ->
@@ -153,5 +172,5 @@ module.exports =
   getConfig: (config) ->
     atom.config.get "activate-power-mode.comboMode.#{config}"
 
-  getConfigM: (config) ->
+  getConfigE: (config) ->
     atom.config.get "activate-power-mode.#{config}"

@@ -1,3 +1,12 @@
+### 1.4.0 2017-03-12
+* Added play exclamation settings
+* Added play background music settings
+* Allow custom background music path
+* Allow custom exclamation audio path
+* Move leftTimeout script to new file left-time-out.coffee (working on it)
+* Remark particles and effects flow when combo mode on readme
+* Mention audio settings on readme
+
 ### 1.3.0 2017-03-02
 * Added typewriter and custom path to audio settings
 * Allow custom audio path to be an absolute path
@@ -59,7 +68,7 @@
 * Add better color detection to prevent getting gray particles when writing at the end of the line
 
 ### 0.6.0 2016-06-30
-* Code refactor, no user-facing changes. 
+* Code refactor, no user-facing changes.
 
 ### 0.5.2 2016-05-03
 * Properly dispose event listeners when disabling the plugin.
