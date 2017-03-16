@@ -3,9 +3,7 @@
 * Added play background music settings
 * Allow custom background music path
 * Allow custom exclamation audio path
-* Move leftTimeout script to new file left-time-out.coffee (working on it)
-* Remark particles and effects flow when combo mode on readme
-* Mention audio settings on readme
+* Added super exclamation settings
 
 ### 1.3.0 2017-03-02
 * Added typewriter and custom path to audio settings
