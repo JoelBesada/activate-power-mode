@@ -185,38 +185,25 @@ module.exports =
         type: "string"
         default: 'changeEndMusic'
         enum: [
-          {value: 'repitEndStreak', description: 'Repit at end of streak'}
-          {value: 'repitEndMusic', description: 'Repit at end of music'}
-          {value: 'changeEndMusic', description: 'Change at end of music'}
-          {value: 'changeAtCombo', description: 'Change at streak count'}
+          {value: 'repit', description: 'Repit Music'}
+          {value: 'change', description: 'Change Music'}
           {value: 'custom', description: 'Custom'}
         ]
         order: 2
 
-      musicChangeTime:
-        title: "Play Background Music - Change Music After"
-        description: "Timeout to change the music. (In seconds.  left in 0 to disable)."
-        type: "integer"
-        default: 0
-        minimum: 0
-        maximum: 1000
+      lapse:
+        title: "Play Background Music - Reproduction Lapse"
+        description: 'Lapse to repits or changes the music. Could be time lapse (in seconds)  or streak count lapse. Ej: "streak, 100" or "Time, 60". (lapse will reset if streak ends) left in 0 to waits unltil music ends.'
+        type: "array"
+        default: [0]
         order: 3
-
-      changeThreshold:
-        title: "Play Background Music - Change Music at streak"
-        description: "Streak threshold to change the music. (left in 0 to disable)"
-        type: "integer"
-        default: 0
-        minimum: 0
-        maximum: 1000
-        order: 4
 
       musicPath:
         title: "Play Background Music - Custom Path"
         description: "Path to Music Tracks played in combo Mode."
         type: "string"
         default: '../audioclips/backgroundmusics/'
-        order: 5
+        order: 4
 
       musicVolume:
         title: "Play Background Music - Volume"
@@ -225,7 +212,7 @@ module.exports =
         default: 0.25
         minimum: 0.0
         maximum: 1.0
-        order: 6
+        order: 5
 
   particles:
     type: "object"

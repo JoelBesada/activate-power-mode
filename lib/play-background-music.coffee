@@ -32,7 +32,7 @@ module.exports =
     @musicChangeTimeObserver?.dispose()
 
   stop: ->
-    if (@getConfig "reproductionSetting") is "custom" and  (@getConfig "musicChangeTime") != 0
+    if (@getConfig "reproductionSetting") is "change" and  (@getConfig "lapse") != 0
       @debouncedChangeMusic()
     @music.pause() if @music != null
     if (@getConfig "reproductionSetting") is "repitEndStreak"

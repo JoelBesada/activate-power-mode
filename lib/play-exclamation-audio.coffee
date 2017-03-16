@@ -7,7 +7,7 @@ module.exports =
   superExclamationLapse: null
   isPlaying: false
 
-  setup: ->
+  setup: (combo) ->
     @superExclamationLapse = (@getConfig "superExclamation.lapse")
 
     if (@getConfig "exclamations.type") is "killerInstint"
@@ -24,13 +24,13 @@ module.exports =
       @fileName = @fileName.substr(0, @fileName.indexOf('.'))
 
   play: (combo) ->
+    @setup(combo)
+
     if (@superExclamationLapse[0]) != 0
       return @playSuperExclamation()
 
     @isPlaying = false if (@audioExclamation.paused)
     return null if (@isPlaying or combo is 0)
-
-    @setup()
 
     @audioExclamation.volume = @getConfig "exclamations.exclamationVolume"
     @isPlaying = true
@@ -61,7 +61,7 @@ module.exports =
     return fileName = ("Ultra Combo") if combo >= 30
     fileName = null
 
-  playSuperExclamation: (combo) ->
+  playSuperExclamation: ->
     exclamationFoP = @getConfig "superExclamation.texts"
     pattern = new RegExp(/^.*[\\\/]/, '')
 
