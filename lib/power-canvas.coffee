@@ -38,17 +38,14 @@ module.exports =
     @canvas.style.display = "block"
     @canvas.width = editorElement.offsetWidth
     @canvas.height = editorElement.offsetHeight
+    @scrollView = editorElement.querySelector(".scroll-view")
     @editorElement = editorElement
     @editor = editor
 
     @init()
 
   spawnParticles: (screenPosition) ->
-    cursorOffset = @calculateCursorOffset()
-
-    {left, top} = @editorElement.pixelPositionForScreenPosition screenPosition
-    left += cursorOffset.left - @editorElement.getScrollLeft()
-    top += cursorOffset.top - @editorElement.getScrollTop()
+    {left, top} = @calculatePositions screenPosition
 
     numParticles = random @getConfig("spawnCount.min"), @getConfig("spawnCount.max")
 
@@ -62,12 +59,10 @@ module.exports =
 
     @animationOn() if not @animationFrame
 
-  calculateCursorOffset: ->
-    editorRect = @editorElement.getBoundingClientRect()
-    scrollViewRect = @editorElement.querySelector(".scroll-view").getBoundingClientRect()
-
-    top: scrollViewRect.top - editorRect.top + @editor.getLineHeightInPixels() / 2
-    left: scrollViewRect.left - editorRect.left
+  calculatePositions: (screenPosition) ->
+    {left, top} = @editorElement.pixelPositionForScreenPosition screenPosition
+    left: left + @scrollView.offsetLeft - @editorElement.getScrollLeft()
+    top: top + @scrollView.offsetTop - @editorElement.getScrollTop() + @editor.getLineHeightInPixels() / 2
 
   createParticle: (x, y, color) ->
     x: x
