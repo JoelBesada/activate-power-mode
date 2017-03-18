@@ -72,6 +72,7 @@ module.exports =
     y: y
     alpha: 1
     color: color
+    size: random @getConfig("size.min"), @getConfig("size.max"), true
     velocity:
       x: -1 + Math.random() * 2
       y: -3.5 + Math.random() * 2
@@ -101,11 +102,10 @@ module.exports =
       particle.alpha *= 0.96
 
       @context.fillStyle = "rgba(#{particle.color[4...-1]}, #{particle.alpha})"
-      size = random @getConfig("size.min"), @getConfig("size.max"), true
       @context.fillRect(
-        Math.round(particle.x - size / 2)
-        Math.round(particle.y - size / 2)
-        size, size
+        Math.round(particle.x - particle.size / 2)
+        Math.round(particle.y - particle.size / 2)
+        particle.size, particle.size
       )
 
     @context.globalCompositeOperation = gco
