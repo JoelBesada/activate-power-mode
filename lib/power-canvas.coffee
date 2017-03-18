@@ -1,8 +1,10 @@
+{CompositeDisposable} = require "atom"
 random = require "lodash.random"
 colorHelper = require "./color-helper"
 
 module.exports =
   colorHelper: colorHelper
+  subscriptions: null
 
   init: ->
     @resetParticles()
@@ -28,12 +30,14 @@ module.exports =
     @resetParticles()
     @canvas?.parentNode.removeChild @canvas
     @canvas = null
+    @subscriptions?.dispose()
 
   setupCanvas: (editor, editorElement) ->
     if not @canvas
       @canvas = document.createElement "canvas"
       @context = @canvas.getContext "2d"
       @canvas.classList.add "power-mode-canvas"
+      @initConfigSubscribers()
 
     editorElement.appendChild @canvas
     @canvas.style.display = "block"
@@ -45,17 +49,30 @@ module.exports =
 
     @init()
 
+  initConfigSubscribers: ->
+    @subscriptions = new CompositeDisposable
+    @subscriptions.add atom.config.observe 'activate-power-mode.particles.spawnCount.min', (value) =>
+      @confMinCount = value
+    @subscriptions.add atom.config.observe 'activate-power-mode.particles.spawnCount.max', (value) =>
+      @confMaxCount = value
+    @subscriptions.add atom.config.observe 'activate-power-mode.particles.totalCount.max', (value) =>
+      @confTotalCount = value
+    @subscriptions.add atom.config.observe 'activate-power-mode.particles.size.min', (value) =>
+      @confMinSize = value
+    @subscriptions.add atom.config.observe 'activate-power-mode.particles.size.max', (value) =>
+      @confMaxSize = value
+
   spawnParticles: (screenPosition) ->
     {left, top} = @calculatePositions screenPosition
 
-    numParticles = random @getConfig("spawnCount.min"), @getConfig("spawnCount.max")
+    numParticles = random @confMinCount, @confMaxCount
 
     color = @colorHelper.getColor @editor, @editorElement, screenPosition
 
     while numParticles--
       nextColor = if typeof color is "object" then color.next().value else color
 
-      @particles.shift() if @particles.length >= @getConfig("totalCount.max")
+      @particles.shift() if @particles.length >= @confTotalCount
       @particles.push @createParticle left, top, nextColor
 
   calculatePositions: (screenPosition) ->
@@ -68,7 +85,7 @@ module.exports =
     y: y
     alpha: 1
     color: color
-    size: random @getConfig("size.min"), @getConfig("size.max"), true
+    size: random @confMinSize, @confMaxSize, true
     velocity:
       x: -1 + Math.random() * 2
       y: -3.5 + Math.random() * 2
