@@ -36,6 +36,8 @@ module.exports =
 
     editorElement.appendChild @canvas
     @canvas.style.display = "block"
+    @canvas.width = editorElement.offsetWidth
+    @canvas.height = editorElement.offsetHeight
     @editorElement = editorElement
     @editor = editor
 
@@ -78,8 +80,7 @@ module.exports =
       y: -3.5 + Math.random() * 2
 
   drawParticles: ->
-    @canvas.width = @editorElement.offsetWidth
-    @canvas.height = @editorElement.offsetHeight
+    @context.clearRect 0, 0, @canvas.width, @canvas.height
 
     if @editor and @particles.length
       @animationOn()
