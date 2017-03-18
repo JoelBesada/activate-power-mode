@@ -66,6 +66,7 @@ module.exports =
       leftTimeout = @streakTimeout - (performance.now() - @lastStreak)
       @refreshStreakBar leftTimeout
 
+    @backgroundMusic.setup()
     @renderStreak()
 
   increaseStreak: ->
