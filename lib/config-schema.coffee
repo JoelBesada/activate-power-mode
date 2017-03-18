@@ -30,7 +30,7 @@ module.exports =
         type: "integer"
         default: 10
         minimum: 0.5
-        maximum: 100
+        maximum: 1000
         order: 3
 
       opacity:
@@ -63,8 +63,8 @@ module.exports =
         description: "Shows an exclamation every streak count. (left in 0 to display at end of the Streak)"
         type: "integer"
         default: 10
-        minimum: 0
-        maximum: 100
+        minimum: 10
+        maximum: 1000
         order: 2
 
       exclamationTexts:
@@ -78,7 +78,7 @@ module.exports =
         title: "Exclamations - Custom Exclamation Audio Path"
         description: 'Path to exclamations audiofiles. (Add "/" or, "\\" at the end of the path).'
         type: "string"
-        default: "../audioclips/exclamation/"
+        default: "../audioclips/exclamations/"   
         orden: 4
 
       exclamationVolume:
@@ -92,11 +92,17 @@ module.exports =
   superExclamation:
     type: "object"
     properties:
-      lapse:
+      exclamationLapse:
+        type: "array"
         title: "Super Exclamation - Lapse"
         description: 'Shows a super exclamations every lapse. Could be time lapse (in seconds)  or streak count lapse. Ej: "streak, 100" or "Time, 60". (lpse will reset if streak ends) left in 0 to desable super exclamation.'
-        type: "array"
-        default: [0]
+        items:
+          type: 'string'
+          default: ""
+          type: 'integer'
+          default: 0
+          minimum: 0
+          maximum: 1000
         order: 3
 
       texts:
@@ -195,7 +201,13 @@ module.exports =
         title: "Play Background Music - Reproduction Lapse"
         description: 'Lapse to repits or changes the music. Could be time lapse (in seconds)  or streak count lapse. Ej: "streak, 100" or "Time, 60". (lapse will reset if streak ends) left in 0 to waits unltil music ends.'
         type: "array"
-        default: [0]
+        items:
+          type: 'string'
+          default: ""
+          type: 'integer'
+          default: 0
+          minimum: 0
+          maximum: 1000
         order: 3
 
       musicPath:
