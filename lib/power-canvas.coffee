@@ -6,6 +6,7 @@ module.exports =
 
   init: ->
     @resetParticles()
+    @animationOn()
 
   resetCanvas: ->
     @animationOff()
@@ -57,8 +58,6 @@ module.exports =
       @particles.shift() if @particles.length >= @getConfig("totalCount.max")
       @particles.push @createParticle left, top, nextColor
 
-    @animationOn() if not @animationFrame
-
   calculatePositions: (screenPosition) ->
     {left, top} = @editorElement.pixelPositionForScreenPosition screenPosition
     left: left + @scrollView.offsetLeft - @editorElement.getScrollLeft()
@@ -75,13 +74,9 @@ module.exports =
       y: -3.5 + Math.random() * 2
 
   drawParticles: ->
+    @animationOn()
     @context.clearRect 0, 0, @canvas.width, @canvas.height
-
-    if @editor and @particles.length
-      @animationOn()
-    else
-      @animationOff()
-      return
+    return if not @particles.length
 
     gco = @context.globalCompositeOperation
     @context.globalCompositeOperation = "lighter"
