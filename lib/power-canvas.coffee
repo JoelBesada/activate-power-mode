@@ -7,15 +7,19 @@ module.exports =
   init: ->
     @resetParticles()
 
-    @animationFrame = requestAnimationFrame @drawParticles.bind(this)
-
   resetCanvas: ->
+    @animationOff()
     @editor = null
     @editorElement = null
+
+  animationOff: ->
     cancelAnimationFrame(@animationFrame)
+    @animationFrame = null
+
+  animationOn: ->
+    @animationFrame = requestAnimationFrame @drawParticles.bind(this)
 
   resetParticles: ->
-    @particlePointer = 0
     @particles = []
 
   destroy: ->
@@ -51,8 +55,10 @@ module.exports =
     while numParticles--
       nextColor = if typeof color is "object" then color.next().value else color
 
-      @particles[@particlePointer] = @createParticle left, top, nextColor
-      @particlePointer = (@particlePointer + 1) % @getConfig("totalCount.max")
+      @particles.shift() if @particles.length >= @getConfig("totalCount.max")
+      @particles.push @createParticle left, top, nextColor
+
+    @animationOn() if not @animationFrame
 
   calculateCursorOffset: ->
     editorRect = @editorElement.getBoundingClientRect()
@@ -71,16 +77,23 @@ module.exports =
       y: -3.5 + Math.random() * 2
 
   drawParticles: ->
-    @animationFrame = requestAnimationFrame @drawParticles.bind(this) if @editor
-    return unless @canvas and @editorElement
-
     @canvas.width = @editorElement.offsetWidth
     @canvas.height = @editorElement.offsetHeight
+
+    if @editor and @particles.length
+      @animationOn()
+    else
+      @animationOff()
+      return
+
     gco = @context.globalCompositeOperation
     @context.globalCompositeOperation = "lighter"
 
-    for particle in @particles
-      continue if particle.alpha <= 0.1
+    for i in [@particles.length - 1 ..0]
+      particle = @particles[i]
+      if particle.alpha <= 0.1
+        @particles.splice i, 1
+        continue
 
       particle.velocity.y += 0.075
       particle.x += particle.velocity.x
