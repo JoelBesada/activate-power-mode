@@ -92,7 +92,7 @@ module.exports =
 
   drawParticles: ->
     @animationOn()
-    @context.clearRect 0, 0, @canvas.width, @canvas.height
+    @canvas.width = @canvas.width
     return if not @particles.length
 
     gco = @context.globalCompositeOperation
