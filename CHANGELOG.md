@@ -1,3 +1,7 @@
+### 1.4.0 2017-03-19
+* Some performance improvements
+* Fix rare bug with combo exclamations
+
 ### 1.3.0 2017-03-02
 * Added typewriter and custom path to audio settings
 * Allow custom audio path to be an absolute path
