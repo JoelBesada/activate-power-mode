@@ -151,8 +151,8 @@ module.exports =
 
       @exclamations.insertBefore exclamation, @exclamations.childNodes[0]
       setTimeout =>
-        @exclamations.removeChild exclamation if @exclamations.firstChild
-      , 3000
+        if exclamation.parentNode is @exclamations
+           @exclamations.removeChild exclamation, 2000
 
   playExclamation: ->
     if (@getConfigE "exclamations.type") != "onlyText"
