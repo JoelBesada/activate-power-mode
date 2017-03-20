@@ -165,6 +165,7 @@ module.exports =
       #@musicPlayer.pause @lapseType, 5
     @exclamationAudio.play @currentStreak, @lapseType
 
+<<<<<<< HEAD
 
   chooseExclamation: ->
     if @currentStreak > 0 and @currentStreak % @getConfigE("exclamations.exclamationEvery") is 0 and (@getConfigE "exclamations.type") != "killerInstint"
@@ -176,6 +177,13 @@ module.exports =
     if @lapse != 0 and (@lapseType is "Time" or @lapseType is "time") and (!@islapsing)
       @debouncedShowExclamation @playSuperExclamation()
       @islapsing = true
+=======
+    @exclamations.insertBefore exclamation, @exclamations.childNodes[0]
+    setTimeout =>
+      if exclamation.parentNode is @exclamations
+        @exclamations.removeChild exclamation
+    , 2000
+>>>>>>> refs/remotes/JoelBesada/master
 
   hasReached: ->
     @reached

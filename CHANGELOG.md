@@ -1,9 +1,15 @@
+<<<<<<< HEAD
 ### 1.4.0 2017-03-12
 * Added play exclamation settings
 * Added play background music settings
 * Allow custom background music path
 * Allow custom exclamation audio path
 * Added super exclamation settings
+=======
+### 1.4.0 2017-03-19
+* Some performance improvements
+* Fix rare bug with combo exclamations
+>>>>>>> refs/remotes/JoelBesada/master
 
 ### 1.3.0 2017-03-02
 * Added typewriter and custom path to audio settings

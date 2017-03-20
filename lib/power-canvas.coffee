@@ -61,6 +61,7 @@ module.exports =
       @confMinSize = value
     @subscriptions.add atom.config.observe 'activate-power-mode.particles.size.max', (value) =>
       @confMaxSize = value
+<<<<<<< HEAD
 
   spawnParticles: (screenPosition) ->
     {left, top} = @calculatePositions screenPosition
@@ -120,48 +121,50 @@ module.exports =
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.particles.#{config}"
+=======
+>>>>>>> refs/remotes/JoelBesada/master
 
-    {left, top} = @editorElement.pixelPositionForScreenPosition screenPosition
-    left += cursorOffset.left - @editorElement.getScrollLeft()
-    top += cursorOffset.top - @editorElement.getScrollTop()
+  spawnParticles: (screenPosition) ->
+    {left, top} = @calculatePositions screenPosition
 
-    numParticles = random @getConfig("spawnCount.min"), @getConfig("spawnCount.max")
+    numParticles = random @confMinCount, @confMaxCount
 
     color = @colorHelper.getColor @editor, @editorElement, screenPosition
 
     while numParticles--
       nextColor = if typeof color is "object" then color.next().value else color
 
-      @particles[@particlePointer] = @createParticle left, top, nextColor
-      @particlePointer = (@particlePointer + 1) % @getConfig("totalCount.max")
+      @particles.shift() if @particles.length >= @confTotalCount
+      @particles.push @createParticle left, top, nextColor
 
-  calculateCursorOffset: ->
-    editorRect = @editorElement.getBoundingClientRect()
-    scrollViewRect = @editorElement.querySelector(".scroll-view").getBoundingClientRect()
-
-    top: scrollViewRect.top - editorRect.top + @editor.getLineHeightInPixels() / 2
-    left: scrollViewRect.left - editorRect.left
+  calculatePositions: (screenPosition) ->
+    {left, top} = @editorElement.pixelPositionForScreenPosition screenPosition
+    left: left + @scrollView.offsetLeft - @editorElement.getScrollLeft()
+    top: top + @scrollView.offsetTop - @editorElement.getScrollTop() + @editor.getLineHeightInPixels() / 2
 
   createParticle: (x, y, color) ->
     x: x
     y: y
     alpha: 1
     color: color
+    size: random @confMinSize, @confMaxSize, true
     velocity:
       x: -1 + Math.random() * 2
       y: -3.5 + Math.random() * 2
 
   drawParticles: ->
-    @animationFrame = requestAnimationFrame @drawParticles.bind(this) if @editor
-    return unless @canvas and @editorElement
+    @animationOn()
+    @canvas.width = @canvas.width
+    return if not @particles.length
 
-    @canvas.width = @editorElement.offsetWidth
-    @canvas.height = @editorElement.offsetHeight
     gco = @context.globalCompositeOperation
     @context.globalCompositeOperation = "lighter"
 
-    for particle in @particles
-      continue if particle.alpha <= 0.1
+    for i in [@particles.length - 1 ..0]
+      particle = @particles[i]
+      if particle.alpha <= 0.1
+        @particles.splice i, 1
+        continue
 
       particle.velocity.y += 0.075
       particle.x += particle.velocity.x
@@ -169,11 +172,10 @@ module.exports =
       particle.alpha *= 0.96
 
       @context.fillStyle = "rgba(#{particle.color[4...-1]}, #{particle.alpha})"
-      size = random @getConfig("size.min"), @getConfig("size.max"), true
       @context.fillRect(
-        Math.round(particle.x - size / 2)
-        Math.round(particle.y - size / 2)
-        size, size
+        Math.round(particle.x - particle.size / 2)
+        Math.round(particle.y - particle.size / 2)
+        particle.size, particle.size
       )
 
     @context.globalCompositeOperation = gco
