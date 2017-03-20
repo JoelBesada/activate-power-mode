@@ -78,7 +78,7 @@ module.exports =
         title: "Exclamations - Custom Exclamation Audio Path"
         description: 'Path to exclamations audiofiles. (Add "/" or, "\\" at the end of the path).'
         type: "string"
-        default: "../audioclips/exclamations/"   
+        default: "../audioclips/exclamations/"
         orden: 4
 
       exclamationVolume:
@@ -91,26 +91,21 @@ module.exports =
 
   superExclamation:
     type: "object"
+    order: 3
     properties:
       exclamationLapse:
-        type: "array"
         title: "Super Exclamation - Lapse"
         description: 'Shows a super exclamations every lapse. Could be time lapse (in seconds)  or streak count lapse. Ej: "streak, 100" or "Time, 60". (lpse will reset if streak ends) left in 0 to desable super exclamation.'
-        items:
-          type: 'string'
-          default: ""
-          type: 'integer'
-          default: 0
-          minimum: 0
-          maximum: 1000
-        order: 3
+        type: "array"
+        default: ["Time","0"]
+        order: 1
 
       texts:
         title: "Super Exclamation - Texts or File"
         description: "Super exclamation to show. Could be a text or a file path if is a file will show the file's name"
         type: "string"
         default: "../audioclips/exclamations/Yes oh my God.wav"
-        order: 3
+        order: 2
 
   screenShake:
     type: "object"
@@ -189,7 +184,7 @@ module.exports =
         title: "Play Background Music - Reproduction Settings"
         description: "Sellect the action of bracground music."
         type: "string"
-        default: 'changeEndMusic'
+        default: 'change'
         enum: [
           {value: 'repit', description: 'Repit Music'}
           {value: 'change', description: 'Change Music'}
@@ -201,13 +196,7 @@ module.exports =
         title: "Play Background Music - Reproduction Lapse"
         description: 'Lapse to repits or changes the music. Could be time lapse (in seconds)  or streak count lapse. Ej: "streak, 100" or "Time, 60". (lapse will reset if streak ends) left in 0 to waits unltil music ends.'
         type: "array"
-        items:
-          type: 'string'
-          default: ""
-          type: 'integer'
-          default: 0
-          minimum: 0
-          maximum: 1000
+        default: ['Streak', '100']
         order: 3
 
       musicPath:
