@@ -23,27 +23,15 @@ module.exports =
       @audioExclamation = new Audio(customPath + @fileName)
       @fileName = @fileName.substr(0, @fileName.indexOf('.'))
 
-    @superExclamationLapse?.dispose()
-    @superExclamationLapse = atom.config.observe "superExclamation.exclamationLapse", (value) =>
-      @sExclamationLapse = value
-    @lapseType = @sExclamationLapse[0]
-    @lapse = @sExclamationLapse[1]
-
-    if (@lapseType is "Time" or @lapseType is "time")
-      @timeLapse = @lapse * 1000
-      @debouncedPlaySuperExclamation?.cancel()
-      @debouncedPlaySuperExclamation = debounce @playSuperExclamation.bind(this),@timeLapse
-
-  play: (combo) ->
+  play: (combo, type="exclamation") ->
     @setup(combo)
 
-    if (@lapseType is "Streak" or @lapseType is "streak") and  combo % @lapse is 0
-      return @playSuperExclamation()
+    if (type is "Time" or type is "time")
+      fileName = @getSuperExclamation()
+      return fileName
 
     @isPlaying = false if (@audioExclamation.paused)
     return null if (@isPlaying or combo is 0)
-
-    @debouncedPlaySuperExclamation() if (@superExclamationLapse[0]) != 0
 
     @audioExclamation.volume = @getConfig "exclamations.exclamationVolume"
     @isPlaying = true
@@ -74,7 +62,7 @@ module.exports =
     return fileName = ("Ultra Combo") if combo >= 30
     fileName = null
 
-  playSuperExclamation: ->
+  getSuperExclamation: ->
     exclamationFoP = @getConfig "superExclamation.texts"
     if (exclamationFoP.indexOf('/') > -1)  or (exclamationFoP.indexOf("\\") > -1)
       ispath = true
@@ -82,17 +70,21 @@ module.exports =
       ispath = false
 
     if (ispath)
-      pathtoaudio = exclamationFoP.substring(0, exclamationFoP.lastIndexOf("/"));
+      pathtoaudio = exclamationFoP.substring(0, exclamationFoP.lastIndexOf("/") + 1)
+      pathtoaudio = path.join(__dirname, pathtoaudio)
       fileName = exclamationFoP.replace(/^.*[\\\/]/, '')
+    else
+      return exclamationFoP
 
     if (@getConfig "exclamations.type") is "onlyText"
       return (fileName + "!")
     else
-      @audioExclamation = new Audio(customPath + @fileName)
-      @audioExclamation.volume = @getConfig "exclamations.exclamationVolume"
+      @audioExclamation = new Audio(pathtoaudio + fileName)
+      @audioExclamation.volume = 1
       @isPlaying = true
       @audioExclamation.play()
-      return filename if (@getConfig "exclamations.type") != "onlyAudio"
+      fileName = fileName.substr(0, fileName.indexOf('.')) if (@getConfig "exclamations.type") != "onlyAudio"
+      return (fileName + "!")
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.#{config}"
