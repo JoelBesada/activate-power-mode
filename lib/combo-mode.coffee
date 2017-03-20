@@ -2,14 +2,17 @@ debounce = require "lodash.debounce"
 defer = require "lodash.defer"
 sample = require "lodash.sample"
 exclamationAudio = require "./play-exclamation-audio"
-backgroundMusic = require "./play-background-music"
+musicPlayer = require "./music-player"
 
 module.exports =
   currentStreak: 0
   reached: false
   maxStreakReached: false
   exclamationAudio: exclamationAudio
-  backgroundMusic: backgroundMusic
+  musicPlayer: musicPlayer
+  lapseType: ""
+  lapse: 0
+  islapsing: false
 
   reset: ->
     @container?.parentNode?.removeChild @container
@@ -24,7 +27,7 @@ module.exports =
     @currentStreak = 0
     @reached = false
     @maxStreakReached = false
-    @backgroundMusic.destroy()
+    @musicPlayer.destroy()
 
   createElement: (name, parent)->
     @element = document.createElement "div"
@@ -45,7 +48,7 @@ module.exports =
       @bar = @createElement "bar", @container
       @remainingTime = @createElement "text", @container
       @exclamations = @createElement "exclamations", @container
-      @backgroundMusic.setup() if @getConfigE "playBackgroundMusic.enabled"
+      @musicPlayer.setup() if @getConfigE "playBackgroundMusic.enabled"
 
       @streakTimeoutObserver?.dispose()
       @streakTimeoutObserver = atom.config.observe 'activate-power-mode.comboMode.streakTimeout', (value) =>
@@ -53,6 +56,17 @@ module.exports =
         @endStreak()
         @debouncedEndStreak?.cancel()
         @debouncedEndStreak = debounce @endStreak.bind(this), @streakTimeout
+
+      @superExclamationLapse?.dispose()
+      @superExclamationLapse = atom.config.observe "activate-power-mode.superExclamation.exclamationLapse", (value) =>
+        @sExclamationLapse = value
+      @lapseType = @sExclamationLapse[0]
+      @lapse = @sExclamationLapse[1]
+
+    if (@lapseType is "Time" or @lapseType is "time")
+      @timeLapse = @lapse * 1000
+      @debouncedShowExclamation?.cancel()
+      @debouncedShowExclamation = debounce @showExclamation.bind(this),@timeLapse
 
       @opacityObserver?.dispose()
       @opacityObserver = atom.config.observe 'activate-power-mode.comboMode.opacity', (value) =>
@@ -66,7 +80,7 @@ module.exports =
       leftTimeout = @streakTimeout - (performance.now() - @lastStreak)
       @refreshStreakBar leftTimeout
 
-    @backgroundMusic.setup()
+    @musicPlayer.setup()
     @renderStreak()
 
   increaseStreak: ->
@@ -79,11 +93,10 @@ module.exports =
     if @currentStreak > @maxStreak
       @increaseMaxStreak()
 
-    @backgroundMusic.play() if @getConfigE "playBackgroundMusic.enabled"
+    if @getConfigE "playBackgroundMusic.enabled"
+      @musicPlayer.play @currentStreak
 
-
-    if @currentStreak > 0 and @currentStreak % @getConfigE("exclamations.exclamationEvery") is 0 and (@getConfigE "exclamations.type") != "killerInstint"
-      @showExclamation @playExclamation()
+    @chooseExclamation()
 
     if @currentStreak >= @getConfig("activationThreshold") and not @reached
       @reached = true
@@ -102,11 +115,14 @@ module.exports =
     @container.classList.add "combo-zero"
     @container.classList.remove "reached"
     @renderStreak()
-    @backgroundMusic.stop()  if @getConfigE "playBackgroundMusic.enabled"
+    @musicPlayer.stop()  if @getConfigE "playBackgroundMusic.enabled"
+    @debouncedShowExclamation?.cancel()
+    @islapsing = false
 
 
   renderStreak: ->
     @counter.textContent = @currentStreak
+    #@counter.textContent = @lapseType + @lapse
     @counter.classList.remove "bump"
 
     defer =>
@@ -145,7 +161,21 @@ module.exports =
       return null
 
   playSuperExclamation: ->
-      @exclamationAudio.play @currentStreak
+    #if @getConfigE "playBackgroundMusic.enabled"
+      #@musicPlayer.pause @lapseType, 5
+    @exclamationAudio.play @currentStreak, @lapseType
+
+
+  chooseExclamation: ->
+    if @currentStreak > 0 and @currentStreak % @getConfigE("exclamations.exclamationEvery") is 0 and (@getConfigE "exclamations.type") != "killerInstint"
+      return @showExclamation @playExclamation()
+
+    if @currentStreak > 0 and @currentStreak % @lapse is 0 and (@lapseType is "Streak" or @lapseType is "streak")
+      return @showExclamation @playSuperExclamation()
+
+    if @lapse != 0 and (@lapseType is "Time" or @lapseType is "time") and (!@islapsing)
+      @debouncedShowExclamation @playSuperExclamation()
+      @islapsing = true
 
   hasReached: ->
     @reached
