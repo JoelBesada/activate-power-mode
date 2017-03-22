@@ -148,7 +148,7 @@ module.exports =
       exclamation.classList.add "exclamation"
       text = sample @getConfigE "exclamations.exclamationTexts" if text is null
       exclamation.textContent = text
-      
+
       @exclamations.insertBefore exclamation, @exclamations.childNodes[0]
       setTimeout =>
         if exclamation.parentNode is @exclamations
@@ -174,7 +174,7 @@ module.exports =
       return @showExclamation @playSuperExclamation()
 
     if @lapse != 0 and (@lapseType is "Time" or @lapseType is "time") and (!@islapsing)
-      @debouncedShowExclamation @playSuperExclamation()
+      #@debouncedShowExclamation @playSuperExclamation()
       @islapsing = true
 
   hasReached: ->
