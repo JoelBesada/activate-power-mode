@@ -1,64 +1,44 @@
-throttle = require "lodash.throttle"
-screenShake = require "./screen-shake"
-playAudio = require "./play-audio"
-powerCanvas = require "./power-canvas"
-comboMode = require "./combo-mode"
+pluginManager = require "./plugin-manager"
 
 module.exports =
-  screenShake: screenShake
-  playAudio: playAudio
-  powerCanvas: powerCanvas
-  comboMode: comboMode
+  pluginManager: pluginManager
 
   enable: ->
-    @throttledShake = throttle @screenShake.shake.bind(@screenShake), 100, trailing: false
-    @throttledPlayAudio = throttle @playAudio.play.bind(@playAudio), 100, trailing: false
+    @pluginManager.enable()
+    @changePaneSubscription = atom.workspace.onDidStopChangingActivePaneItem =>
+      @setupPane()
 
-    @activeItemSubscription = atom.workspace.onDidStopChangingActivePaneItem =>
-      @subscribeToActiveTextEditor()
-
-    @comboModeEnabledSubscription = atom.config.observe 'activate-power-mode.comboMode.enabled', (value) =>
-      @isComboMode = value
-      if @isComboMode and @editorElement
-        @comboMode.setup @editorElement
-      else
-        @comboMode.destroy()
-
-    @subscribeToActiveTextEditor()
+    @setupPane()
 
   disable: ->
-    @activeItemSubscription?.dispose()
-    @editorChangeSubscription?.dispose()
-    @comboModeEnabledSubscription?.dispose()
-    @editorAddCursor?.dispose()
-    @powerCanvas.destroy()
-    @comboMode.destroy()
-    @isComboMode = false
+    @changePaneSubscription?.dispose()
+    @inputSubscription?.dispose()
+    @cursorSubscription?.dispose()
+    @pluginManager.disable()
 
-  subscribeToActiveTextEditor: ->
-    @powerCanvas.resetCanvas()
-    @comboMode.reset() if @isComboMode
-    @prepareEditor()
+  isExcludedFile: ->
+    excluded = @getConfig "excludedFileTypes.excluded"
+    @editor.getPath()?.split('.').pop() in excluded
 
-  prepareEditor: ->
-    @editorChangeSubscription?.dispose()
-    @editorAddCursor?.dispose()
+  setupPane: ->
+    @inputSubscription?.dispose()
+    @cursorSubscription?.dispose()
     @editor = atom.workspace.getActiveTextEditor()
-    return unless @editor
-    return if @editor.getPath()?.split('.').pop() in @getConfig "excludedFileTypes.excluded"
+
+    if not @editor or @isExcludedFile()
+      @pluginManager.runOnChangePane()
+      return
 
     @editorElement = atom.views.getView @editor
+    @inputSubscription = @editor.getBuffer().onDidChange @handleInput.bind(this)
+    @cursorSubscription = @editor.observeCursors @handleCursor.bind(this)
 
-    @powerCanvas.setupCanvas @editor, @editorElement
-    @comboMode.setup @editorElement if @isComboMode
-
-    @editorChangeSubscription = @editor.getBuffer().onDidChange @onChange.bind(this)
-    @editorAddCursor = @editor.observeCursors @handleCursor.bind(this)
+    @pluginManager.runOnChangePane @editor, @editorElement
 
   handleCursor: (cursor) ->
-    cursor.throttleSpawnParticles = throttle @powerCanvas.spawnParticles.bind(@powerCanvas), 25, trailing: false
+    @pluginManager.runOnNewCursor cursor
 
-  onChange: (e) ->
+  handleInput: (e) ->
     spawnParticles = true
     if e.newText
       spawnParticles = e.newText isnt "\n"
@@ -66,23 +46,11 @@ module.exports =
     else
       range = e.newRange.start
 
-    screenPosition = @editor.screenPositionForBufferPosition range
-    cursor = @editor.getCursorAtScreenPosition screenPosition
+    screenPos = @editor.screenPositionForBufferPosition range
+    cursor = @editor.getCursorAtScreenPosition screenPos
     return unless cursor
 
-    if @isComboMode
-      @comboMode.increaseStreak()
-      return unless @comboMode.hasReached()
-
-    if spawnParticles and @getConfig "particles.enabled"
-      cursor.throttleSpawnParticles screenPosition
-    if @getConfig "screenShake.enabled"
-      @throttledShake @editorElement
-    if @getConfig "playAudio.enabled"
-      @throttledPlayAudio()
-
-  getCombo: ->
-    @comboMode
+    @pluginManager.runOnInput @editor, @editorElement, cursor
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.#{config}"

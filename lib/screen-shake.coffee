@@ -1,6 +1,13 @@
+throttle = require "lodash.throttle"
 random = require "lodash.random"
 
 module.exports =
+  enable: ->
+    @throttledShake = throttle @shake.bind(this), 100, trailing: false
+
+  onInput: (editor, editorElement, cursor) ->
+    @throttledShake editorElement
+
   shake: (editorElement) ->
     min = @getConfig "minIntensity"
     max = @getConfig "maxIntensity"

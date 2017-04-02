@@ -7,6 +7,16 @@ module.exports =
   reached: false
   maxStreakReached: false
 
+  disable: ->
+    @destroy()
+
+  onChangePane: (editor, editorElement) ->
+    @reset()
+    @setup editorElement if editor
+
+  onInput: (editor, editorElement, cursor) ->
+    @increaseStreak()
+
   reset: ->
     @container?.parentNode?.removeChild @container
 
