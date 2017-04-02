@@ -1,13 +1,6 @@
-throttle = require "lodash.throttle"
 path = require "path"
 
 module.exports =
-  enable: ->
-    @throttledPlayAudio = throttle @play.bind(this), 100, trailing: false
-
-  onInput: (editor, editorElement, cursor) ->
-    @throttledPlayAudio()
-
   play: ->
     if (@getConfig "audioclip") is "customAudioclip"
       pathtoaudio = @getConfig "customAudioclip"

@@ -14,7 +14,7 @@ module.exports =
     @reset()
     @setup editorElement if editor
 
-  onInput: (editor, editorElement, cursor) ->
+  onInput: ->
     @increaseStreak()
 
   reset: ->

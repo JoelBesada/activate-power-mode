@@ -1,14 +1,17 @@
-screenShake = require "./screen-shake"
-playAudio = require "./play-audio"
-powerCanvas = require "./power-canvas"
-comboMode = require "./combo-mode"
+api = require "./api"
+screenShake = require "./plugin/screen-shake"
+playAudio = require "./plugin/play-audio"
+powerCanvas = require "./plugin/power-canvas"
+comboMode = require "./plugin/combo-mode"
 
 module.exports =
+  api: api
   plugins: [comboMode, powerCanvas, screenShake, playAudio]
 
   enable: ->
+    @api.init()
     for plugin in @plugins
-      plugin.enable?()
+      plugin.enable?(@api)
 
   disable: ->
     for plugin in @plugins
@@ -22,6 +25,6 @@ module.exports =
     for plugin in @plugins
       plugin.onNewCursor?(cursor)
 
-  runOnInput: (editor, editorElement, cursor) ->
+  runOnInput: (cursor) ->
     for plugin in @plugins
       plugin.onInput?(editor, editorElement, cursor)

@@ -1,7 +1,7 @@
 {CompositeDisposable} = require "atom"
 throttle = require "lodash.throttle"
 random = require "lodash.random"
-colorHelper = require "./color-helper"
+colorHelper = require "../color-helper"
 
 module.exports =
   colorHelper: colorHelper
@@ -20,7 +20,7 @@ module.exports =
   onNewCursor: (cursor) ->
     cursor.spawnParticles = throttle @spawnParticles.bind(this), 25, trailing: false
 
-  onInput: (editor, editorElement, cursor) ->
+  onInput: (cursor) ->
     cursor.spawnParticles cursor.getScreenPosition()
 
   init: ->
