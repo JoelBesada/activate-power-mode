@@ -63,7 +63,7 @@ module.exports =
         description: "Shows an exclamation every streak count. (left in 0 to display at end of the Streak)"
         type: "integer"
         default: 10
-        minimum: 10
+        minimum: 0
         maximum: 1000
         order: 2
 
@@ -180,31 +180,12 @@ module.exports =
         default: true
         order: 1
 
-      reproductionSetting:
-        title: "Play Background Music - Reproduction Settings"
-        description: "Sellect the action of bracground music."
-        type: "string"
-        default: 'change'
-        enum: [
-          {value: 'repit', description: 'Repit Music'}
-          {value: 'change', description: 'Change Music'}
-          {value: 'custom', description: 'Custom'}
-        ]
-        order: 2
-
-      lapse:
-        title: "Play Background Music - Reproduction Lapse"
-        description: 'Lapse to repits or changes the music. Could be time lapse (in seconds)  or streak count lapse. Ej: "streak, 100" or "Time, 60". (lapse will reset if streak ends) left in 0 to waits unltil music ends.'
-        type: "array"
-        default: ['Streak', '100']
-        order: 3
-
       musicPath:
         title: "Play Background Music - Custom Path"
         description: "Path to Music Tracks played in combo Mode."
         type: "string"
         default: '../audioclips/backgroundmusics/'
-        order: 4
+        order: 2
 
       musicVolume:
         title: "Play Background Music - Volume"
@@ -213,7 +194,19 @@ module.exports =
         default: 0.25
         minimum: 0.0
         maximum: 1.0
-        order: 5
+        order: 3
+
+      action:
+        title: "Play Background Music - Action"
+        description: 'Syntax "action, when, lapseType, lapse".
+        action: repit, change, none
+        execution: duringStreak, endStreak, endMusic
+        lapseType: streak, time (This value is used only if execution is duringStreak)
+        lapse: Number Value (if lapseType is time, lapse will be in seconds)
+        Note: the lapsetype and lapse values is only used in duringStreak.'
+        type: "array"
+        default: ['change', 'duringStreak', 'Streak', '100']
+        order: 4
 
   particles:
     type: "object"
