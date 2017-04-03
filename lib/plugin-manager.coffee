@@ -1,15 +1,16 @@
-api = require "./api"
+Api = require "./api"
+editorRegistry = require "./service/editor-registry"
 screenShake = require "./plugin/screen-shake"
 playAudio = require "./plugin/play-audio"
 powerCanvas = require "./plugin/power-canvas"
 comboMode = require "./plugin/combo-mode"
 
 module.exports =
-  api: api
+  editorRegistry: editorRegistry
   plugins: [comboMode, powerCanvas, screenShake, playAudio]
 
   enable: ->
-    @api.init()
+    @api = new Api(@editorRegistry)
     for plugin in @plugins
       plugin.enable?(@api)
 
@@ -18,6 +19,9 @@ module.exports =
       plugin.disable?()
 
   runOnChangePane: (editor = null, editorElement = null) ->
+    @editorRegistry.setEditor editor
+    @editorRegistry.setEditorElement editorElement
+
     for plugin in @plugins
       plugin.onChangePane?(editor, editorElement)
 
@@ -27,4 +31,4 @@ module.exports =
 
   runOnInput: (cursor) ->
     for plugin in @plugins
-      plugin.onInput?(editor, editorElement, cursor)
+      plugin.onInput?(cursor)
