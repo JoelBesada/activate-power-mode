@@ -3,133 +3,145 @@ fs = require "fs"
 debounce = require "lodash.debounce"
 
 module.exports =
-  pathtoMusic: null
-  musicFiles: null
-  currentFile: 0
   music: null
-  isPlaying: false
-  isSilent: false
-  silentLapse: 0
-  lapseType: ""
-  timeLapse: 0
-  streakLapse: 0
+  remainingTime: 0
+  isPlayin: false
+  isSetup: false
+  isMute: false
+  pathtoMusic: ""
+  musicFiles: null
+  currentMusic: 0
+  action: ""
+  execution: ""
+  actionLapseType: ""
+  actionLapse: 0
 
   setup: ->
-    if (@getConfig "musicPath") != "../audioclips/backgroundmusics/"
-      @pathtoMusic = @getConfig "musicPath"
-    else
-      @pathtoMusic = path.join(__dirname, @getConfig "musicPath")
+    if(!@isSetup)
+      if (@getConfig "musicPath") != "../audioclips/backgroundmusics/"
+        @pathtoMusic = @getConfig "musicPath"
+      else
+        @pathtoMusic = path.join(__dirname, @getConfig "musicPath")
 
-    @musicFiles = fs.readdirSync(@pathtoMusic.toString())
-    @music = new Audio(@pathtoMusic + @getFileName(0))
+      @musicFiles = fs.readdirSync(@pathtoMusic.toString())
+      @music = new Audio(@pathtoMusic + @musicFiles[0])
+      @music.volume = @getConfig "musicVolume"
+      @isSetup = true
 
-    @reproductionActionLapse?.dispose()
-    @reproductionActionLapse = atom.config.observe 'activate-power-mode.playBackgroundMusic.lapse', (value) =>
-      @actionLapse = value
-      @lapseType = @actionLapse[0]
-      lapse = @actionLapse.map(Number)
-      if (@lapseType is "Time") or (@lapseType is "time")
-        @timeLapse = lapse[1]  * 1000
-        @debouncedChangeOrRepitMusic?.cancel()
-        @debouncedChangeOrRepitMusic = debounce @changeOrRepitMusic.bind(this), @timeLapse
-      if (@lapseType is "Streak") or (@lapseType is "streak")
-        @streakLapse = lapse[1]
+    @streakTimeoutObserver?.dispose()
+    @streakTimeoutObserver = atom.config.observe 'activate-power-mode.comboMode.streakTimeout', (value) =>
+      @streakTimeout = value * 1000
+      @debouncedActionEndStreak?.cancel()
+      @debouncedActionEndStreak = debounce @actionEndStreak.bind(this), @streakTimeout
 
-    @superExclamationLapse?.dispose()
-    @superExclamationLapse = atom.config.observe 'activate-power-mode.superExclamation.exclamationLapse', (value) =>
-      @sExclamationLapse = value
-      @sElapseType = @sExclamationLapse[0]
-      @lapse = @sExclamationLapse[1] * 1000
+    @actionObserver?.dispose()
+    @actionObserver = atom.config.observe 'activate-power-mode.playBackgroundMusic.action', (value) =>
+      @action = value[0]
+      @execution = value[1]
+      if(@execution is "duringStreak")
+        @actionLapseType = value[2]
+        lapseValue = value.map(Number)
+        @actionLapse = lapseValue[3]
+      else
+        @actionLapseType = ""
+        @actionLapse = 0
+
+    if(@actionLapseType is "time")
+      timeLapse = @actionLapse * 1000
       @debouncedPause?.cancel()
-      @debouncedPause = debounce @timePause.bind(this), @lapse
+      @debouncedActionDuringStreak = debounce @actionDuringStreak.bind(this), timeLapse
 
-    @silentLapse = 5000
-    @debouncedContinue?.cancel()
-    @debouncedContinue = debounce @continue.bind(this), @silentLapse
+    if(@execution is "endMusic")
+      @remainingTime = (@music.duration - @music.currentTime)
+      @debouncedActionDuringStreak?.cancel()
+      @debouncedActionDuringStreak = debounce @actionDuringStreak.bind(this), @remainingTime
+
+    @debouncedMuteToggle?.cancel()
+    @debouncedMuteToggle = debounce @muteToggle.bind(this), 5000
 
   destroy: ->
-    stop()
-    @streakTimeoutObserver?.dispose()
-    @debouncedChangeOrRepitMusic?.cancel()
-    @debouncedContinue?.cancel()
-    @reproductionActionLapse?.dispose()
+    if(@music != null) and (@isSetup is true)
+      @stop()
+      @streakTimeoutObserver?.dispose()
+      @debouncedActionEndStreak?.cancel()
+      @debouncedActionEndStreak = null
+      @actionObserver?.dispose()
+      @debouncedActionDuringStreak?.cancel()
+      @debouncedActionDuringStreak = null
+      @debouncedMuteToggle?.cancel()
+      @debouncedMuteToggle = null
+      @isSetup = false
+      @music = null
+      @musicFiles = null
 
-  stop: ->
-    @debouncedChangeOrRepitMusic?.cancel()
-    @music.pause() if @music != null
-    if (@getConfig "reproductionSetting") is "repit"
-      @music.currentTime = 0
-    @isPlaying = false
-    if (@getConfig "reproductionSetting") is "custom"
-      @changeOrRepitMusic() if (@isPlaying is "changeEndStreak")
-      @music.currentTime = 0 if (@isPlaying is "repitEndStreak")
-
-  play: (combo) ->
-
-    @changeOrRepit(combo)
+  play: (streak) ->
+    @setup()
+    @remainingTime = (@music.duration - @music.currentTime)
+    if(@execution is "duringStreak") or (@execution is "endMusic")
+      @actionDuringStreak(streak)
+    @debouncedActionEndStreak()
 
     @isPlaying = false if (@music.paused)
-    return null if (@isPlaying) or (@isSilent)
+    return null if (@isPlaying) or (@isMute)
 
-    @music.volume = @getConfig "musicVolume"
+    @debouncedActionDuringStreak() if(@actionLapseType is "time")
+
     @isPlaying = true
     @music.play()
 
-  pause: (type, lapse) ->
-    if (type is "Time") or (type is "time")
-      @silentLapse = lapse
-      @debouncedPause()
-    else
-      @silentLapse = lapse
-      @strikePause()
-
-  changeOrRepit: (combo) ->
-    if (@timeLapse != 0)
-      @debouncedChangeOrRepitMusic()
-
-    if (@music.ended) and (@getConfig "reproductionSetting") is "custom"
-      @changeOrRepitMusic() if (@isPlaying is "changeEndMusic")
-      @music.currentTime = 0 if (@isPlaying is "repitEndMusic")
-
-    if (combo % @streakLapse) is 0
-      @changeOrRepitMusic() if (@getConfig "reproductionSetting") is "change"
-      @music.currentTime = 0 if (@getConfig "reproductionSetting") is "repit"
-
-  strikePause: ->
-    @isSilent = true
+  pause: ->
     @isPlaying = false
-    @music.pause() if @music != null
-    @debouncedContinue()
+    @music.pause()
 
-  timePause: ->
-    @isSilent = true
+  stop: ->
     @isPlaying = false
-    @music.pause() if @music != null
-    @debouncedContinue()
+    @music.pause()
+    @music.currentTime = 0
 
-  continue: ->
-    @isSilent = false
-    @isPlaying = true
-    @music.volume = @getConfig "musicVolume"
-    @isPlaying = true
-    @music.play()
+  autoPlay: ->
+    @music.play() if @music.paused
 
-  changeOrRepitMusic: ->
-    @music.pause() if (@isPlaying)
-    @music = new Audio(@pathtoMusic + @getFileName())
-
-  getFileName: (index = null) ->
+  next: ->
+    @stop()
     maxIndex = @musicFiles.length - 1
-    if (index != null)
-      @currentFile = index
-      return fileName = (@musicFiles[index])
-    else if (maxIndex > @currentFile)
-      @currentFile++
-      return fileName = (@musicFiles[@currentFile])
+    if (maxIndex > @currentMusic)
+      @currentMusic++
     else
-      @currentFile = 0
-      return fileName = (@musicFiles[@currentFile])
+      @currentMusic = 0
 
+    @music = new Audio(@pathtoMusic + @musicFiles[@currentMusic])
+    @music.volume = @getConfig "musicVolume"
+
+  muteToggle: (type) ->
+    if(!@isMute)
+      @isMute = true
+      @music.volume = 0
+      @debouncedMuteToggle() if(type is "temporary")
+    if(@isMute)
+      @isMute = false
+      @music.volume = @getConfig "musicVolume"
+
+  actionDuringStreak: (streak = 0) ->
+    if(streak is 0 and @actionLapse != 0)
+      @stop() if @action is "repit"
+      @next() if @action is "change"
+      return null
+
+    if(streak % @actionLapse is 0) and (streak != 0)
+      @stop() if @action is "repit"
+      @next() if @action is "change"
+      return null
+
+    if(@music.ended)
+      @stop() if @action is "repit"
+      @next() if @action is "change"
+      @autoPlay()
+
+  actionEndStreak: ->
+    @debouncedActionDuringStreak?.cancel()
+    return @stop() if @action is "repit"
+    return @pause() if @action is "pause"
+    @pause()
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.playBackgroundMusic.#{config}"

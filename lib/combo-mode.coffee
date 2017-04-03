@@ -48,7 +48,6 @@ module.exports =
       @bar = @createElement "bar", @container
       @remainingTime = @createElement "text", @container
       @exclamations = @createElement "exclamations", @container
-      @musicPlayer.setup() if @getConfigE "playBackgroundMusic.enabled"
 
       @streakTimeoutObserver?.dispose()
       @streakTimeoutObserver = atom.config.observe 'activate-power-mode.comboMode.streakTimeout', (value) =>
@@ -80,7 +79,6 @@ module.exports =
       leftTimeout = @streakTimeout - (performance.now() - @lastStreak)
       @refreshStreakBar leftTimeout
 
-    @musicPlayer.setup()
     @renderStreak()
 
   increaseStreak: ->
@@ -115,7 +113,6 @@ module.exports =
     @container.classList.add "combo-zero"
     @container.classList.remove "reached"
     @renderStreak()
-    @musicPlayer.stop()  if @getConfigE "playBackgroundMusic.enabled"
     @debouncedShowExclamation?.cancel()
     @islapsing = false
 
@@ -163,7 +160,7 @@ module.exports =
 
   playSuperExclamation: ->
     #if @getConfigE "playBackgroundMusic.enabled"
-      #@musicPlayer.pause @lapseType, 5
+      #@musicPlayer.mute @lapseType, 5
     @exclamationAudio.play @currentStreak, @lapseType
 
   chooseExclamation: ->
