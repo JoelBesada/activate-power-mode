@@ -1,13 +1,15 @@
 {CompositeDisposable} = require "atom"
 throttle = require "lodash.throttle"
-random = require "lodash.random"
 colorHelper = require "../color-helper"
+effect = require "../default-effect"
 
 module.exports =
   colorHelper: colorHelper
+  effect: effect
   subscriptions: null
+  conf: []
 
-  enable: ->
+  enable: (api) ->
     @initConfigSubscribers()
 
   disable: ->
@@ -18,13 +20,13 @@ module.exports =
     @setupCanvas editor, editorElement if editor
 
   onNewCursor: (cursor) ->
-    cursor.spawnParticles = throttle @spawnParticles.bind(this), 25, trailing: false
+    cursor.spawn = throttle @spawn.bind(this), 25, trailing: false
 
   onInput: (cursor) ->
-    cursor.spawnParticles cursor.getScreenPosition()
+    cursor.spawn cursor.getScreenPosition()
 
   init: ->
-    @resetParticles()
+    @effect.init()
     @animationOn()
 
   resetCanvas: ->
@@ -37,14 +39,11 @@ module.exports =
     @animationFrame = null
 
   animationOn: ->
-    @animationFrame = requestAnimationFrame @drawParticles.bind(this)
-
-  resetParticles: ->
-    @particles = []
+    @animationFrame = requestAnimationFrame @animate.bind(this)
 
   destroy: ->
     @resetCanvas()
-    @resetParticles()
+    @effect.disable()
     @canvas?.parentNode.removeChild @canvas
     @canvas = null
     @subscriptions?.dispose()
@@ -66,74 +65,30 @@ module.exports =
 
     @init()
 
+  observe: (key) ->
+    @subscriptions.add atom.config.observe "activate-power-mode.particles.#{key}", (value) =>
+      @conf[key] = value
+
   initConfigSubscribers: ->
     @subscriptions = new CompositeDisposable
-    @subscriptions.add atom.config.observe 'activate-power-mode.particles.spawnCount.min', (value) =>
-      @confMinCount = value
-    @subscriptions.add atom.config.observe 'activate-power-mode.particles.spawnCount.max', (value) =>
-      @confMaxCount = value
-    @subscriptions.add atom.config.observe 'activate-power-mode.particles.totalCount.max', (value) =>
-      @confTotalCount = value
-    @subscriptions.add atom.config.observe 'activate-power-mode.particles.size.min', (value) =>
-      @confMinSize = value
-    @subscriptions.add atom.config.observe 'activate-power-mode.particles.size.max', (value) =>
-      @confMaxSize = value
+    @observe 'spawnCount.min'
+    @observe 'spawnCount.max'
+    @observe 'totalCount.max'
+    @observe 'size.min'
+    @observe 'size.max'
 
-  spawnParticles: (screenPosition) ->
-    {left, top} = @calculatePositions screenPosition
-
-    numParticles = random @confMinCount, @confMaxCount
-
-    color = @colorHelper.getColor @editor, @editorElement, screenPosition
-
-    while numParticles--
-      nextColor = if typeof color is "object" then color.next().value else color
-
-      @particles.shift() if @particles.length >= @confTotalCount
-      @particles.push @createParticle left, top, nextColor
+  spawn: (screenPosition) ->
+    position = @calculatePositions screenPosition
+    colorGenerator = @colorHelper.generateColors @editor, @editorElement, screenPosition
+    @effect.spawn position, colorGenerator, @conf
 
   calculatePositions: (screenPosition) ->
     {left, top} = @editorElement.pixelPositionForScreenPosition screenPosition
     left: left + @scrollView.offsetLeft - @editorElement.getScrollLeft()
     top: top + @scrollView.offsetTop - @editorElement.getScrollTop() + @editor.getLineHeightInPixels() / 2
 
-  createParticle: (x, y, color) ->
-    x: x
-    y: y
-    alpha: 1
-    color: color
-    size: random @confMinSize, @confMaxSize, true
-    velocity:
-      x: -1 + Math.random() * 2
-      y: -3.5 + Math.random() * 2
-
-  drawParticles: ->
+  animate: ->
     @animationOn()
     @canvas.width = @canvas.width
-    return if not @particles.length
 
-    gco = @context.globalCompositeOperation
-    @context.globalCompositeOperation = "lighter"
-
-    for i in [@particles.length - 1 ..0]
-      particle = @particles[i]
-      if particle.alpha <= 0.1
-        @particles.splice i, 1
-        continue
-
-      particle.velocity.y += 0.075
-      particle.x += particle.velocity.x
-      particle.y += particle.velocity.y
-      particle.alpha *= 0.96
-
-      @context.fillStyle = "rgba(#{particle.color[4...-1]}, #{particle.alpha})"
-      @context.fillRect(
-        Math.round(particle.x - particle.size / 2)
-        Math.round(particle.y - particle.size / 2)
-        particle.size, particle.size
-      )
-
-    @context.globalCompositeOperation = gco
-
-  getConfig: (config) ->
-    atom.config.get "activate-power-mode.particles.#{config}"
+    @effect.animate(@context)

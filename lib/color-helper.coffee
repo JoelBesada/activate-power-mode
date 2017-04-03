@@ -48,14 +48,18 @@ module.exports =
     else
       "rgb(255, 255, 255)"
 
-  getColor: (editor, editorElement, screenPosition) ->
+  generateColors: (editor, editorElement, screenPosition) ->
     colorType = @getConfig("type")
     if (colorType == "random")
-      @getRandomGenerator()
+      return @getRandomGenerator()
     else if colorType == "fixed"
-      @getFixedColor()
+      color = @getFixedColor()
     else
-      @getColorAtPosition editor, editorElement, screenPosition
+      color = @getColorAtPosition editor, editorElement, screenPosition
+
+    loop
+      yield color
+    return
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.particles.colours.#{config}"
