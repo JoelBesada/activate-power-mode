@@ -58,12 +58,16 @@ module.exports =
       @initConfigSubscribers()
 
     editorElement.appendChild @canvas
+
     @canvas.style.display = "block"
-    @canvas.width = editorElement.offsetWidth
-    @canvas.height = editorElement.offsetHeight
     @scrollView = editorElement.querySelector(".scroll-view")
     @editorElement = editorElement
     @editor = editor
+    @updateCanvasDimesions()
+    @calculateOffsets()
+    @editorElement.addEventListener 'resize', =>
+      @updateCanvasDimesions()
+      @calculateOffsets()
 
     @init()
 
@@ -86,8 +90,16 @@ module.exports =
 
   calculatePositions: (screenPosition) ->
     {left, top} = @editorElement.pixelPositionForScreenPosition screenPosition
-    left: left + @scrollView.offsetLeft - @editorElement.getScrollLeft()
-    top: top + @scrollView.offsetTop - @editorElement.getScrollTop() + @editor.getLineHeightInPixels() / 2
+    left: left + @offsetLeft - @editorElement.getScrollLeft()
+    top: top + @offsetTop - @editorElement.getScrollTop() + @editor.getLineHeightInPixels() / 2
+
+  calculateOffsets: ->
+    @offsetLeft = @scrollView.offsetLeft
+    @offsetTop = @scrollView.offsetTop
+
+  updateCanvasDimesions: ->
+    @canvas.width = @editorElement.offsetWidth
+    @canvas.height = @editorElement.offsetHeight
 
   animate: ->
     @animationOn()

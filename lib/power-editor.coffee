@@ -29,7 +29,8 @@ module.exports =
       @pluginManager.runOnChangePane()
       return
 
-    @editorElement = atom.views.getView @editor
+    @editorElement = @editor.getElement()
+
     @inputSubscription = @editor.getBuffer().onDidChange @handleInput.bind(this)
     @cursorSubscription = @editor.observeCursors @handleCursor.bind(this)
 
