@@ -1,5 +1,26 @@
+{CompositeDisposable} = require "atom"
+
 module.exports =
+  subscriptions: null
+  conf: []
   golden_ratio_conjugate: 0.618033988749895
+
+  init: ->
+    @initConfigSubscribers()
+
+  disable: ->
+    @subscriptions.dispose()
+
+  observe: (key) ->
+    @subscriptions.add atom.config.observe(
+      "activate-power-mode.particles.colours.#{key}", (value) =>
+        @conf[key] = value
+    )
+
+  initConfigSubscribers: ->
+    @subscriptions = new CompositeDisposable
+    @observe 'type'
+    @observe 'fixed'
 
   hsvToRgb: (h,s,v) -> # HSV to RGB algorithm, as per wikipedia
     c = v * s
@@ -15,7 +36,7 @@ module.exports =
     if 5<=h2<6 then return [c+m,m,x+m]
 
   getFixedColor: ->
-    c = @getConfig "fixed"
+    c = @conf['fixed']
 
     "rgb(#{c.red},#{c.green},#{c.blue})"
 
@@ -49,10 +70,10 @@ module.exports =
       "rgb(255, 255, 255)"
 
   generateColors: (editor, editorElement, screenPosition) ->
-    colorType = @getConfig("type")
-    if (colorType == "random")
+    colorType = @conf['type']
+    if (colorType == 'random')
       return @getRandomGenerator()
-    else if colorType == "fixed"
+    else if colorType == 'fixed'
       color = @getFixedColor()
     else
       color = @getColorAtPosition editor, editorElement, screenPosition
@@ -60,6 +81,3 @@ module.exports =
     loop
       yield color
     return
-
-  getConfig: (config) ->
-    atom.config.get "activate-power-mode.particles.colours.#{config}"

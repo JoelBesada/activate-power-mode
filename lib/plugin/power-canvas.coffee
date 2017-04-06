@@ -11,6 +11,7 @@ module.exports =
 
   enable: (api) ->
     @initConfigSubscribers()
+    @colorHelper.init()
 
   disable: ->
     @destroy()
@@ -22,8 +23,8 @@ module.exports =
   onNewCursor: (cursor) ->
     cursor.spawn = throttle @spawn.bind(this), 25, trailing: false
 
-  onInput: (cursor) ->
-    cursor.spawn cursor.getScreenPosition()
+  onInput: (cursor, screenPosition) ->
+    cursor.spawn screenPosition
 
   init: ->
     @effect.init()
@@ -47,6 +48,7 @@ module.exports =
     @canvas?.parentNode.removeChild @canvas
     @canvas = null
     @subscriptions?.dispose()
+    @colorHelper.disable()
 
   setupCanvas: (editor, editorElement) ->
     if not @canvas

@@ -1,15 +1,37 @@
+{CompositeDisposable} = require "atom"
 path = require "path"
 
 module.exports =
-  play: ->
-    if (@getConfig "audioclip") is "customAudioclip"
-      pathtoaudio = @getConfig "customAudioclip"
-    else
-      pathtoaudio = path.join(__dirname, @getConfig "audioclip")
-    audio = new Audio(pathtoaudio)
-    audio.currentTime = 0
-    audio.volume = @getConfig "volume"
-    audio.play()
+  subscriptions: null
+  conf: []
 
-  getConfig: (config) ->
-    atom.config.get "activate-power-mode.playAudio.#{config}"
+  init: ->
+    @initConfigSubscribers()
+
+  disable: ->
+    @subscriptions.dispose()
+
+  observe: (key, loadAudio = true) ->
+    @subscriptions.add atom.config.observe(
+      "activate-power-mode.playAudio.#{key}", (value) =>
+        @conf[key] = value
+        @loadAudio() if loadAudio
+    )
+
+  initConfigSubscribers: ->
+    @subscriptions = new CompositeDisposable
+    @observe 'audioclip'
+    @observe 'customAudioclip'
+    @observe 'volume', false
+
+  loadAudio: ->
+    if @conf['audioclip'] is 'customAudioclip' and @conf['customAudioclip']
+      pathtoaudio = @conf['customAudioclip']
+    else
+      pathtoaudio = path.join(__dirname, @conf['audioclip'])
+    @audio = new Audio(pathtoaudio)
+
+  play: ->
+    @audio.currentTime = 0
+    @audio.volume = @conf['volume']
+    @audio.play()

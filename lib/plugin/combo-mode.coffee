@@ -1,11 +1,17 @@
+{CompositeDisposable} = require "atom"
 debounce = require "lodash.debounce"
 defer = require "lodash.defer"
 sample = require "lodash.sample"
 
 module.exports =
+  subscriptions: null
+  conf: []
   currentStreak: 0
   reached: false
   maxStreakReached: false
+
+  enable: ->
+    @initConfigSubscribers()
 
   disable: ->
     @destroy()
@@ -17,11 +23,24 @@ module.exports =
   onInput: ->
     @increaseStreak()
 
+  observe: (key) ->
+    @subscriptions.add atom.config.observe(
+      "activate-power-mode.comboMode.#{key}", (value) =>
+        @conf[key] = value
+    )
+
+  initConfigSubscribers: ->
+    @subscriptions = new CompositeDisposable
+    @observe 'exclamationEvery'
+    @observe 'activationThreshold'
+    @observe 'exclamationTexts'
+
   reset: ->
     @container?.parentNode?.removeChild @container
 
   destroy: ->
     @reset()
+    @subscriptions.dispose()
     @container = null
     @debouncedEndStreak?.cancel()
     @debouncedEndStreak = null
@@ -81,9 +100,9 @@ module.exports =
     if @currentStreak > @maxStreak
       @increaseMaxStreak()
 
-    @showExclamation() if @currentStreak > 0 and @currentStreak % @getConfig("exclamationEvery") is 0
+    @showExclamation() if @currentStreak > 0 and @currentStreak % @conf['exclamationEvery'] is 0
 
-    if @currentStreak >= @getConfig("activationThreshold") and not @reached
+    if @currentStreak >= @conf['activationThreshold'] and not @reached
       @reached = true
       @container.classList.add "reached"
 
@@ -119,7 +138,7 @@ module.exports =
   showExclamation: (text = null) ->
     exclamation = document.createElement "span"
     exclamation.classList.add "exclamation"
-    text = sample @getConfig "exclamationTexts" if text is null
+    text = sample @conf['exclamationTexts'] if text is null
     exclamation.textContent = text
 
     @exclamations.insertBefore exclamation, @exclamations.childNodes[0]
@@ -149,6 +168,3 @@ module.exports =
     @maxStreak = 0
     if @max
       @max.textContent = "Max 0"
-
-  getConfig: (config) ->
-    atom.config.get "activate-power-mode.comboMode.#{config}"

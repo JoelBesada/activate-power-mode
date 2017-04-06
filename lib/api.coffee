@@ -1,19 +1,14 @@
-screenShaker = require "./service/screen-shaker"
-audioPlayer = require "./service/audio-player"
-
 module.exports = class Api
-  screenShaker: screenShaker
-  audioPlayer: audioPlayer
-
-  constructor: (editorRegistry) ->
+  constructor: (editorRegistry, screenShaker, audioPlayer) ->
     @editorRegistry = editorRegistry
-    @screenShaker.init()
+    @screenShaker = screenShaker
+    @audioPlayer = audioPlayer
 
   shakeScreen: ->
     @screenShaker.shake @editorRegistry.getEditorElement()
 
   playAudio: ->
-    audioPlayer.play()
+    @audioPlayer.play()
 
   getEditor: ->
     @editorRegistry.getEditor()
