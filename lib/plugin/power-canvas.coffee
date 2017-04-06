@@ -24,7 +24,7 @@ module.exports =
     cursor.spawn = throttle @spawn.bind(this), 25, trailing: false
 
   onInput: (cursor, screenPosition) ->
-    cursor.spawn screenPosition
+    cursor.spawn cursor, screenPosition
 
   init: ->
     @effect.init()
@@ -83,9 +83,9 @@ module.exports =
     @observe 'size.min'
     @observe 'size.max'
 
-  spawn: (screenPosition) ->
+  spawn: (cursor, screenPosition) ->
     position = @calculatePositions screenPosition
-    colorGenerator = @colorHelper.generateColors @editor, @editorElement, screenPosition
+    colorGenerator = @colorHelper.generateColors cursor, @editorElement
     @effect.spawn position, colorGenerator, @conf
 
   calculatePositions: (screenPosition) ->

@@ -35,10 +35,13 @@ module.exports =
     if 4<=h2<5 then return [x+m,m,c+m]
     if 5<=h2<6 then return [c+m,m,x+m]
 
-  getFixedColor: ->
+  getFixedColorGenerator: ->
     c = @conf['fixed']
+    color = "rgb(#{c.red},#{c.green},#{c.blue})"
 
-    "rgb(#{c.red},#{c.green},#{c.blue})"
+    loop
+      yield color
+    return
 
   getRandomGenerator: ->
     seed = Math.random()
@@ -53,10 +56,14 @@ module.exports =
       yield "rgb(#{r},#{g},#{b})"
     return
 
-  getColorAtPosition: (editor, editorElement, screenPosition) ->
-    screenPosition = [screenPosition.row, screenPosition.column - 1]
-    bufferPosition = editor.bufferPositionForScreenPosition screenPosition
-    scope = editor.scopeDescriptorForBufferPosition bufferPosition
+  getColorAtCursorGenerator: (cursor, editorElement) ->
+    color = @getColorAtCursor cursor, editorElement
+    loop
+      yield color
+    return
+
+  getColorAtCursor: (cursor, editorElement) ->
+    scope = cursor.getScopeDescriptor()
     scope = scope.toString().replace(/\./g, '.syntax--')
 
     try
@@ -69,15 +76,11 @@ module.exports =
     else
       "rgb(255, 255, 255)"
 
-  generateColors: (editor, editorElement, screenPosition) ->
+  generateColors: (cursor, editorElement) ->
     colorType = @conf['type']
     if (colorType == 'random')
       return @getRandomGenerator()
     else if colorType == 'fixed'
-      color = @getFixedColor()
+      @getFixedColorGenerator()
     else
-      color = @getColorAtPosition editor, editorElement, screenPosition
-
-    loop
-      yield color
-    return
+      @getColorAtCursorGenerator cursor, editorElement
