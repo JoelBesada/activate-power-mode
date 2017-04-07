@@ -101,12 +101,12 @@ module.exports =
     if @currentStreak > @maxStreak
       @increaseMaxStreak()
 
+    return if @checkLevel()
+
     if @currentStreak % @conf['exclamationEvery'] is 0
       @showExclamation()
     else
       @showExclamation "+#{n}", 'up'
-
-    @checkLevel()
 
   streakDecreased: (n) ->
     @showExclamation "#{n}", 'down'
@@ -123,8 +123,10 @@ module.exports =
 
     if level != @level
       @container.classList.remove "level-#{@level}"
+      @container.classList.add "level-#{level}"
+      @showExclamation "#{level+1}x", 'level'
       @level = level
-      @container.classList.add "level-#{@level}"
+      return true
 
   getLevel: ->
     @level
@@ -155,10 +157,10 @@ module.exports =
       @bar.style.transition = "transform #{leftTimeout}ms linear"
     , 100
 
-  showExclamation: (text = null, type = null) ->
+  showExclamation: (text = null, type = 'message') ->
     exclamation = document.createElement "span"
     exclamation.classList.add "exclamation"
-    exclamation.classList.add type if type
+    exclamation.classList.add type
     text = sample @conf['exclamationTexts'] if text is null
     exclamation.textContent = text
 
