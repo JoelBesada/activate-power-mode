@@ -18,10 +18,12 @@ module.exports =
       activationThreshold:
         title: "Combo Mode - Activation Threshold"
         description: "Streak threshold to activate the power mode."
-        type: "integer"
-        default: 50
-        minimum: 1
-        maximum: 1000
+        type: "array"
+        default: [20, 50, 100, 200, 500]
+        items:
+          type: "integer"
+          minimum: 1
+          maximum: 1000
 
       streakTimeout:
         title: "Combo Mode - Streak Timeout"

@@ -11,7 +11,7 @@
 
 .power-mode-canvas {
   position: absolute;
-  z-index: 10;
+  z-index: 0;
   top: 0;
   left: 0;
   pointer-events: none;
@@ -74,24 +74,20 @@
       position: absolute;
       min-width: 200px;
       animation: exclamation 1.5s ease-out both;
+
+      &.up,
+      &.down {
+        font-size: 15px;
+      }
+
+      &.down,
+      &.error {
+        color: #ee3c3c;
+      }
     }
   }
 
-  &.reached {
-    .title {
-      text-shadow: 2px 2px 2px #00DDFF;
-    }
-
-    .counter,
-    .exclamations,
-    .max {
-      color: #00DDFF;
-    }
-
-    .bar {
-      background: #00DDFF;
-    }
-  }
+  .generate-levels(5);
 }
 
 @keyframes grow {
@@ -109,4 +105,24 @@
     opacity: 0;
     transform: translate3D(0, 100px, 0);
   }
+}
+
+.generate-levels(@i) when (@i > 0) {
+  @levelColor: spin(#4EFFA1, (@i * 35));
+  &.level-@{i} {
+    .title {
+      text-shadow: 2px 2px 2px @levelColor;
+    }
+
+    .counter,
+    .exclamations,
+    .max {
+      color: @levelColor;
+    }
+
+    .bar {
+      background: @levelColor;
+    }
+  }
+  .generate-levels(@i - 1);
 }
