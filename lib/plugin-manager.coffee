@@ -1,5 +1,6 @@
 Api = require "./api"
 comboRenderer = require "./combo-renderer"
+canvasRenderer = require "./canvas-renderer"
 editorRegistry = require "./service/editor-registry"
 ComboApi = require "./service/combo-api"
 screenShaker = require "./service/screen-shaker"
@@ -8,18 +9,24 @@ screenShake = require "./plugin/screen-shake"
 playAudio = require "./plugin/play-audio"
 powerCanvas = require "./plugin/power-canvas"
 comboMode = require "./plugin/combo-mode"
+effect = require "./default-effect"
 
 module.exports =
   comboRenderer: comboRenderer
+  canvasRenderer: canvasRenderer
+  effect: effect
   editorRegistry: editorRegistry
   screenShaker: screenShaker
   audioPlayer: audioPlayer
   comboMode: comboMode
+  powerCanvas: powerCanvas
   plugins: [comboMode, powerCanvas, screenShake, playAudio]
 
   enable: ->
     @comboApi = new ComboApi(@comboRenderer)
     @comboMode.setComboRenderer @comboRenderer
+    @canvasRenderer.setEffect @effect
+    @powerCanvas.setCanvasRenderer @canvasRenderer
     @screenShaker.init()
     @audioPlayer.init()
     @api = new Api(@editorRegistry, @comboApi, @screenShaker, @audioPlayer)
