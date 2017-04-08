@@ -17,7 +17,7 @@ module.exports =
   actionLapse: 0
 
   setup: ->
-    if(!@isSetup)
+    if !@isSetup
       if (@getConfig "musicPath") != "../audioclips/backgroundmusics/"
         @pathtoMusic = @getConfig "musicPath"
       else
@@ -26,7 +26,6 @@ module.exports =
       @musicFiles = fs.readdirSync(@pathtoMusic.toString())
       @music = new Audio(@pathtoMusic + @musicFiles[0])
       @music.volume = @getConfig "musicVolume"
-      @isSetup = true
 
     @streakTimeoutObserver?.dispose()
     @streakTimeoutObserver = atom.config.observe 'activate-power-mode.comboMode.streakTimeout', (value) =>
@@ -35,29 +34,30 @@ module.exports =
       @debouncedActionEndStreak = debounce @actionEndStreak.bind(this), @streakTimeout
 
     @actionObserver?.dispose()
-    @actionObserver = atom.config.observe 'activate-power-mode.playBackgroundMusic.action', (value) =>
+    @actionObserver = atom.config.observe 'activate-power-mode.playBackgroundMusic.actions.command', (value) =>
       @action = value[0]
       @execution = value[1]
       if(@execution is "duringStreak")
         @actionLapseType = value[2]
         lapseValue = value.map(Number)
-        @actionLapse = lapseValue[3]
+        @actionLapse = lapseValue[3] if(lapseValue[3] >= 10)
+        @actionLapse = 10 if(lapseValue[3] < 10)
       else
         @actionLapseType = ""
         @actionLapse = 0
 
-    if(@actionLapseType is "time")
+    if(@actionLapseType is "time" and !@isSetup)
       timeLapse = @actionLapse * 1000
       @debouncedPause?.cancel()
       @debouncedActionDuringStreak = debounce @actionDuringStreak.bind(this), timeLapse
-
-    if(@execution is "endMusic")
+    else if(@execution is "endMusic")
       @remainingTime = (@music.duration - @music.currentTime)
       @debouncedActionDuringStreak?.cancel()
       @debouncedActionDuringStreak = debounce @actionDuringStreak.bind(this), @remainingTime
 
     @debouncedMuteToggle?.cancel()
     @debouncedMuteToggle = debounce @muteToggle.bind(this), 5000
+    @isSetup = true
 
   destroy: ->
     if(@music != null) and (@isSetup is true)
@@ -77,14 +77,15 @@ module.exports =
   play: (streak) ->
     @setup()
     @remainingTime = (@music.duration - @music.currentTime)
-    if(@execution is "duringStreak") or (@execution is "endMusic")
+    if(@execution is "duringStreak")
       @actionDuringStreak(streak)
-    @debouncedActionEndStreak()
+    #@debouncedActionEndStreak()
 
     @isPlaying = false if (@music.paused)
     return null if (@isPlaying) or (@isMute)
 
-    @debouncedActionDuringStreak() if(@actionLapseType is "time")
+    if(@actionLapseType is "time") or (@execution is "endMusic")
+      @debouncedActionDuringStreak() #endMusic doesn't work
 
     @isPlaying = true
     @music.play()
@@ -99,7 +100,8 @@ module.exports =
     @music.currentTime = 0
 
   autoPlay: ->
-    @music.play() if @music.paused
+    @isPlaying = true
+    @music.play()
 
   next: ->
     @stop()
@@ -121,26 +123,26 @@ module.exports =
       @isMute = false
       @music.volume = @getConfig "musicVolume"
 
-  actionDuringStreak: (streak = 0) ->
-    if(streak is 0 and @actionLapse != 0)
-      @stop() if @action is "repit"
-      @next() if @action is "change"
-      return null
-
-    if(streak % @actionLapse is 0) and (streak != 0)
-      @stop() if @action is "repit"
-      @next() if @action is "change"
-      return null
-
-    if(@music.ended)
-      @stop() if @action is "repit"
-      @next() if @action is "change"
-      @autoPlay()
+  actionDuringStreak: (streak = 0) -> #endMusic doesn't work
+    if streak is 0
+      if @actionLapse != 0 and @actionLapseType is "time"
+        @stop() if @action is "repit"
+        @next() if @action is "change"
+        return @autoPlay()
+      if(@music.paused and @execution is "endMusic")
+        @stop() if @action is "repit"
+        @next() if @action is "change"
+        return @autoPlay()
+    else
+      if(streak % @actionLapse is 0 and @actionLapseType is "streak")
+        @stop() if @action is "repit"
+        @next() if @action is "change"
+        return @autoPlay()
 
   actionEndStreak: ->
     @debouncedActionDuringStreak?.cancel()
-    return @stop() if @action is "repit"
-    return @pause() if @action is "pause"
+    return @stop() if(@action is "repit") and (@execution is "endStreak")
+    return @next() if(@action is "change")  and (@execution is "endStreak")
     @pause()
 
   getConfig: (config) ->
