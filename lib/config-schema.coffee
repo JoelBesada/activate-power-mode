@@ -15,23 +15,34 @@ module.exports =
         default: true
         order: 1
 
+      style:
+        title: "Combo Mode - Style"
+        description: "Sets the settings to have pre-configured style or use custom settings."
+        type: "string"
+        default: 'killerInstint'
+        enum: [
+          {value: 'killerInstint', description: 'Killer Instint'}
+          {value: 'custom', description: 'Custom'}
+        ]
+        order: 2
+
       activationThreshold:
-        title: "Combo Mode - Activation Threshold"
+        title: "Combo Mode - Activation Threshold (To aply this setting Combo Mode - Style has to be Custom)"
         description: "Streak threshold to activate the power mode."
         type: "integer"
         default: 50
         minimum: 1
         maximum: 1000
-        order: 2
+        order: 3
 
       streakTimeout:
         title: "Combo Mode - Streak Timeout"
         description: "Timeout to reset the streak counter. In seconds."
         type: "integer"
         default: 10
-        minimum: 0.5
-        maximum: 1000
-        order: 3
+        minimum: 1
+        maximum: 100
+        order: 4
 
       opacity:
         title: "Combo Mode - Opacity"
@@ -40,46 +51,25 @@ module.exports =
         default: 0.6
         minimum: 0
         maximum: 1
-        order: 4
+        order: 5
 
-  exclamations:
-    type: "object"
-    properties:
-      type:
-        title: "Exclamations - Type"
-        description: "The exclamation displayed in combo mode."
-        type: "string"
-        default: 'onlyText'
-        enum: [
-          {value: 'killerInstint', description: 'Killer Instint'}
-          {value: 'onlyText', description: 'Custom Text Only'}
-          {value: 'onlyAudio', description: 'Custom Audio Only'}
-          {value: 'both', description: 'Both of Custom'}
-        ]
-        order: 1
+      customExclamations:
+        type: "object"
+        description: "To aply this setting Combo Mode - Style has to be Custom"
+        properties:
+          typeAndLapse:
+            title: "Exclamations - Type and Display Every Streak"
+            description: "types: onlyText, onlyAudio, bouth. streakCount: min 10 max 100. (left in 0 to display at end of the Streak)."
+            type: "array"
+            default: ["onlyText", "10"]
+            order: 1
 
-      exclamationEvery:
-        title: "Exclamations - Custom Exclamation Every"
-        description: "Shows an exclamation every streak count. (left in 0 to display at end of the Streak)"
-        type: "integer"
-        default: 10
-        minimum: 0
-        maximum: 1000
-        order: 2
-
-      exclamationTexts:
-        title: "Exclamations - Custom Exclamation Texts"
-        description: "Custom exclamations to show (randomized)."
-        type: "array"
-        default: ["Super!", "Radical!", "Fantastic!", "Great!", "OMG", "Whoah!", ":O", "Nice!", "Splendid!", "Wild!", "Grand!", "Impressive!", "Stupendous!", "Extreme!", "Awesome!"]
-        order: 3
-
-      exclamationPath:
-        title: "Exclamations - Custom Exclamation Audio Path"
-        description: 'Path to exclamations audiofiles. (Add "/" or, "\\" at the end of the path).'
-        type: "string"
-        default: "../audioclips/exclamations/"
-        orden: 4
+          textsOrPath:
+            title: "Exclamations - Exclamation Texts or Path"
+            description: 'Custom exclamations to show (randomized) or Path to exclamations audiofiles. (Add "/" or, "\\" at the end of the path).'
+            type: "array"
+            default: ["Super!", "Radical!", "Fantastic!", "Great!", "OMG", "Whoah!", ":O", "Nice!", "Splendid!", "Wild!", "Grand!", "Impressive!", "Stupendous!", "Extreme!", "Awesome!"]
+            order: 3
 
       exclamationVolume:
         title: "Exclamations - Exclamation Volume"
@@ -89,23 +79,21 @@ module.exports =
         minimum: 0.0
         maximum: 1.0
 
-  superExclamation:
-    type: "object"
-    order: 3
-    properties:
-      exclamationLapse:
-        title: "Super Exclamation - Lapse"
-        description: 'Shows a super exclamations every lapse. Could be time lapse (in seconds)  or streak count lapse. Ej: "streak, 100" or "Time, 60". (lpse will reset if streak ends) left in 0 to desable super exclamation.'
-        type: "array"
-        default: ["Time","0"]
-        order: 1
+      customSuperExclamation:
+        type: "object"
+        description: "To aply this setting Combo Mode - Style has to be Custom"
+        properties:
+          lapse:
+            title: "Super Exclamation - Lapse"
+            description: 'Shows a super exclamations every lapse. Could be time lapse (in seconds)  or streak count lapse. Ej: "streak, 100" or "Time, 60". (lpse will reset if streak ends) left in 0 to desable super exclamation.'
+            type: "array"
+            default: ["streak","100"]
 
-      texts:
-        title: "Super Exclamation - Texts or File"
-        description: "Super exclamation to show. Could be a text or a file path if is a file will show the file's name"
-        type: "string"
-        default: "../audioclips/exclamations/Yes oh my God.wav"
-        order: 2
+          textOrFile:
+            title: "Super Exclamation - Texts or File"
+            description: "Super exclamation to show. Could be a text or a file path if is a file also will show the file's name"
+            type: "string"
+            default: "../audioclips/exclamations/Yes oh my God.wav"
 
   screenShake:
     type: "object"
@@ -174,21 +162,21 @@ module.exports =
     type: "object"
     properties:
       enabled:
-        title: "Play Background Music - Enabled"
+        title: "Background Music - Enabled"
         description: "Play Background Music on/off."
         type: "boolean"
         default: true
         order: 1
 
       musicPath:
-        title: "Play Background Music - Custom Path"
+        title: "Background Music - Path to Audio"
         description: "Path to Music Tracks played in combo Mode."
         type: "string"
         default: '../audioclips/backgroundmusics/'
         order: 2
 
       musicVolume:
-        title: "Play Background Music - Volume"
+        title: "Background Music - Volume"
         description: "Volume of the Music Track played in combo Mode."
         type: "number"
         default: 0.25
@@ -196,17 +184,19 @@ module.exports =
         maximum: 1.0
         order: 3
 
-      action:
-        title: "Play Background Music - Action"
-        description: 'Syntax "action, when, lapseType, lapse".
-        action: repit, change, none
-        execution: duringStreak, endStreak, endMusic
-        lapseType: streak, time (This value is used only if execution is duringStreak)
-        lapse: Number Value (if lapseType is time, lapse will be in seconds)
-        Note: the lapsetype and lapse values is only used in duringStreak.'
-        type: "array"
-        default: ['change', 'duringStreak', 'Streak', '100']
-        order: 4
+      actions:
+        type: "object"
+        properties:
+          command:
+            title: "Music Player - Action"
+            description: 'Syntax "action, when, lapseType, lapse".\n
+            action: repit, change, none\n
+            execution: duringStreak, endStreak, endMusic\n
+            lapseType: streak, time (This value is used only if execution is duringStreak)\n
+            lapse: Number Value (if lapseType is time, lapse will be in seconds)\n
+            Note: the lapsetype and lapse values is only used in duringStreak.'
+            type: "array"
+            default: ['change', 'duringStreak', 'Streak', '100']
 
   particles:
     type: "object"
