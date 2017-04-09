@@ -36,6 +36,7 @@ module.exports =
     @element
 
   setup: (editorElement) ->
+    @editor = atom.workspace.getActiveTextEditor() #test
     if not @container
       @maxStreak = @getMaxStreak()
       @container = @createElement "streak-container"
@@ -79,7 +80,7 @@ module.exports =
 
     if @style is "custom" and @exclamationType is "onlyText" and @isPath
       @conflict = true
-    else if @style is "custom" and @exclamationType is "onlyAudio" and not @isPath
+    else if @style is "custom" and not @isPath
       @conflict = true
     else
       @conflict = false

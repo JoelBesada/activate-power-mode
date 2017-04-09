@@ -57,7 +57,8 @@ module.exports =
 
     @audio.volume = @getConfig "exclamationVolume"
     @audio.play()
-    return (@fileName + "!") if @exclamationType is "bouth"
+    if @exclamationType is "bouth" or style is "killerInstint"
+      return (@fileName + "!")
 
   killerInstintAudio: (combo) ->
     return fileName = ("Triple Combo") if combo is 3
