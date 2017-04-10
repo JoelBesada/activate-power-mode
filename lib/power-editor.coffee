@@ -9,7 +9,6 @@ module.exports =
   playAudio: playAudio
   powerCanvas: powerCanvas
   comboMode: comboMode
-  previousKey: null
 
   enable: ->
     @throttledShake = throttle @screenShake.shake.bind(@screenShake), 100, trailing: false
@@ -60,38 +59,27 @@ module.exports =
     cursor.throttleSpawnParticles = throttle @powerCanvas.spawnParticles.bind(@powerCanvas), 25, trailing: false
 
   onChange: (e) ->
-    pos = @editor.getCursorBufferPosition()
-    row = pos.row
-    col = pos.column
-    lastChar = @editor.getTextInBufferRange([
-       [row,col-1],
-       [row,col]
-    ])
-    if @previousKey is lastChar
-      return null
+    spawnParticles = true
+    if e.newText
+      spawnParticles = e.newText isnt "\n"
+      range = e.newRange.end
     else
-      @previousKey = lastChar
-      spawnParticles = true
-      if e.newText
-        spawnParticles = e.newText isnt "\n"
-        range = e.newRange.end
-      else
-        range = e.newRange.start
+      range = e.newRange.start
 
-      screenPosition = @editor.screenPositionForBufferPosition range
-      cursor = @editor.getCursorAtScreenPosition screenPosition
-      return unless cursor
+    screenPosition = @editor.screenPositionForBufferPosition range
+    cursor = @editor.getCursorAtScreenPosition screenPosition
+    return unless cursor
 
-      if @isComboMode
-        @comboMode.increaseStreak()
-        return unless @comboMode.hasReached()
+    if @isComboMode
+      @comboMode.increaseStreak()
+      return unless @comboMode.hasReached()
 
-      if spawnParticles and @getConfig "particles.enabled"
-        cursor.throttleSpawnParticles screenPosition
-      if @getConfig "screenShake.enabled"
-        @throttledShake @editorElement
-      if @getConfig "playAudio.enabled"
-        @throttledPlayAudio()
+    if spawnParticles and @getConfig "particles.enabled"
+      cursor.throttleSpawnParticles screenPosition
+    if @getConfig "screenShake.enabled"
+      @throttledShake @editorElement
+    if @getConfig "playAudio.enabled"
+      @throttledPlayAudio()
 
   getCombo: ->
     @comboMode
