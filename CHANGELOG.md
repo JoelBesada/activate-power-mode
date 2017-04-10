@@ -1,9 +1,16 @@
-### 1.5.0 2017-?-?
-* Added play exclamation settings
-* Added play background music settings
-* Allow custom background music path
-* Allow custom exclamation audio path
-* Added super exclamation settings
+### 1.5.0 2017-4-10
+* Added combo Mode - style to combo Mode settings
+* killer Instinct style and custom style
+* New addition play exclamation
+* Added custom exclamation to combo Mode settings
+* Added (`type and lapse`) to custom exclamation settings
+* Added (`text or path`) to custom exclamation settings
+* Allow custom exclamation audio path or text
+* New addition play background music
+* Added music volume to play background music settings
+* Allow custom music path to play background music settings
+* Added reproduction action (`repeat, change`) to music-player when (`endMusic, endStreak, duringStreak`)
+* Added (`time, streak`) lapse to reproduction action settings
 
 ### 1.4.0 2017-03-19
 * Some performance improvements
