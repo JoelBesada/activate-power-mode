@@ -19,9 +19,9 @@ module.exports =
         title: "Combo Mode - Style"
         description: "Sets the settings to have pre-configured style or use custom settings."
         type: "string"
-        default: 'killerInstint'
+        default: 'killerInstinct'
         enum: [
-          {value: 'killerInstint', description: 'Killer Instint'}
+          {value: 'killerInstinct', description: 'Killer Instinct'}
           {value: 'custom', description: 'Custom'}
         ]
         order: 2
@@ -181,7 +181,7 @@ module.exports =
           command:
             title: "Music Player - Action"
             description: 'Syntax "action, when, lapseType, lapse".\n
-            action: repit, change, none\n
+            action: repeat, change, none\n
             execution: duringStreak, endStreak, endMusic\n
             lapseType: streak, time (This value is used only if execution is duringStreak)\n
             lapse: Number Value (if lapseType is time, lapse will be in seconds) Min:10 Max:100\n

@@ -6,9 +6,9 @@ module.exports =
   fileName: ""
 
   setup: (combo,style) ->
-    if style is "killerInstint"
+    if style is "killerInstinct"
       pathtoaudio = path.join(__dirname, "../audioclips/Exclamations/")
-      @fileName = @killerInstintAudio(combo)
+      @fileName = @killerInstinctAudio(combo)
       @audio = new Audio(pathtoaudio + @fileName + ".wav")
     else
       exclamationPath = @getConfig "customExclamations.textsOrPath"
@@ -27,7 +27,7 @@ module.exports =
     @audio.play()
     return (@fileName + "!")
 
-  killerInstintAudio: (combo) ->
+  killerInstinctAudio: (combo) ->
     return fileName = ("Triple Combo") if combo is 3
     return fileName = ("Super Combo") if combo > 3 and combo < 6
     return fileName = ("Hyper Combo") if combo > 5 and combo < 9

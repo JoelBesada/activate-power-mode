@@ -110,7 +110,7 @@ module.exports =
     if @currentStreak > @maxStreak
       @increaseMaxStreak()
 
-    if(@currentStreak >= @getConfig("comboMode.activationThreshold")  or (@style is "killerInstint" and @currentStreak >= 3)) and not @reached
+    if(@currentStreak >= @getConfig("comboMode.activationThreshold")  or (@style is "killerInstinct" and @currentStreak >= 3)) and not @reached
       @reached = true
       @container.classList.add "reached"
 
@@ -126,7 +126,7 @@ module.exports =
     @renderStreak()
 
   endStreak: ->
-    if ((@exclamationEvery is 0 and not @conflict) or @style is "killerInstint") and @reached
+    if ((@exclamationEvery is 0 and not @conflict) or @style is "killerInstinct") and @reached
       @chooseExclamation()
     if @getConfig("playBackgroundMusic.enabled") and @reached
       @musicPlayer.actionEndStreak()
@@ -184,7 +184,7 @@ module.exports =
         return @playExclamation()
       if @exclamationType is "bouth"
         return @showExclamation @playExclamation()
-    if @style is "killerInstint"
+    if @style is "killerInstinct"
       @showExclamation @playExclamation()
 
   hasReached: ->
