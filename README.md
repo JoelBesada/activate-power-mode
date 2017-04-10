@@ -10,6 +10,8 @@ Now with a COMBO MODE!!!
 
 **For a list of power mode packages to other editors, check out [codeinthedark/awesome-power-mode](https://github.com/codeinthedark/awesome-power-mode).**
 
+**For a video of how to use and Configure activate-power-mode, check out [The-atom-power/activate-power-mode](https://youtube.com).**
+
 ## Install
 
 With the atom package manager:
@@ -36,10 +38,16 @@ Auto enable power mode on atom start.
 
 **When enabled effects won't appear until reach the activation threshold.**
 
+* Style **killerInstinct/custom**
 * Activation Threshold
 * Streak Timeout
-* Exclamation Every
-* Exclamation Texts
+* Opacity
+* Exclamation volume
+
+### Custom Exclamations
+* **Enable/Disable**
+* Type and Lapse
+* Text or Path
 
 ### Screen Shake
 * **Enable/Disable**
@@ -49,6 +57,16 @@ Auto enable power mode on atom start.
 * **Enable/Disable**
 * Volume
 * Audioclip (Gun, Typewriter, Custom)
+
+### Play Background Music
+* **Enable/Disable**
+* Path to Audio
+* Volume
+
+### Play Background Music Action
+* **none/repit/change, endMusic/endStreak/duringStreak, streak/time, lapse**
+
+**The last 2 parameters are only used on duringStreak**
 
 ### Particles
 * **Enable/Disable**
