@@ -5,60 +5,27 @@ module.exports =
   audio: null
   fileName: ""
 
-  setupExclamation: (combo,style) ->
-    exclamationPath = @getConfig "customExclamations.textsOrPath"
-    customPath = exclamationPath[0]
-
-    exclamationTaL = @getConfig "customExclamations.typeAndLapse"
-    @exclamationType = exclamationTaL[0]
-
+  setup: (combo,style) ->
     if style is "killerInstint"
       pathtoaudio = path.join(__dirname, "../audioclips/Exclamations/")
       @fileName = @killerInstintAudio(combo)
       @audio = new Audio(pathtoaudio + @fileName + ".wav")
     else
+      exclamationPath = @getConfig "customExclamations.textsOrPath"
+      if exclamationPath[0] is "../audioclips/Exclamations/"
+        customPath = path.join(__dirname, exclamationPath[0])
+      else
+        customPath = exclamationPath[0]
       @fileName = @customAudio(customPath)
       @audio = new Audio(customPath + @fileName)
       @fileName = @fileName.substr(0, @fileName.indexOf('.'))
 
-  setupSuperExclamation: (style) -> #not yet
-    exclamationToP = @getConfig "customSuperExclamation.textOrFile"
-    customPath = exclamationPath[0]
-
-    exclamationTaL = @getConfig "customExclamations.typeAndLapse"
-    @exclamationType = exclamationTaL[0]
-
-    superExclamationLapse = @getConfig "customSuperExclamation.lapse"
-    lapsetype = superExclamationLapse[0]
-    lapse = superExclamationLapse[1]
-
-    if (exclamationToP.indexOf('/') > -1)  or (exclamationToP.indexOf("\\") > -1)
-      pathtoaudio = exclamationToP.substring(0, exclamationToP.lastIndexOf("/") + 1)
-      @fileName = exclamationToP.replace(/^.*[\\\/]/, '')
-      if (pathtoaudio is "../audioclips/exclamations/")
-        pathtoaudio = path.join(__dirname, pathtoaudio)
-    else
-      return exclamationToP
-
-    if exclamationType is "onlyText" #array typeAndLapse
-      return (@fileName + "!")
-    else
-      @audioExclamation = new Audio(pathtoaudio + @fileName)
-      @audioExclamation.volume = 1
-      @isPlaying = true
-      @audioExclamation.play()
-      if exclamationType is "bouth"
-        @fileName = @fileName.substr(0, @fileName.indexOf('.'))
-        return (@fileName + "!")
-
-  play: (type,combo,style) ->
-    @setupExclamation(combo,style) if type is "exclamation"
-    @setupSuperExclamation(style) if type is "superExclamation"
+  play: (combo,style) ->
+    @setup(combo,style)
 
     @audio.volume = @getConfig "exclamationVolume"
     @audio.play()
-    if @exclamationType is "bouth" or style is "killerInstint"
-      return (@fileName + "!")
+    return (@fileName + "!")
 
   killerInstintAudio: (combo) ->
     return fileName = ("Triple Combo") if combo is 3

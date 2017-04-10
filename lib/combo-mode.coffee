@@ -22,8 +22,8 @@ module.exports =
     @streakTimeoutObserver?.dispose()
     @opacityObserver?.dispose()
     @comboModeStyleObserver?.dispose()
-    @exclamationTypeAndLapseObserver?.dispose()
-    @exclamationTextOrPathObserver?.dispose()
+    @exclamationsTypeAndLapseObserver?.dispose()
+    @exclamationsTextsOrPathObserver?.dispose()
     @currentStreak = 0
     @reached = false
     @maxStreakReached = false
@@ -65,22 +65,27 @@ module.exports =
       @comboModeStyleObserver = atom.config.observe 'activate-power-mode.comboMode.style', (value) =>
         @style = value
 
-      @exclamationTypeAndLapseObserver?.dispose()
-      @exclamationTypeAndLapseObserver = atom.config.observe 'activate-power-mode.comboMode.customExclamations.typeAndLapse', (value) =>
+      @exclamationsTypeAndLapseObserver?.dispose()
+      @exclamationsTypeAndLapseObserver = atom.config.observe 'activate-power-mode.comboMode.customExclamations.typeAndLapse', (value) =>
         @exclamationType = value[0]
         lapseValue = value.map(Number)
-        @exclamationEvery = lapseValue[1]
+        if lapseValue[1] >= 10 and lapseValue[1] <= 100 or lapseValue[1] is 0
+          @exclamationEvery = lapseValue[1]
+        else if lapseValue[1] < 10
+          @exclamationEvery = 10
+        else if lapseValue[1] > 100
+          @exclamationEvery = 100
 
-      @exclamationTextOrPathObserver?.dispose()
-      @exclamationTextOrPathObserver = atom.config.observe 'activate-power-mode.comboMode.customExclamations.textsOrPath', (value) =>
-        if (value[0].indexOf('/') > -1)  or (value[0].indexOf("\\") > -1)
-          @isPath = true
+      @exclamationsTextsOrPathObserver?.dispose()
+      @exclamationsTextsOrPathObserver = atom.config.observe 'activate-power-mode.comboMode.customExclamations.textsOrPath', (value) =>
+        if(value[0].indexOf('/') > -1)  or (value[0].indexOf("\\") > -1)
+          @textsOrPathIsPath = true
         else
-          @isPath = false
+          @textsOrPathIsPath = false
 
-    if @style is "custom" and @exclamationType is "onlyText" and @isPath
+    if @textsOrPathIsPath and @style is "custom" and @exclamationType is "onlyText"
       @conflict = true
-    else if @style is "custom" and not @isPath
+    else if not @textsOrPathIsPath and @style is "custom" and @exclamationType != "onlyText"
       @conflict = true
     else
       @conflict = false
@@ -112,8 +117,9 @@ module.exports =
     if @getConfig("playBackgroundMusic.enabled") and @reached
       @musicPlayer.play @currentStreak
 
-    if @style is "custom" and @currentStreak % @exclamationEvery is 0 and @reached and not @conflict
-      @chooseExclamation()
+    if @style is "custom" and @getConfig("comboMode.customExclamations.enabled")
+      if @currentStreak % @exclamationEvery is 0 and @reached and not @conflict
+        @chooseExclamation()
 
     @refreshStreakBar()
 
@@ -167,7 +173,7 @@ module.exports =
     , 2000
 
   playExclamation: ->
-    @exclamationAudio.play "exclamation", @currentStreak, @style
+    @exclamationAudio.play(@currentStreak,@style)
 
 
   chooseExclamation: ->

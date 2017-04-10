@@ -27,7 +27,7 @@ module.exports =
         order: 2
 
       activationThreshold:
-        title: "Combo Mode - Activation Threshold (To aply this setting Combo Mode - Style has to be Custom)"
+        title: 'Combo Mode - Activation Threshold (To aply this settings "Combo Mode - Style" has to be Custom).'
         description: "Streak threshold to activate the power mode."
         type: "integer"
         default: 50
@@ -53,47 +53,38 @@ module.exports =
         maximum: 1
         order: 5
 
-      customExclamations:
-        type: "object"
-        description: "To aply this setting Combo Mode - Style has to be Custom"
-        properties:
-          typeAndLapse:
-            title: "Exclamations - Type and Display Every Streak"
-            description: "types: onlyText, onlyAudio, bouth. streakCount: min 10 max 100. (left in 0 to display at end of the Streak)."
-            type: "array"
-            default: ["onlyText", "10"]
-            order: 1
-
-          textsOrPath:
-            title: "Exclamations - Exclamation Texts or Path"
-            description: 'Custom exclamations to show (randomized) or Path to exclamations audiofiles. (Add "/" or, "\\" at the end of the path).'
-            type: "array"
-            default: ["Super!", "Radical!", "Fantastic!", "Great!", "OMG", "Whoah!", ":O", "Nice!", "Splendid!", "Wild!", "Grand!", "Impressive!", "Stupendous!", "Extreme!", "Awesome!"]
-            order: 3
-
       exclamationVolume:
-        title: "Exclamations - Exclamation Volume"
+        title: "Combo Mode - Exclamation Volume"
         description: "Volume of the exclamation audio."
         type: "number"
         default: 0.50
         minimum: 0.0
         maximum: 1.0
+        order: 6
 
-      customSuperExclamation:
+      customExclamations:
         type: "object"
-        description: "To aply this setting Combo Mode - Style has to be Custom"
         properties:
-          lapse:
-            title: "Super Exclamation - Lapse"
-            description: 'Shows a super exclamations every lapse. Could be time lapse (in seconds)  or streak count lapse. Ej: "streak, 100" or "Time, 60". (lpse will reset if streak ends) left in 0 to desable super exclamation.'
-            type: "array"
-            default: ["streak","100"]
+          enabled:
+            title: "Combo Mode Custom Exclamations - Enabled"
+            description: 'To aply this settings "Combo Mode - Style" has to be Custom'
+            type: "boolean"
+            default: true
+            order: 1
 
-          textOrFile:
-            title: "Super Exclamation - Texts or File"
-            description: "Super exclamation to show. Could be a text or a file path if is a file also will show the file's name"
-            type: "string"
-            default: "../audioclips/exclamations/Yes oh my God.wav"
+          typeAndLapse:
+            title: "Combo Mode Custom Exclamations - Type and Lapse"
+            description: "types: onlyText, onlyAudio, bouth. streakCount: min 10 max 100."
+            type: "array"
+            default: ["onlyText", "10"]
+            order: 2
+
+          textsOrPath:
+            title: "Combo Mode Custom Exclamations - Exclamation Texts or Path"
+            description: 'Custom exclamations to show (randomized) or Path to exclamations audiofiles. (Add "/" or, "\\" at the end of the path).'
+            type: "array"
+            default: ["Super!", "Radical!", "Fantastic!", "Great!", "OMG", "Whoah!", ":O", "Nice!", "Splendid!", "Wild!", "Grand!", "Impressive!", "Stupendous!", "Extreme!", "Awesome!"]
+            order: 3
 
   screenShake:
     type: "object"
@@ -193,10 +184,10 @@ module.exports =
             action: repit, change, none\n
             execution: duringStreak, endStreak, endMusic\n
             lapseType: streak, time (This value is used only if execution is duringStreak)\n
-            lapse: Number Value (if lapseType is time, lapse will be in seconds)\n
+            lapse: Number Value (if lapseType is time, lapse will be in seconds) Min:10 Max:100\n
             Note: the lapsetype and lapse values is only used in duringStreak.'
             type: "array"
-            default: ['change', 'duringStreak', 'Streak', '100']
+            default: ['change', 'duringStreak', 'streak', '100']
 
   particles:
     type: "object"
