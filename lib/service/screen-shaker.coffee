@@ -3,15 +3,30 @@ throttle = require "lodash.throttle"
 random = require "lodash.random"
 
 module.exports =
+  enabled: false
   subscriptions: null
   conf: []
 
   init: ->
+    @enableSubscription = atom.config.observe(
+      'activate-power-mode.screenShake.enabled', (value) =>
+        @enabled = value
+        if @enabled
+          @enable()
+        else
+          @disable()
+    )
+
+  destroy: ->
+    @enableSubscription.dispose()
+    @disable()
+
+  enable: ->
     @initConfigSubscribers()
     @throttledShake = throttle @shakeElement.bind(this), 100, trailing: false
 
   disable: ->
-    @subscriptions.dispose()
+    @subscriptions?.dispose()
 
   observe: (key) ->
     @subscriptions.add atom.config.observe(
@@ -25,7 +40,7 @@ module.exports =
     @observe 'maxIntensity'
 
   shake: (element) ->
-    @throttledShake(element)
+    @throttledShake(element) if @enabled
 
   shakeElement: (element) ->
     min = @conf['minIntensity']

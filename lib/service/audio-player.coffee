@@ -2,14 +2,29 @@
 path = require "path"
 
 module.exports =
+  enabled: false
   subscriptions: null
   conf: []
 
   init: ->
+    @enableSubscription = atom.config.observe(
+      'activate-power-mode.playAudio.enabled', (value) =>
+        @enabled = value
+        if @enabled
+          @enable()
+        else
+          @disable()
+    )
+
+  destroy: ->
+    @enableSubscription.dispose()
+    @disable()
+
+  enable: ->
     @initConfigSubscribers()
 
   disable: ->
-    @subscriptions.dispose()
+    @subscriptions?.dispose()
 
   observe: (key, loadAudio = true) ->
     @subscriptions.add atom.config.observe(
@@ -32,6 +47,8 @@ module.exports =
     @audio = new Audio(pathtoaudio)
 
   play: ->
+    return if not @enabled
+
     @audio.currentTime = 0
     @audio.volume = @conf['volume']
     @audio.play()

@@ -55,69 +55,6 @@ module.exports =
         minimum: 0
         maximum: 1
 
-  screenShake:
-    type: "object"
-    properties:
-      minIntensity:
-        title: "Screen Shake - Minimum Intensity"
-        description: "The minimum (randomized) intensity of the shake."
-        type: "integer"
-        default: 1
-        minimum: 0
-        maximum: 100
-
-      maxIntensity:
-        title: "Screen Shake - Maximum Intensity"
-        description: "The maximum (randomized) intensity of the shake."
-        type: "integer"
-        default: 3
-        minimum: 0
-        maximum: 100
-
-      enabled:
-        title: "Screen Shake - Enabled"
-        description: "Turn the shaking on/off."
-        type: "boolean"
-        default: true
-
-  playAudio:
-    type: "object"
-    properties:
-      enabled:
-        title: "Play Audio - Enabled"
-        description: "Play audio clip on/off."
-        type: "boolean"
-        default: false
-        order: 1
-
-      audioclip:
-        title: "Play Audio - Audioclip"
-        description: "Which audio clip played at keystroke."
-        type: "string"
-        default: '../audioclips/gun.wav'
-        enum: [
-          {value: '../audioclips/gun.wav', description: 'Gun'}
-          {value: '../audioclips/typewriter.wav', description: 'Type Writer'}
-          {value: 'customAudioclip', description: 'Custom Path'}
-        ]
-        order: 3
-
-      customAudioclip:
-        title: "Play Audio - Path to Audioclip"
-        description: "Path to audioclip played at keystroke."
-        type: "string"
-        default: 'rocksmash.wav'
-        order: 4
-
-      volume:
-        title: "Play Audio - Volume"
-        description: "Volume of the audio clip played at keystroke."
-        type: "number"
-        default: 0.42
-        minimum: 0.0
-        maximum: 1.0
-        order: 2
-
   particles:
     type: "object"
     properties:
@@ -190,6 +127,69 @@ module.exports =
             type: "integer"
             default: 4
             minimum: 0
+
+  screenShake:
+    type: "object"
+    properties:
+      enabled:
+        title: "Screen Shake - Enabled"
+        description: "Turn the shaking on/off."
+        type: "boolean"
+        default: true
+
+      minIntensity:
+        title: "Screen Shake - Minimum Intensity"
+        description: "The minimum (randomized) intensity of the shake."
+        type: "integer"
+        default: 1
+        minimum: 0
+        maximum: 100
+
+      maxIntensity:
+        title: "Screen Shake - Maximum Intensity"
+        description: "The maximum (randomized) intensity of the shake."
+        type: "integer"
+        default: 3
+        minimum: 0
+        maximum: 100
+
+  playAudio:
+    type: "object"
+    properties:
+      enabled:
+        title: "Play Audio - Enabled"
+        description: "Play audio clip on/off."
+        type: "boolean"
+        default: false
+        order: 1
+
+      audioclip:
+        title: "Play Audio - Audioclip"
+        description: "Which audio clip played at keystroke."
+        type: "string"
+        default: '../audioclips/gun.wav'
+        enum: [
+          {value: '../audioclips/gun.wav', description: 'Gun'}
+          {value: '../audioclips/typewriter.wav', description: 'Type Writer'}
+          {value: 'customAudioclip', description: 'Custom Path'}
+        ]
+        order: 3
+
+      customAudioclip:
+        title: "Play Audio - Path to Audioclip"
+        description: "Path to audioclip played at keystroke."
+        type: "string"
+        default: 'rocksmash.wav'
+        order: 4
+
+      volume:
+        title: "Play Audio - Volume"
+        description: "Volume of the audio clip played at keystroke."
+        type: "number"
+        default: 0.42
+        minimum: 0.0
+        maximum: 1.0
+        order: 2
 
   excludedFileTypes:
     type: "object"
