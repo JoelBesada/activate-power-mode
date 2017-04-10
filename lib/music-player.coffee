@@ -113,23 +113,23 @@ module.exports =
   actionDuringStreak: (streak = 0) ->
     if streak is 0
       if @actionLapse != 0 and @actionLapseType is "time"
-        @stop() if @action is "repit"
+        @stop() if @action is "repeat"
         @next() if @action is "change"
         @autoPlay()
         return @debouncedActionDuringStreak()
       if(@music.paused and @execution is "endMusic")
-        @stop() if @action is "repit"
+        @stop() if @action is "repeat"
         @next() if @action is "change"
         return @autoPlay()
     else
       if(streak % @actionLapse is 0 and @actionLapseType is "streak")
-        @stop() if @action is "repit"
+        @stop() if @action is "repeat"
         @next() if @action is "change"
         return @autoPlay()
 
   actionEndStreak: ->
     @debouncedActionDuringStreak?.cancel()
-    return @stop() if(@action is "repit") and (@execution is "endStreak")
+    return @stop() if(@action is "repeat") and (@execution is "endStreak")
     return @next() if(@action is "change")  and (@execution is "endStreak")
     @pause()
 
