@@ -1,6 +1,4 @@
 module.exports =
-  t: 0
-
   setComboRenderer: (comboRenderer) ->
     @combo = comboRenderer
 
