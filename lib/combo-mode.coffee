@@ -113,7 +113,7 @@ module.exports =
     if not @reached and (@style is "killerInstinct" and @currentStreak >= 3)
       @reached = true
       @container.classList.add "reached"
-    else if not @reached and (@currentStreak >= @getConfig("comboMode.activationThreshold"))
+    else if not @reached and (@style is "custom" and @currentStreak >= @getConfig("comboMode.activationThreshold"))
       @reached = true
       @container.classList.add "reached"
 
