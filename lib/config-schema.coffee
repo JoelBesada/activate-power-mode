@@ -4,9 +4,11 @@ module.exports =
     description: "Toggle on start."
     type: "boolean"
     default: true
+    order: 1
 
   comboMode:
     type: "object"
+    order: 2
     properties:
       enabled:
         title: "Combo Mode - Enabled"
@@ -57,6 +59,7 @@ module.exports =
 
   particles:
     type: "object"
+    order: 3
     properties:
       enabled:
         title: "Particles - Enabled"
@@ -130,6 +133,7 @@ module.exports =
 
   screenShake:
     type: "object"
+    order: 4
     properties:
       enabled:
         title: "Screen Shake - Enabled"
@@ -155,6 +159,7 @@ module.exports =
 
   playAudio:
     type: "object"
+    order: 5
     properties:
       enabled:
         title: "Play Audio - Enabled"
@@ -192,6 +197,7 @@ module.exports =
         order: 2
 
   excludedFileTypes:
+    order: 6
     type: "object"
     properties:
       excluded:
@@ -202,4 +208,5 @@ module.exports =
 
   plugins:
     type: "object"
+    order: 7
     properties: {}
