@@ -1,8 +1,4 @@
-pluginManager = require "./plugin-manager"
-
 module.exports =
-  pluginManager: pluginManager
-
   enable: ->
     @pluginManager.enable()
     @changePaneSubscription = atom.workspace.onDidStopChangingActivePaneItem =>
@@ -15,6 +11,9 @@ module.exports =
     @inputSubscription?.dispose()
     @cursorSubscription?.dispose()
     @pluginManager.disable()
+
+  setPluginManager: (pluginManager) ->
+    @pluginManager = pluginManager
 
   isExcludedFile: ->
     excluded = @getConfig "excludedFileTypes.excluded"

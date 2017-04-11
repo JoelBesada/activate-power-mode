@@ -199,3 +199,7 @@ module.exports =
         description: "Use comma separated, lowercase values (i.e. \"html, cpp, css\")"
         type: "array"
         default: ["."]
+
+  plugins:
+    type: "object"
+    properties: {}

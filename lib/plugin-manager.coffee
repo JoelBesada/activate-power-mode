@@ -20,6 +20,8 @@ module.exports =
   editorRegistry: editorRegistry
   screenShaker: screenShaker
   audioPlayer: audioPlayer
+  screenShake: screenShake
+  playAudio: playAudio
   comboMode: comboMode
   powerCanvas: powerCanvas
   plugins: []
@@ -30,6 +32,9 @@ module.exports =
     @subscriptions = new CompositeDisposable
     @initApi()
     @initCorePlugins()
+
+  setConfigSchema: (configSchema) ->
+    @config = configSchema
 
   initApi: ->
     @comboApi = new ComboApi(@comboRenderer)
@@ -43,12 +48,33 @@ module.exports =
     @powerCanvas.setCanvasRenderer @canvasRenderer
     @addCorePlugin @powerCanvas, 'particles'
     @addCorePlugin @comboMode, 'comboMode'
+    @addPlugin @screenShake, 'screenShake'
+    @addPlugin @playAudio, 'playAudio'
 
-  addCorePlugin: (plugin, key) ->
+  addCorePlugin: (plugin, code) ->
     @plugins.push plugin
     @corePlugins.push plugin
+    @observePlugin plugin, "activate-power-mode.#{code}.enabled"
+
+  addPlugin: (plugin, code) ->
+    info = plugin.info
+
+    key = "activate-power-mode.plugins.#{code}"
+    @plugins.push plugin
+    @config.plugins.properties[code] =
+      type: 'boolean',
+      title: info.title,
+      description: info.description,
+      default: true
+
+    if atom.config.get == undefined
+      atom.config.set key, @config.plugins.properties[code].default
+
+    @observePlugin plugin, key
+
+  observePlugin: (plugin, key) ->
     @subscriptions.add atom.config.observe(
-      "activate-power-mode.#{key}.enabled", (isEnabled) =>
+      key, (isEnabled) =>
         if isEnabled
           @enabledPlugins.push plugin
           plugin.enable?(@api)
@@ -56,6 +82,7 @@ module.exports =
           index = @enabledPlugins.indexOf(plugin)
           if index >= 0
             @enabledPlugins.splice(index, 1)
+            plugin.disable?()
     )
 
   disable: ->

@@ -1,16 +1,18 @@
 {CompositeDisposable} = require "atom"
-
 configSchema = require "./config-schema"
-powerEditor = require "./power-editor"
 
 module.exports = ActivatePowerMode =
   config: configSchema
   subscriptions: null
   active: false
-  powerEditor: powerEditor
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
+
+    @powerEditor = require "./power-editor"
+    @pluginManager = require "./plugin-manager"
+    @pluginManager.setConfigSchema @config
+    @powerEditor.setPluginManager @pluginManager
 
     @subscriptions.add atom.commands.add "atom-workspace",
       "activate-power-mode:toggle": => @toggle()
