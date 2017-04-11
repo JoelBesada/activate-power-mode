@@ -67,7 +67,7 @@ module.exports =
       description: info.description,
       default: true
 
-    if atom.config.get == undefined
+    if atom.config.get(key) == undefined
       atom.config.set key, @config.plugins.properties[code].default
 
     @observePlugin plugin, key
