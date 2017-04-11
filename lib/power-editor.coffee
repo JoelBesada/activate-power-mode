@@ -1,4 +1,8 @@
+inputHandler = require "./input-handler"
+
 module.exports =
+  inputHandler: inputHandler
+
   enable: ->
     @pluginManager.enable()
     @changePaneSubscription = atom.workspace.onDidStopChangingActivePaneItem =>
@@ -39,14 +43,9 @@ module.exports =
     @pluginManager.runOnNewCursor cursor
 
   handleInput: (e) ->
-    spawnParticles = true
-    if e.newText
-      spawnParticles = e.newText isnt "\n"
-      range = e.newRange.end
-    else
-      range = e.newRange.start
+    @inputHandler.handle e
 
-    screenPos = @editor.screenPositionForBufferPosition range
+    screenPos = @editor.screenPositionForBufferPosition @inputHandler.getPosition()
     cursor = @editor.getCursorAtScreenPosition screenPos
     return unless cursor
 
