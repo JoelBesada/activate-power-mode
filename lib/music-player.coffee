@@ -17,14 +17,16 @@ module.exports =
   actionLapse: 0
 
   setup: ->
-    if (@getConfig "musicPath") != "../audioclips/backgroundmusics/"
-      @pathtoMusic = @getConfig "musicPath"
-    else
-      @pathtoMusic = path.join(__dirname, @getConfig "musicPath")
+    @musicPathObserver?.dispose()
+    @musicPathObserver = atom.config.observe 'activate-power-mode.playBackgroundMusic.musicPath', (value) =>
+      if value is "../audioclips/backgroundmusics/"
+        @pathtoMusic = path.join(__dirname, value)
+      else
+        @pathtoMusic = value
 
-    @musicFiles = fs.readdirSync(@pathtoMusic.toString())
-    @music = new Audio(@pathtoMusic + @musicFiles[0])
-    @music.volume = @getConfig "musicVolume"
+      @musicFiles = fs.readdirSync(@pathtoMusic.toString())
+      @music = new Audio(@pathtoMusic + @musicFiles[0])
+      @music.volume = @getConfig "musicVolume"
 
     @actionObserver?.dispose()
     @actionObserver = atom.config.observe 'activate-power-mode.playBackgroundMusic.actions.command', (value) =>
@@ -56,7 +58,7 @@ module.exports =
   destroy: ->
     if(@music != null) and (@isSetup is true)
       @stop()
-      @streakTimeoutObserver?.dispose()
+      @musicPathObserver?.dispose()
       @actionObserver?.dispose()
       @debouncedActionDuringStreak?.cancel()
       @debouncedActionDuringStreak = null
