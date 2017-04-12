@@ -24,7 +24,7 @@ module.exports =
       else
         @pathtoMusic = value
 
-      @musicFiles = fs.readdirSync(@pathtoMusic.toString())
+      @musicFiles = @getAudioFiles()
       @music = new Audio(@pathtoMusic + @musicFiles[0])
       @music.volume = @getConfig "musicVolume"
 
@@ -54,6 +54,18 @@ module.exports =
           @actionDuringStreak()
 
     @isSetup = true
+
+  getAudioFiles: ->
+    allFiles = fs.readdirSync(@pathtoMusic.toString())
+    cont = 0
+    for file of allFiles
+      fileName = allFiles[file]
+      fileExtencion = fileName.split('.').pop();
+      musicFiles[cont++] = fileName if fileExtencion is "mp3"
+      musicFiles[cont++] = fileName if fileExtencion is "wav"
+      musicFiles[cont++] = fileName if fileExtencion is "3gp"
+      musicFiles[cont++] = fileName if fileExtencion is "m4a"
+      musicFiles[cont++] = fileName if fileExtencion is "webm"
 
   destroy: ->
     if(@music != null) and (@isSetup is true)
