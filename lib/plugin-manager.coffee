@@ -10,7 +10,7 @@ screenShake = require "./plugin/screen-shake"
 playAudio = require "./plugin/play-audio"
 powerCanvas = require "./plugin/power-canvas"
 comboMode = require "./plugin/combo-mode"
-effect = require "./default-effect"
+effect = require "./effect/default"
 
 module.exports =
   subscriptions: null
