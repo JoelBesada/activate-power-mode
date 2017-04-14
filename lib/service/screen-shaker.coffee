@@ -39,12 +39,17 @@ module.exports =
     @observe 'minIntensity'
     @observe 'maxIntensity'
 
-  shake: (element) ->
-    @throttledShake(element) if @enabled
+  shake: (element, intensity) ->
+    @throttledShake(element, intensity) if @enabled
 
-  shakeElement: (element) ->
+  shakeElement: (element, intensity) ->
     min = @conf['minIntensity']
     max = @conf['maxIntensity']
+    if intensity is 'max'
+      min = max - min
+      max = max + 2
+    else if intensity is 'min'
+      max = max - min
 
     x = @shakeIntensity min, max
     y = @shakeIntensity min, max

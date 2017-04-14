@@ -6,5 +6,5 @@ module.exports =
   enable: (api) ->
     @api = api
 
-  onInput: ->
-    @api.shakeScreen()
+  onInput: (cursor, screenPosition, input, data) ->
+    @api.shakeScreen(data['intensity'])
