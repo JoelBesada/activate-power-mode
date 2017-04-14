@@ -11,12 +11,16 @@ playAudio = require "./plugin/play-audio"
 powerCanvas = require "./plugin/power-canvas"
 comboMode = require "./plugin/combo-mode"
 effect = require "./effect/default"
+flow = require "./flow/default"
+switcher = require "./switcher"
 
 module.exports =
   subscriptions: null
   comboRenderer: comboRenderer
   canvasRenderer: canvasRenderer
   effect: effect
+  switcher: switcher
+  flow: flow
   editorRegistry: editorRegistry
   screenShaker: screenShaker
   audioPlayer: audioPlayer
@@ -46,21 +50,21 @@ module.exports =
   initCorePlugins: ->
     @comboMode.setComboRenderer @comboRenderer
     @powerCanvas.setCanvasRenderer @canvasRenderer
-    @addCorePlugin @powerCanvas, 'particles'
-    @addCorePlugin @comboMode, 'comboMode'
-    @addPlugin @screenShake, 'screenShake'
-    @addPlugin @playAudio, 'playAudio'
+    @addCorePlugin 'particles', @powerCanvas
+    @addCorePlugin 'comboMode', @comboMode
+    @addPlugin 'screenShake', @screenShake
+    @addPlugin 'playAudio', @playAudio
 
-  addCorePlugin: (plugin, code) ->
-    @plugins.push plugin
-    @corePlugins.push plugin
-    @observePlugin plugin, "activate-power-mode.#{code}.enabled"
+  addCorePlugin: (code, plugin) ->
+    @plugins[code] = plugin
+    @corePlugins[code] = plugin
+    @observePlugin code, plugin, "activate-power-mode.#{code}.enabled"
 
-  addPlugin: (plugin, code) ->
+  addPlugin: (code, plugin) ->
     info = plugin.info
 
     key = "activate-power-mode.plugins.#{code}"
-    @plugins.push plugin
+    @plugins[code] = plugin
     @config.plugins.properties[code] =
       type: 'boolean',
       title: info.title,
@@ -70,19 +74,17 @@ module.exports =
     if atom.config.get(key) == undefined
       atom.config.set key, @config.plugins.properties[code].default
 
-    @observePlugin plugin, key
+    @observePlugin code, plugin, key
 
-  observePlugin: (plugin, key) ->
+  observePlugin: (code, plugin, key) ->
     @subscriptions.add atom.config.observe(
       key, (isEnabled) =>
         if isEnabled
-          @enabledPlugins.push plugin
           plugin.enable?(@api)
+          @enabledPlugins[code] = plugin
         else
-          index = @enabledPlugins.indexOf(plugin)
-          if index >= 0
-            @enabledPlugins.splice(index, 1)
-            plugin.disable?()
+          plugin.disable?()
+          delete @enabledPlugins[code]
     )
 
   disable: ->
@@ -90,20 +92,24 @@ module.exports =
     @screenShaker.disable()
     @audioPlayer.disable()
 
-    for plugin in @enabledPlugins
+    for code, plugin of @enabledPlugins
       plugin.disable?()
 
   runOnChangePane: (editor = null, editorElement = null) ->
     @editorRegistry.setEditor editor
     @editorRegistry.setEditorElement editorElement
 
-    for plugin in @enabledPlugins
+    for code, plugin of @enabledPlugins
       plugin.onChangePane?(editor, editorElement)
 
   runOnNewCursor: (cursor) ->
-    for plugin in @enabledPlugins
+    for code, plugin of @enabledPlugins
       plugin.onNewCursor?(cursor)
 
-  runOnInput: (cursor, screenPosition) ->
-    for plugin in @enabledPlugins
-      plugin.onInput?(cursor, screenPosition)
+  runOnInput: (cursor, screenPosition, input) ->
+    @switcher.reset()
+    @flow.handle input, @switcher, @comboApi.getLevel()
+
+    for code, plugin of @enabledPlugins
+      continue if @switcher.isOff code
+      plugin.onInput?(cursor, screenPosition, input, @switcher.getData code)
