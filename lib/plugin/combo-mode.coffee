@@ -13,5 +13,13 @@ module.exports =
     @combo.reset()
     @combo.setup editorElement if editor
 
-  onInput: ->
-    @combo.modifyStreak 1
+  onInput: (cursor, screenPosition, input, data) ->
+    if data['reset']
+      @combo.resetCounter()
+      return
+
+    qty = 1
+    if data['qty']
+      qty = data['qty']
+
+    @combo.modifyStreak qty
