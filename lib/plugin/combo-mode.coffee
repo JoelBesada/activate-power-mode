@@ -3,6 +3,7 @@ module.exports =
     @combo = comboRenderer
 
   enable: ->
+    @combo.enable()
     @combo.initConfigSubscribers()
 
   disable: ->

@@ -6,6 +6,7 @@ sample = require "lodash.sample"
 module.exports =
   subscriptions: null
   conf: []
+  isEnable: false
   currentStreak: 0
   level: 0
   maxStreakReached: false
@@ -15,6 +16,10 @@ module.exports =
       "activate-power-mode.comboMode.#{key}", (value) =>
         @conf[key] = value
     )
+
+  enable: ->
+    @isEnable = true
+    @initConfigSubscribers()
 
   initConfigSubscribers: ->
     @subscriptions = new CompositeDisposable
@@ -26,6 +31,7 @@ module.exports =
     @container?.parentNode?.removeChild @container
 
   destroy: ->
+    @isEnable = false
     @reset()
     @subscriptions.dispose()
     @container = null

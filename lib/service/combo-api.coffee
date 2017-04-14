@@ -3,16 +3,22 @@ module.exports = class ComboApi
     @combo = comboRenderer
 
   increase: (n = 1) ->
-    @combo.modifyStreak n
+    @combo.modifyStreak n if @combo.isEnable
 
   decrease: (n = 1) ->
-    @combo.modifyStreak(-n)
+    @combo.modifyStreak(-n) if @combo.isEnable
 
   exclame: (word = null, type = null) ->
-    @combo.showExclamation word, type
+    @combo.showExclamation word, type if @combo.isEnable
 
   resetCounter: ->
-    @combo.resetCounter()
+    @combo.resetCounter() if @combo.isEnable
 
   getLevel: ->
-    @combo.getLevel()
+    if @combo.isEnable
+      @combo.getLevel()
+    else
+      null
+
+  isEnable: ->
+    @combo.isEnable
