@@ -1,4 +1,5 @@
 {CompositeDisposable} = require "atom"
+random = require "lodash.random"
 colorHelper = require "./color-helper"
 
 module.exports =
@@ -70,10 +71,24 @@ module.exports =
     @observe 'size.min'
     @observe 'size.max'
 
-  spawn: (cursor, screenPosition) ->
+  spawn: (cursor, screenPosition, input, size) ->
     position = @calculatePositions screenPosition
     colorGenerator = @colorHelper.generateColors cursor, @editorElement
-    @effect.spawn position, colorGenerator, @conf
+    randomSize = => @randomSize(size)
+    colorGenerate = -> colorGenerator.next().value
+
+    @effect.spawn position, colorGenerate, input, randomSize, @conf
+
+  randomSize: (size) ->
+    min = @conf['size.min']
+    max = @conf['size.max']
+
+    if size is 'max'
+      random max - min + 2, max + 2, true
+    else if size is 'min'
+      random min - 1, max - min, true
+    else
+      random min, max, true
 
   calculatePositions: (screenPosition) ->
     {left, top} = @editorElement.pixelPositionForScreenPosition screenPosition

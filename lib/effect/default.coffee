@@ -10,20 +10,20 @@ module.exports =
   reset: ->
     @particles = []
 
-  spawn: (position, colorGenerator, conf) ->
+  spawn: (position, colorGenerate, input, randomSize, conf) ->
     @conf = conf
     numParticles = random @conf['spawnCount.min'], @conf['spawnCount.max']
 
     while numParticles--
       @particles.shift() if @particles.length >= @conf['totalCount.max']
-      @particles.push @createParticle position.left, position.top, colorGenerator
+      @particles.push @createParticle position.left, position.top, colorGenerate, randomSize
 
-  createParticle: (x, y, colorGenerator) ->
+  createParticle: (x, y, colorGenerate, randomSize) ->
     x: x
     y: y
     alpha: 1
-    color: colorGenerator.next().value
-    size: random @conf['size.min'], @conf['size.max'], true
+    color: colorGenerate()
+    size: randomSize()
     velocity:
       x: -1 + Math.random() * 2
       y: -3.5 + Math.random() * 2

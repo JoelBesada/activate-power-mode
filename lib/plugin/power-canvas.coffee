@@ -17,5 +17,5 @@ module.exports =
   onNewCursor: (cursor) ->
     cursor.spawn = throttle @canvas.spawn.bind(@canvas), 25, trailing: false
 
-  onInput: (cursor, screenPosition) ->
-    cursor.spawn cursor, screenPosition
+  onInput: (cursor, screenPosition, input, data) ->
+    cursor.spawn cursor, screenPosition, input, data['size']

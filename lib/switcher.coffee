@@ -29,7 +29,7 @@ module.exports =
       true
 
   getData: (code) ->
-    if @plugins[code]? and @plugins[code] is true
-      []
-    else
+    if @plugins[code]? and typeof @plugins[code] is 'object'
       @plugins[code]
+    else
+      []
