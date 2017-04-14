@@ -12,16 +12,19 @@ module.exports =
       @e.newRange.start
 
   isNewLine: ->
-    not @e.newText and not @e.oldText
+    @e.newText is '\n'
 
   hasDeleted: ->
     not not @e.oldText
 
   hasWritten: ->
-    not not @e.newText
+    not not @e.newText and @e.newText isnt '\n'
 
   getText: ->
     @e.newText
 
   getDeletedText: ->
     @e.oldText
+
+  isGhost: ->
+    not @e.newText and not @e.oldText

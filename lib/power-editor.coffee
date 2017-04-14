@@ -44,6 +44,7 @@ module.exports =
 
   handleInput: (e) ->
     @inputHandler.handle e
+    return if @inputHandler.isGhost()
 
     screenPos = @editor.screenPositionForBufferPosition @inputHandler.getPosition()
     cursor = @editor.getCursorAtScreenPosition screenPos
