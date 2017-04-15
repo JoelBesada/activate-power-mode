@@ -46,9 +46,10 @@ module.exports =
       pathtoaudio = path.join(__dirname, @conf['audioclip'])
     @audio = new Audio(pathtoaudio)
 
-  play: ->
+  play: (audio) ->
     return if not @enabled
 
-    @audio.currentTime = 0
-    @audio.volume = @conf['volume']
-    @audio.play()
+    audio = @audio if not audio
+    audio.currentTime = 0
+    audio.volume = @conf['volume']
+    audio.play()

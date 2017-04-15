@@ -8,8 +8,8 @@ module.exports = class Api
   shakeScreen: (intensity = null) ->
     @screenShaker.shake @editorRegistry.getEditorElement(), intensity
 
-  playAudio: ->
-    @audioPlayer.play()
+  playAudio: (audio) ->
+    @audioPlayer.play(audio)
 
   getEditor: ->
     @editorRegistry.getEditor()
