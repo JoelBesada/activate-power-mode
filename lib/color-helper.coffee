@@ -9,7 +9,7 @@ module.exports =
     @initConfigSubscribers()
 
   disable: ->
-    @subscriptions.dispose()
+    @subscriptions?.dispose()
 
   observe: (key) ->
     @subscriptions.add atom.config.observe(

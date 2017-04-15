@@ -32,11 +32,11 @@ module.exports =
 
   destroy: ->
     @resetCanvas()
-    @effect.disable()
+    @effect?.disable()
     @canvas?.parentNode.removeChild @canvas
     @canvas = null
     @subscriptions?.dispose()
-    @colorHelper.disable()
+    @colorHelper?.disable()
 
   setupCanvas: (editor, editorElement) ->
     if not @canvas

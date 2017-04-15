@@ -38,7 +38,7 @@ module.exports =
   destroy: ->
     @isEnable = false
     @reset()
-    @subscriptions.dispose()
+    @subscriptions?.dispose()
     @container = null
     @debouncedEndStreak?.cancel()
     @debouncedEndStreak = null
