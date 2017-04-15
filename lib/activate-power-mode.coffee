@@ -18,8 +18,6 @@ module.exports = ActivatePowerMode =
       "activate-power-mode:toggle": => @toggle()
       "activate-power-mode:enable": => @enable()
       "activate-power-mode:disable": => @disable()
-      "activate-power-mode:reset-max-combo": =>
-        @powerEditor.getCombo().resetMaxStreak()
 
     if @getConfig "autoToggle"
       @toggle()

@@ -26,6 +26,8 @@ module.exports =
     @observe 'exclamationEvery'
     @observe 'activationThreshold'
     @observe 'exclamationTexts'
+    @subscriptions.add atom.commands.add "atom-workspace",
+      "activate-power-mode:reset-max-combo": => @resetMaxStreak()
 
   reset: ->
     @container?.parentNode?.removeChild @container
