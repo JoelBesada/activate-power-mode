@@ -195,7 +195,7 @@ module.exports =
     localStorage.setItem "activate-power-mode.maxStreak", @currentStreak
     @maxStreak = @currentStreak
     @max.textContent = "Max #{@maxStreak}"
-    @showExclamation "NEW MAX!!!" if @maxStreakReached is false
+    @showExclamation "NEW MAX!!!", 'max-combo' if @maxStreakReached is false
     @maxStreakReached = true
 
   resetMaxStreak: ->
