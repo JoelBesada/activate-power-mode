@@ -84,10 +84,14 @@ module.exports =
     @renderStreak()
 
   resetCounter: ->
-    @modifyStreak(-@currentStreak)
+    return if @currentStreak is 0
+
+    @showExclamation "#{-@currentStreak}", 'down'
     @endStreak()
 
   modifyStreak: (n) ->
+    return if @currentStreak is 0 and n < 0
+
     @lastStreak = performance.now()
     @debouncedEndStreak()
 
@@ -99,7 +103,10 @@ module.exports =
     @streakIncreased n if n > 0
     @streakDecreased n if n < 0
 
-    @refreshStreakBar()
+    if @currentStreak is 0
+      @endStreak()
+    else
+      @refreshStreakBar()
     @renderStreak()
 
   streakIncreased: (n) ->
@@ -145,6 +152,7 @@ module.exports =
     @level = 0
     @container.classList.add "level-#{@level}"
     @renderStreak()
+    @refreshStreakBar(0)
 
   renderStreak: ->
     @counter.textContent = @currentStreak
