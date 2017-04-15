@@ -11,6 +11,9 @@ module.exports =
   level: 0
   maxStreakReached: false
 
+  setPluginManager: (pluginManager) ->
+    @pluginManager = pluginManager
+
   observe: (key) ->
     @subscriptions.add atom.config.observe(
       "activate-power-mode.comboMode.#{key}", (value) =>
@@ -88,7 +91,7 @@ module.exports =
   resetCounter: ->
     return if @currentStreak is 0
 
-    @showExclamation "#{-@currentStreak}", 'down'
+    @showExclamation "#{-@currentStreak}", 'down', false
     @endStreak()
 
   modifyStreak: (n) ->
@@ -99,6 +102,7 @@ module.exports =
 
     n = n * (@level + 1) if n > 0
 
+    oldStreak = @currentStreak
     @currentStreak += n
     @currentStreak = 0 if @currentStreak < 0
 
@@ -111,6 +115,9 @@ module.exports =
       @refreshStreakBar()
     @renderStreak()
 
+    if oldStreak is 0 and n > 0
+      @pluginManager.runOnComboStartStreak()
+
   streakIncreased: (n) ->
     @container.classList.remove "combo-zero"
     if @currentStreak > @maxStreak
@@ -121,10 +128,10 @@ module.exports =
     if @currentStreak % @conf['exclamationEvery'] is 0
       @showExclamation()
     else
-      @showExclamation "+#{n}", 'up'
+      @showExclamation "+#{n}", 'up', false
 
   streakDecreased: (n) ->
-    @showExclamation "#{n}", 'down'
+    @showExclamation "#{n}", 'down', false
 
     @checkLevel()
     if @currentStreak == 0
@@ -139,7 +146,8 @@ module.exports =
     if level != @level
       @container.classList.remove "level-#{@level}"
       @container.classList.add "level-#{level}"
-      @showExclamation "#{level+1}x", 'level'
+      @showExclamation "#{level+1}x", 'level', false
+      @pluginManager.runOnComboLevelChange(level, @level)
       @level = level
       return true
 
@@ -155,6 +163,7 @@ module.exports =
     @container.classList.add "level-#{@level}"
     @renderStreak()
     @refreshStreakBar(0)
+    @pluginManager.runOnComboEndStreak()
 
   renderStreak: ->
     @counter.textContent = @currentStreak
@@ -173,7 +182,7 @@ module.exports =
       @bar.style.transition = "transform #{leftTimeout}ms linear"
     , 100
 
-  showExclamation: (text = null, type = 'message') ->
+  showExclamation: (text = null, type = 'message', trigger = true) ->
     exclamation = document.createElement "span"
     exclamation.classList.add "exclamation"
     exclamation.classList.add type
@@ -186,6 +195,9 @@ module.exports =
         @exclamations.removeChild exclamation
     , 2000
 
+    if trigger
+      @pluginManager.runOnComboExclamation(text)
+
   getMaxStreak: ->
     maxStreak = localStorage.getItem "activate-power-mode.maxStreak"
     maxStreak = 0 if maxStreak is null
@@ -195,7 +207,9 @@ module.exports =
     localStorage.setItem "activate-power-mode.maxStreak", @currentStreak
     @maxStreak = @currentStreak
     @max.textContent = "Max #{@maxStreak}"
-    @showExclamation "NEW MAX!!!", 'max-combo' if @maxStreakReached is false
+    if @maxStreakReached is false
+      @showExclamation "NEW MAX!!!", 'max-combo', false
+      @pluginManager.runOnComboMaxStreak(@maxStreak)
     @maxStreakReached = true
 
   resetMaxStreak: ->

@@ -41,6 +41,7 @@ module.exports =
     @config = configSchema
 
   initApi: ->
+    @comboRenderer.setPluginManager this
     @comboApi = new ComboApi(@comboRenderer)
     @canvasRenderer.setEffect @effect
     @screenShaker.init()
@@ -113,3 +114,23 @@ module.exports =
     for code, plugin of @enabledPlugins
       continue if @switcher.isOff code
       plugin.onInput?(cursor, screenPosition, input, @switcher.getData code)
+
+  runOnComboStartStreak: ->
+    for code, plugin of @enabledPlugins
+      plugin.onComboStartStreak?()
+
+  runOnComboLevelChange: (newLvl, oldLvl) ->
+    for code, plugin of @enabledPlugins
+      plugin.onComboLevelChange?(newLvl, oldLvl)
+
+  runOnComboEndStreak: ->
+    for code, plugin of @enabledPlugins
+      plugin.onComboEndStreak?()
+
+  runOnComboExclamation: (text) ->
+    for code, plugin of @enabledPlugins
+      plugin.onComboExclamation?(text)
+
+  runOnComboMaxStreak: (maxStreak) ->
+    for code, plugin of @enabledPlugins
+      plugin.onComboMaxStreak?(maxStreak)
