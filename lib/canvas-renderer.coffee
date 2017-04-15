@@ -53,7 +53,7 @@ module.exports =
     @editor = editor
     @updateCanvasDimesions()
     @calculateOffsets()
-    @editorElement.addEventListener 'resize', =>
+    window.addEventListener 'resize', =>
       @updateCanvasDimesions()
       @calculateOffsets()
 
@@ -96,12 +96,16 @@ module.exports =
     top: top + @offsetTop - @editorElement.getScrollTop() + @editor.getLineHeightInPixels() / 2
 
   calculateOffsets: ->
+    return if not @scrollView
     @offsetLeft = @scrollView.offsetLeft
     @offsetTop = @scrollView.offsetTop
 
   updateCanvasDimesions: ->
+    return if not @editorElement
     @canvas.width = @editorElement.offsetWidth
     @canvas.height = @editorElement.offsetHeight
+    @canvas.style.width = @editorElement.width
+    @canvas.style.height = @editorElement.height
 
   animate: ->
     @animationOn()
