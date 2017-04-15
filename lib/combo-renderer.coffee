@@ -189,7 +189,7 @@ module.exports =
     text = sample @conf['exclamationTexts'] if text is null
     exclamation.textContent = text
 
-    @exclamations.insertBefore exclamation, @exclamations.childNodes[0]
+    @exclamations.appendChild exclamation
     setTimeout =>
       if exclamation.parentNode is @exclamations
         @exclamations.removeChild exclamation
