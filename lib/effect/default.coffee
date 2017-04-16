@@ -1,6 +1,10 @@
 random = require "lodash.random"
 
 module.exports =
+  title: 'Default effect'
+  description: 'Simple blaster effect.'
+  image: 'atom://activate-power-mode/images/default-effect.gif'
+
   init: ->
     @reset()
 

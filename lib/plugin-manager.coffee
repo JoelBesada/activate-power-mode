@@ -9,7 +9,7 @@ screenShake = require "./plugin/screen-shake"
 playAudio = require "./plugin/play-audio"
 powerCanvas = require "./plugin/power-canvas"
 comboMode = require "./plugin/combo-mode"
-effect = require "./effect/default"
+defaultEffect = require "./effect/default"
 defaultFlow = require "./flow/default"
 userFileFlow = require "./flow/user-file"
 switcher = require "./switcher"
@@ -17,8 +17,8 @@ switcher = require "./switcher"
 module.exports =
   comboRenderer: comboRenderer
   canvasRenderer: canvasRenderer
-  effect: effect
   switcher: switcher
+  defaultEffect: defaultEffect
   defaultFlow: defaultFlow
   userFileFlow: userFileFlow
   editorRegistry: editorRegistry
@@ -29,18 +29,20 @@ module.exports =
   comboMode: comboMode
   powerCanvas: powerCanvas
 
-  init: (config, pluginRegistry, flowRegistry) ->
+  init: (config, pluginRegistry, flowRegistry, effectRegistry) ->
     @pluginRegistry = pluginRegistry
     @flowRegistry = flowRegistry
+    @effectRegistry = effectRegistry
     @initApi()
     pluginRegistry.init config, @api
-    @initCorePlugins()
     @initCoreFlows()
+    @initCoreEffects()
+    @initCorePlugins()
 
   initApi: ->
     @comboRenderer.setPluginManager this
     @comboApi = new ComboApi(@comboRenderer)
-    @canvasRenderer.setEffect @effect
+    @canvasRenderer.setEffectRegistry @effectRegistry
     @screenShaker.init()
     @audioPlayer.init()
     @api = new Api(@editorRegistry, @comboApi, @screenShaker, @audioPlayer)
@@ -57,14 +59,19 @@ module.exports =
     @flowRegistry.setDefaultFlow @defaultFlow
     @flowRegistry.addFlow 'user-file', @userFileFlow
 
+  initCoreEffects: ->
+    @effectRegistry.setDefaultEffect @defaultEffect
+
   enable: ->
     @pluginRegistry.enable @api
     @flowRegistry.enable()
+    @effectRegistry.enable()
 
   disable: ->
     @screenShaker.disable()
     @audioPlayer.disable()
     @flowRegistry.disable()
+    @effectRegistry.disable()
 
     @pluginRegistry.onEnabled(
       (code, plugin) -> plugin.disable?()

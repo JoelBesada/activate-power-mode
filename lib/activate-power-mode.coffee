@@ -13,8 +13,9 @@ module.exports = ActivatePowerMode =
     @pluginManager = require "./plugin-manager"
     @pluginRegistry = require "./plugin-registry"
     @flowRegistry = require "./flow-registry"
+    @effectRegistry = require "./effect-registry"
     @powerEditor.setPluginManager @pluginManager
-    @pluginManager.init @config, @pluginRegistry, @flowRegistry
+    @pluginManager.init @config, @pluginRegistry, @flowRegistry, @effectRegistry
 
     @subscriptions.add atom.commands.add "atom-workspace",
       "activate-power-mode:toggle": => @toggle()
@@ -46,5 +47,5 @@ module.exports = ActivatePowerMode =
   provideServiceV1: ->
     if not @service
       Service = require "./service"
-      @service = new Service(@pluginRegistry, @flowRegistry)
+      @service = new Service(@pluginRegistry, @flowRegistry, @effectRegistry)
     @service

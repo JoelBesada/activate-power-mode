@@ -131,6 +131,13 @@ module.exports =
             default: 4
             minimum: 0
 
+      effect:
+        title: "Effect"
+        description: "Defines the effect."
+        type: "string"
+        default: ""
+        order: 7
+
   screenShake:
     type: "object"
     order: 4

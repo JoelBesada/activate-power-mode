@@ -7,15 +7,15 @@ module.exports =
   subscriptions: null
   conf: []
 
-  setEffect: (effect) ->
-    @effect = effect
+  setEffectRegistry: (effectRegistry) ->
+    @effectRegistry = effectRegistry
 
   enable: ->
     @initConfigSubscribers()
     @colorHelper.init()
 
   init: ->
-    @effect.init()
+    @effectRegistry.effect.init()
     @animationOn()
 
   resetCanvas: ->
@@ -32,7 +32,7 @@ module.exports =
 
   destroy: ->
     @resetCanvas()
-    @effect?.disable()
+    @effectRegistry?.effect.disable()
     @canvas?.parentNode.removeChild @canvas
     @canvas = null
     @subscriptions?.dispose()
@@ -77,7 +77,7 @@ module.exports =
     randomSize = => @randomSize(size)
     colorGenerate = -> colorGenerator.next().value
 
-    @effect.spawn position, colorGenerate, input, randomSize, @conf
+    @effectRegistry.effect.spawn position, colorGenerate, input, randomSize, @conf
 
   randomSize: (size) ->
     min = @conf['size.min']
@@ -111,4 +111,4 @@ module.exports =
     @animationOn()
     @canvas.width = @canvas.width
 
-    @effect.animate(@context)
+    @effectRegistry.effect.animate(@context)
