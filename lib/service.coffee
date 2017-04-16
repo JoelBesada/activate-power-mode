@@ -1,3 +1,5 @@
+ParticlesEffect = require "./effect/particles"
+
 module.exports = class Service
   constructor: (pluginRegistry, flowRegistry, effectRegistry) ->
     @pluginRegistry = pluginRegistry
@@ -12,3 +14,6 @@ module.exports = class Service
 
   registerEffect: (code, effect) ->
     @effectRegistry.addEffect code, effect
+
+  createParticlesEffect: (particleManager) ->
+    new ParticlesEffect(particleManager)

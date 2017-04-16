@@ -1,4 +1,5 @@
 Api = require "./api"
+ParticlesEffect = require "./effect/particles"
 comboRenderer = require "./combo-renderer"
 canvasRenderer = require "./canvas-renderer"
 editorRegistry = require "./service/editor-registry"
@@ -60,7 +61,8 @@ module.exports =
     @flowRegistry.addFlow 'user-file', @userFileFlow
 
   initCoreEffects: ->
-    @effectRegistry.setDefaultEffect @defaultEffect
+    effect = new ParticlesEffect(defaultEffect)
+    @effectRegistry.setDefaultEffect effect
 
   enable: ->
     @pluginRegistry.enable @api
