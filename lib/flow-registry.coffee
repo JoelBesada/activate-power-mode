@@ -9,9 +9,12 @@ module.exports =
   enable: ->
     @subscriptions = new CompositeDisposable
     @observeFlow()
+    @initList()
 
   disable: ->
     @subscriptions?.dispose()
+    @flowList?.dispose()
+    @flowList = null
 
   setDefaultFlow: (flow) ->
     @flow = flow
@@ -31,3 +34,16 @@ module.exports =
         else
           @flow = @flows['default']
     )
+
+  selectFlow: (code) ->
+    atom.config.set(@key, code)
+
+  initList: ->
+    return if @flowList?
+
+    @flowList = require "./flow-list"
+    @flowList.init this
+
+    @subscriptions.add atom.commands.add "atom-workspace",
+      "activate-power-mode:select-flow": =>
+        @flowList.toggle()

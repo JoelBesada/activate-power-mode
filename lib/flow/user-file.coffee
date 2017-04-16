@@ -2,6 +2,9 @@ path = require "path"
 os = require "os"
 
 module.exports =
+  title: 'User File'
+  description: 'Based on user-file located on user\'s home'
+
   handle: (input, switcher, comboLvl) ->
     return if @error
     if not @file
