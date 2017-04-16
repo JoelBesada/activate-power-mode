@@ -206,7 +206,13 @@ module.exports =
         type: "array"
         default: ["."]
 
+  flow:
+    title: "Flow"
+    description: "Defines the flow when typping."
+    type: "string"
+    order: 7
+
   plugins:
     type: "object"
-    order: 7
+    order: 8
     properties: {}

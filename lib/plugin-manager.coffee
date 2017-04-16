@@ -10,7 +10,7 @@ playAudio = require "./plugin/play-audio"
 powerCanvas = require "./plugin/power-canvas"
 comboMode = require "./plugin/combo-mode"
 effect = require "./effect/default"
-flow = require "./flow/default"
+defaultFlow = require "./flow/default"
 switcher = require "./switcher"
 
 module.exports =
@@ -18,7 +18,7 @@ module.exports =
   canvasRenderer: canvasRenderer
   effect: effect
   switcher: switcher
-  flow: flow
+  defaultFlow: defaultFlow
   editorRegistry: editorRegistry
   screenShaker: screenShaker
   audioPlayer: audioPlayer
@@ -27,11 +27,13 @@ module.exports =
   comboMode: comboMode
   powerCanvas: powerCanvas
 
-  init: (config, pluginRegistry) ->
+  init: (config, pluginRegistry, flowRegistry) ->
     @pluginRegistry = pluginRegistry
+    @flowRegistry = flowRegistry
     @initApi()
     pluginRegistry.init config, @api
     @initCorePlugins()
+    @initCoreFlows()
 
   initApi: ->
     @comboRenderer.setPluginManager this
@@ -49,16 +51,22 @@ module.exports =
     @pluginRegistry.addPlugin 'screenShake', @screenShake
     @pluginRegistry.addPlugin 'playAudio', @playAudio
 
+  initCoreFlows: ->
+    @flowRegistry.setDefaultFlow @defaultFlow
+
   enable: ->
     @pluginRegistry.enable @api
+    @flowRegistry.enable()
 
   disable: ->
     @screenShaker.disable()
     @audioPlayer.disable()
+    @flowRegistry.disable()
 
     @pluginRegistry.onEnabled(
       (code, plugin) -> plugin.disable?()
     )
+    @pluginRegistry.disable()
 
   runOnChangePane: (editor = null, editorElement = null) ->
     @editorRegistry.setEditor editor
@@ -75,7 +83,7 @@ module.exports =
 
   runOnInput: (cursor, screenPosition, input) ->
     @switcher.reset()
-    @flow.handle input, @switcher, @comboApi.getLevel()
+    @flowRegistry.flow.handle input, @switcher, @comboApi.getLevel()
 
     @pluginRegistry.onEnabled(
       (code, plugin) =>
