@@ -41,3 +41,9 @@ module.exports = ActivatePowerMode =
   disable: ->
     @active = false
     @powerEditor.disable()
+
+  provideServiceV1: ->
+    if not @service
+      Service = require "./service"
+      @service = new Service(@pluginRegistry)
+    @service

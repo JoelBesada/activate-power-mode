@@ -1,9 +1,8 @@
 throttle = require "lodash.throttle"
 
 module.exports =
-  info:
-    title: 'Play Audio'
-    description: 'Plays selected audio on typing.'
+  title: 'Play Audio'
+  description: 'Plays selected audio on typing.'
 
   enable: (api) ->
     @api = api

@@ -1,7 +1,6 @@
 module.exports =
-  info:
-    title: 'Screen Shake'
-    description: 'Shakes the screen on typing.'
+  title: 'Screen Shake'
+  description: 'Shakes the screen on typing.'
 
   enable: (api) ->
     @api = api

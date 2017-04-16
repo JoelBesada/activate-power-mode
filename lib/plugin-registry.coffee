@@ -1,6 +1,7 @@
 {CompositeDisposable} = require "atom"
 
 module.exports =
+  enabled: false
   subscriptions: null
   plugins: []
   corePlugins: []
@@ -12,6 +13,7 @@ module.exports =
 
   enable: ->
     @subscriptions = new CompositeDisposable
+    @enabled = true
 
     for code, plugin of @corePlugins
       @observePlugin code, plugin, "activate-power-mode.#{code}.enabled"
@@ -20,24 +22,26 @@ module.exports =
       @observePlugin code, plugin, "activate-power-mode.plugins.#{code}"
 
   disable: ->
+    @enabled = false
     @subscriptions?.dispose()
 
   addCorePlugin: (code, plugin) ->
     @corePlugins[code] = plugin
 
   addPlugin: (code, plugin) ->
-    info = plugin.info
-
     key = "activate-power-mode.plugins.#{code}"
     @plugins[code] = plugin
     @config.plugins.properties[code] =
       type: 'boolean',
-      title: info.title,
-      description: info.description,
+      title: plugin.title,
+      description: plugin.description,
       default: true
 
     if atom.config.get(key) == undefined
       atom.config.set key, @config.plugins.properties[code].default
+
+    if @enabled
+      @observePlugin code, plugin, key
 
   observePlugin: (code, plugin, key) ->
     @subscriptions.add atom.config.observe(
