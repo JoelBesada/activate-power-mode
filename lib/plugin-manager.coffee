@@ -11,6 +11,7 @@ powerCanvas = require "./plugin/power-canvas"
 comboMode = require "./plugin/combo-mode"
 effect = require "./effect/default"
 defaultFlow = require "./flow/default"
+userFileFlow = require "./flow/user-file"
 switcher = require "./switcher"
 
 module.exports =
@@ -19,6 +20,7 @@ module.exports =
   effect: effect
   switcher: switcher
   defaultFlow: defaultFlow
+  userFileFlow: userFileFlow
   editorRegistry: editorRegistry
   screenShaker: screenShaker
   audioPlayer: audioPlayer
@@ -53,6 +55,7 @@ module.exports =
 
   initCoreFlows: ->
     @flowRegistry.setDefaultFlow @defaultFlow
+    @flowRegistry.addFlow 'user-file', @userFileFlow
 
   enable: ->
     @pluginRegistry.enable @api

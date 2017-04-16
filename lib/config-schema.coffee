@@ -210,6 +210,7 @@ module.exports =
     title: "Flow"
     description: "Defines the flow when typping."
     type: "string"
+    default: ""
     order: 7
 
   plugins:
