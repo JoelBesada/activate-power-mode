@@ -11,8 +11,9 @@ module.exports = ActivatePowerMode =
 
     @powerEditor = require "./power-editor"
     @pluginManager = require "./plugin-manager"
-    @pluginManager.setConfigSchema @config
+    @pluginRegistry = require "./plugin-registry"
     @powerEditor.setPluginManager @pluginManager
+    @pluginManager.init @config, @pluginRegistry
 
     @subscriptions.add atom.commands.add "atom-workspace",
       "activate-power-mode:toggle": => @toggle()
