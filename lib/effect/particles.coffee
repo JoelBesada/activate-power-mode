@@ -1,6 +1,8 @@
 random = require "lodash.random"
 
 module.exports = class ParticlesEffect
+  particles: []
+
   constructor: (particleManager) ->
     @title = particleManager.title
     @description = particleManager.description

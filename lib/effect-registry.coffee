@@ -30,9 +30,12 @@ module.exports =
     @subscriptions.add atom.config.observe(
       @key, (code) =>
         if @effects[code]?
-          @effect = @effects[code]
+          effect = @effects[code]
         else
-          @effect = @effects['default']
+          effect = @effects['default']
+        @effect.disable()
+        @effect = effect
+        @effect.init()
     )
 
   selectEffect: (code) ->
