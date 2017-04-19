@@ -58,37 +58,18 @@ module.exports =
   getAudioFiles: ->
     allFiles = fs.readdirSync(@pathtoMusic.toString())
     file = 0
-    musicFile = true
-    while(file < allFiles.length)
-      fileName = allFiles[file]
+    while(allFiles[file])
+      fileName = allFiles[file++]
       fileExtencion = fileName.split('.').pop();
-      if(fileExtencion is "mp3") or (fileExtencion is "MP3")
-        musicFile = true
-        file++
-        continue
-      if(fileExtencion is "wav") or (fileExtencion is "WAV")
-        musicFile = true
-        file++
-        continue
-      if(fileExtencion is "3gp") or (fileExtencion is "3GP")
-        musicFile = true
-        file++
-        continue
-      if(fileExtencion is "m4a") or (fileExtencion is "M4A")
-        musicFile = true
-        file++
-        continue
-      if(fileExtencion is "webm") or (fileExtencion is "WEBM")
-        musicFile = true
-        file++
-        continue
-      else
-        musicFile = false
-      if not musicFile
-        allFiles.splice(file, 1)
-        break if file is allFiles.length
+      continue if(fileExtencion is "mp3") or (fileExtencion is "MP3")
+      continue if(fileExtencion is "wav") or (fileExtencion is "WAV")
+      continue if(fileExtencion is "3gp") or (fileExtencion is "3GP")
+      continue if(fileExtencion is "m4a") or (fileExtencion is "M4A")
+      continue if(fileExtencion is "webm") or (fileExtencion is "WEBM")
+      allFiles.splice(--file, 1)
+      break if file is allFiles.length
 
-    return allFiles
+    allFiles
 
   destroy: ->
     if(@music != null) and (@isSetup is true)
