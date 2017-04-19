@@ -7,12 +7,12 @@ module.exports =
 
   setup: (combo,style) ->
     if style is "killerInstinct"
-      pathtoaudio = path.join(__dirname, "../audioclips/Exclamations/")
+      pathtoaudio = path.join(__dirname, "../audioclips/exclamations/")
       @fileName = @killerInstinctAudio(combo)
       @audio = new Audio(pathtoaudio + @fileName + ".wav")
     else
       exclamationPath = @getConfig "customExclamations.textsOrPath"
-      if exclamationPath[0] is "../audioclips/Exclamations/"
+      if exclamationPath[0] is "../audioclips/exclamations/"
         customPath = path.join(__dirname, exclamationPath[0])
       else
         customPath = exclamationPath[0]
