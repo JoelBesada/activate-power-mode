@@ -41,15 +41,25 @@ module.exports =
     return fileName = ("Ultra Combo") if combo >= 30
     fileName = null
 
-  customAudio: (customPath) ->
-    pathtoaudio = path.join(customPath)
-    audioFiles = fs.readdirSync(pathtoaudio.toString())
+  customAudio: (pathtoaudio) ->
+    allFiles = fs.readdirSync(pathtoaudio.toString())
+    file = 0
+    while(allFiles[file])
+      fileName = allFiles[file++]
+      fileExtencion = fileName.split('.').pop();
+      continue if(fileExtencion is "mp3") or (fileExtencion is "MP3")
+      continue if(fileExtencion is "wav") or (fileExtencion is "WAV")
+      continue if(fileExtencion is "3gp") or (fileExtencion is "3GP")
+      continue if(fileExtencion is "m4a") or (fileExtencion is "M4A")
+      continue if(fileExtencion is "webm") or (fileExtencion is "WEBM")
+      allFiles.splice(--file, 1)
+      break if file is allFiles.length
 
-    maxIndex = audioFiles.length - 1
+    maxIndex = allFiles.length - 1
     minIndex = 0
     randomIndex = Math.floor(Math.random() * (maxIndex - minIndex + 1) + minIndex)
 
-    fileName = (audioFiles[randomIndex])
+    fileName = (allFiles[randomIndex])
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.comboMode.#{config}"
