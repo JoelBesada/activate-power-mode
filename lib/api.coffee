@@ -16,3 +16,6 @@ module.exports = class Api
 
   getEditorElement: ->
     @editorRegistry.getEditorElement()
+
+  getCombo: ->
+    @combo
