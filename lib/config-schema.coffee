@@ -27,8 +27,8 @@ module.exports =
         order: 2
 
       activationThreshold:
-        title: 'Combo Mode - Activation Threshold (To aply this settings "Combo Mode - Style" has to be Custom).'
-        description: "Streak threshold to activate the power mode."
+        title: 'Combo Mode - Activation Threshold'
+        description: 'Streak threshold to activate the power mode. (To aply this settings "Combo Mode - Style" has to be Custom).'
         type: "integer"
         default: 50
         minimum: 1
@@ -74,7 +74,7 @@ module.exports =
 
           typeAndLapse:
             title: "Combo Mode Custom Exclamations - Type and Lapse"
-            description: "types: onlyText, onlyAudio, bouth. streakCount: min 10 max 100."
+            description: "types: onlyText, onlyAudio, bouth. streakCount: min 10 max 100. (let in 0 to play at endStreak)"
             type: "array"
             default: ["onlyText", "10"]
             order: 2
