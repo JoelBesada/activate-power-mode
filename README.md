@@ -10,7 +10,7 @@ Now with a COMBO MODE!!!
 
 **For a list of power mode packages to other editors, check out [codeinthedark/awesome-power-mode](https://github.com/codeinthedark/awesome-power-mode).**
 
-**For a video of how to use and Configure activate-power-mode, check out [The-atom-power/activate-power-mode](https://youtube.com).**
+**For a video of how to use and Configure activate-power-mode, check out [The-atom-power/activate-power-mode](https://www.youtube.com/channel/UCvqT1eT3VYOTPYLetNJ-PIQ). Not yet**
 
 ## Install
 
@@ -80,3 +80,7 @@ With this option you can select if use the color at cursor position, random colo
 
 ### Excluded File Types
 * Array of file types to exclude
+
+## References
+* Exclamation audios downloaded from [here](http://www.killerinstinctonline.net/).
+* Background Music downloaded from [here](www.bensound.com).
