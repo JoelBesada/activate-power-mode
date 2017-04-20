@@ -10,7 +10,7 @@ Now with a COMBO MODE!!!
 
 **For a list of power mode packages to other editors, check out [codeinthedark/awesome-power-mode](https://github.com/codeinthedark/awesome-power-mode).**
 
-**For a video of how to use and Configure activate-power-mode, check out [new-features](https://www.youtube.com/channel/UCvqT1eT3VYOTPYLetNJ-PIQ). Not yet**
+**For a video of how to use and configure activate-power-mode, check out [new-features](https://www.youtube.com/channel/UCvqT1eT3VYOTPYLetNJ-PIQ). Not yet**
 
 ## Install
 
