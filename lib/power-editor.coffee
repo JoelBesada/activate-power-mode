@@ -43,14 +43,15 @@ module.exports =
     @pluginManager.runOnNewCursor cursor
 
   handleInput: (e) ->
-    @inputHandler.handle e
-    return if @inputHandler.isGhost()
+    requestIdleCallback =>
+      @inputHandler.handle e
+      return if @inputHandler.isGhost()
 
-    screenPos = @editor.screenPositionForBufferPosition @inputHandler.getPosition()
-    cursor = @editor.getCursorAtScreenPosition screenPos
-    return unless cursor
+      screenPos = @editor.screenPositionForBufferPosition @inputHandler.getPosition()
+      cursor = @editor.getCursorAtScreenPosition screenPos
+      return unless cursor
 
-    @pluginManager.runOnInput cursor, screenPos, @inputHandler
+      @pluginManager.runOnInput cursor, screenPos, @inputHandler
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.#{config}"
