@@ -7,23 +7,25 @@ module.exports = ActivatePowerMode =
   active: false
 
   activate: (state) ->
-    @subscriptions = new CompositeDisposable
-
-    @powerEditor = require "./power-editor"
-    @pluginManager = require "./plugin-manager"
     @pluginRegistry = require "./plugin-registry"
     @flowRegistry = require "./flow-registry"
     @effectRegistry = require "./effect-registry"
-    @powerEditor.setPluginManager @pluginManager
-    @pluginManager.init @config, @pluginRegistry, @flowRegistry, @effectRegistry
 
-    @subscriptions.add atom.commands.add "atom-workspace",
-      "activate-power-mode:toggle": => @toggle()
-      "activate-power-mode:enable": => @enable()
-      "activate-power-mode:disable": => @disable()
+    requestIdleCallback =>
+      @subscriptions = new CompositeDisposable
 
-    if @getConfig "autoToggle"
-      @toggle()
+      @powerEditor = require "./power-editor"
+      @pluginManager = require "./plugin-manager"
+      @powerEditor.setPluginManager @pluginManager
+      @pluginManager.init @config, @pluginRegistry, @flowRegistry, @effectRegistry
+
+      @subscriptions.add atom.commands.add "atom-workspace",
+        "activate-power-mode:toggle": => @toggle()
+        "activate-power-mode:enable": => @enable()
+        "activate-power-mode:disable": => @disable()
+
+      if @getConfig "autoToggle"
+        @toggle()
 
   deactivate: ->
     @subscriptions?.dispose()
