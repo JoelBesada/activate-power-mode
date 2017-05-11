@@ -21,6 +21,7 @@ module.exports =
 
   resetCanvas: ->
     @animationOff()
+    @canvas?.style.display = "none"
     @editor = null
     @editorElement = null
 
