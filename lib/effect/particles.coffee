@@ -42,11 +42,8 @@ module.exports = class ParticlesEffect
       x: -1 + Math.random() * 2
       y: -3.5 + Math.random() * 2
 
-  animate: (context) ->
+  update: ->
     return if not @particles.length
-
-    gco = context.globalCompositeOperation
-    context.globalCompositeOperation = "lighter"
 
     for i in [@particles.length - 1 ..0]
       particle = @particles[i]
@@ -56,6 +53,15 @@ module.exports = class ParticlesEffect
         continue
 
       @particleManager.update particle
+
+  animate: (context) ->
+    return if not @particles.length
+
+    gco = context.globalCompositeOperation
+    context.globalCompositeOperation = "lighter"
+
+    for i in [@particles.length - 1 ..0]
+      particle = @particles[i]
 
       @particleManager.draw particle, context
 

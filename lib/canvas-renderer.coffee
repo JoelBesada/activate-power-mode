@@ -6,6 +6,7 @@ module.exports =
   colorHelper: colorHelper
   subscriptions: null
   conf: []
+  phaseStep: 0
 
   setEffectRegistry: (effectRegistry) ->
     @effectRegistry = effectRegistry
@@ -109,6 +110,10 @@ module.exports =
 
   animate: ->
     @animationOn()
-    @canvas.width = @canvas.width
+    @effectRegistry.effect.update()
+    if @phaseStep is 0
+      @canvas.width = @canvas.width
+      @effectRegistry.effect.animate(@context)
 
-    @effectRegistry.effect.animate(@context)
+    @phaseStep++
+    @phaseStep = 0 if @phaseStep > 2
