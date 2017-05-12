@@ -74,14 +74,15 @@ module.exports =
 
           typeAndLapse:
             title: "Combo Mode Custom Exclamations - Type and Lapse"
-            description: "types: onlyText, onlyAudio, bouth. streakCount: min 10 max 100. (let in 0 to play at endStreak)"
+            description: "types: onlyText, onlyAudio, bouth. streakCount: min 10 max 100. (let in 0 to play at endStreak)."
             type: "array"
             default: ["onlyText", "10"]
             order: 2
 
           textsOrPath:
             title: "Combo Mode Custom Exclamations - Exclamation Texts or Path"
-            description: 'Custom exclamations to show (randomized) or Path to exclamations audiofiles. (Add "/" or, "\\" at the end of the path).'
+            description: 'Custom exclamations to show (randomized) or Path to exclamations audiofiles. (Add "/" or, "\\" at the end of the path).
+            Note: exclamation will not apear if type is onlyText and text or path is a path also if type is onlyAudio or bouth and texts or path are texts.'
             type: "array"
             default: ["Super!", "Radical!", "Fantastic!", "Great!", "OMG", "Whoah!", ":O", "Nice!", "Splendid!", "Wild!", "Grand!", "Impressive!", "Stupendous!", "Extreme!", "Awesome!"]
             order: 3
