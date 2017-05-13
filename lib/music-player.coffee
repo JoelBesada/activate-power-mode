@@ -43,8 +43,8 @@ module.exports =
         if @actionLapseType is "time"
           @timeLapse = @actionLapse * 1000
           @debouncedActionDuringStreak?.cancel()
-          @debouncedActionDuringStreak = debounce @actionDuringStreak.bind(this), @timeLapse
-          @debouncedActionDuringStreak()
+          @debouncedActionDuringStreak = debounce @action.bind(this), @timeLapse
+          @debouncedActionDuringStreakDuringStreak()
       else
         @debouncedActionDuringStreak?.cancel()
         @debouncedActionDuringStreak = null
@@ -91,11 +91,15 @@ module.exports =
     return null if (@isPlaying) or (@isMute)
 
     if @execution is "duringStreak" and @actionLapseType is "time"
-      @debouncedActionDuringStreak()
+      @debouncedActionDuringStreakDuringStreak()
 
-    if @execution != "endStreak"
+
+    if @execution is "endMusic"
       @music.onended = =>
-        @music.play()
+        @actionDuringStreak()
+    else
+      @music.onended = =>
+        @autoPlay()
 
     @isPlaying = true
     @music.play()
@@ -110,9 +114,12 @@ module.exports =
     @music.currentTime = 0
 
   autoPlay: ->
-    if @execution != "endStreak"
+    if @execution is "endMusic"
       @music.onended = =>
-        @music.play()
+        @actionDuringStreak()
+    else
+      @music.onended = =>
+        @autoPlay()
 
     @isPlaying = true
     @music.play()
@@ -134,8 +141,8 @@ module.exports =
         @stop() if @action is "repeat"
         @next() if @action is "change"
         @autoPlay()
-        return @debouncedActionDuringStreak()
-      if(@music.paused and @execution is "endMusic")
+        return @debouncedActionDuringStreakDuringStreak()
+      if(@execution is "endMusic")
         @stop() if @action is "repeat"
         @next() if @action is "change"
         return @autoPlay()
