@@ -131,14 +131,14 @@ module.exports =
           {value: '../audioclips/typewriter.wav', description: 'Type Writer'}
           {value: 'customAudioclip', description: 'Custom Path'}
         ]
-        order: 3
+        order: 2
 
       customAudioclip:
         title: "Play Audio - Path to Audioclip"
         description: "Path to audioclip played at keystroke."
         type: "string"
-        default: 'rocksmash.wav'
-        order: 4
+        default: 'intro.wav'
+        order: 3
 
       volume:
         title: "Play Audio - Volume"
@@ -147,7 +147,44 @@ module.exports =
         default: 0.42
         minimum: 0.0
         maximum: 1.0
+        order: 4
+
+  playIntroAudio:
+    type: "object"
+    properties:
+      enabled:
+        title: "Play Intro Audio - Enabled"
+        description: "Play audio clip on/off."
+        type: "boolean"
+        default: false
+        order: 1
+
+      audioclip:
+        title: "Play Intro Audio - Audioclip"
+        description: "Which audio clip played at keystroke."
+        type: "string"
+        default: '../audioclips/intro.wav'
+        enum: [
+          {value: '../audioclips/intro.wav', description: 'Intro'}
+          {value: 'customAudioclip', description: 'Custom Path'}
+        ]
         order: 2
+
+      customAudioclip:
+        title: "Play Intro Audio - Path to Audioclip"
+        description: "Path to audioclip played at keystroke."
+        type: "string"
+        default: 'intro.wav'
+        order: 3
+
+      volume:
+        title: "Play Intro Audio - Volume"
+        description: "Volume of the audio clip played at keystroke."
+        type: "number"
+        default: 1
+        minimum: 0.0
+        maximum: 1.0
+        order: 4
 
   playBackgroundMusic:
     type: "object"
