@@ -57,6 +57,13 @@ Auto enable power mode on atom start.
 * **Enable/Disable**
 * Volume
 * Audioclip (Gun, Typewriter, Custom)
+* Custom Audio Path
+
+### Play Intro Audio
+* **Enable/Disable**
+* Volume
+* Audioclip (Intro, Custom)
+* Custom Audio Path
 
 ### Play Background Music
 * **Enable/Disable**

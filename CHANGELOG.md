@@ -11,6 +11,7 @@
 * Allow custom music path to play background music settings
 * Added reproduction action (`repeat, change`) to music-player when (`endMusic, endStreak, duringStreak`)
 * Added (`time, streak`) lapse to reproduction action settings
+* New addition play intro audio
 
 ### 1.4.0 2017-03-19
 * Some performance improvements
