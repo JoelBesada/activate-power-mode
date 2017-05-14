@@ -47,10 +47,10 @@ module.exports =
       @canvas.classList.add "power-mode-canvas"
       @initConfigSubscribers()
 
-    editorElement.appendChild @canvas
-
-    @canvas.style.display = "block"
     @scrollView = editorElement.querySelector(".scroll-view")
+    @editorContents = editorElement.querySelector(".editor-contents--private")
+    @editorContents.appendChild @canvas
+    @canvas.style.display = "block"
     @editorElement = editorElement
     @editor = editor
     @updateCanvasDimesions()

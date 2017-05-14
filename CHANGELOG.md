@@ -12,6 +12,7 @@
 * Flow from a user's file, for now `user-flow.coffee` (or .js) in your home dir.
 * Render only 1 each 3 frames.
 * Avoid calling configs each input or frame.
+* Fix issue when minimap is on the left.
 
 ### 1.4.0 2017-03-19
 * Some performance improvements
