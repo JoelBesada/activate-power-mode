@@ -92,5 +92,5 @@ With this option you can select if use the color at cursor position, random colo
 
 ## References
 * Intro Sound downloaded from [here](https://www.freesound.org/people/kantouth/sounds/104396/).
-* Exclamation audios downloaded from [here](http://www.killerinstinctonline.net/).
+* Exclamation Sounds downloaded from [here](http://www.killerinstinctonline.net/).
 * Background Music downloaded from [here](http://www.bensound.com).
