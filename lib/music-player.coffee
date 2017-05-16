@@ -4,10 +4,8 @@ debounce = require "lodash.debounce"
 
 module.exports =
   music: null
-  remainingTime: 0
   isPlayin: false
   isSetup: false
-  isMute: false
   pathtoMusic: ""
   musicFiles: null
   currentMusic: 0
@@ -27,6 +25,11 @@ module.exports =
       @musicFiles = @getAudioFiles()
       @music = new Audio(@pathtoMusic + @musicFiles[0])
       @music.volume = @getConfig "musicVolume"
+
+    @musicEnabledObserver?.dispose()
+    @musicEnabledObserver = atom.config.observe 'activate-power-mode.playBackgroundMusic.enabled', (enabled) =>
+      if not enabled
+        @destroy()
 
     @actionObserver?.dispose()
     @actionObserver = atom.config.observe 'activate-power-mode.playBackgroundMusic.actions.command', (value) =>
@@ -69,18 +72,21 @@ module.exports =
       allFiles.splice(--file, 1)
       break if file is allFiles.length
 
-    allFiles
+    return allFiles
 
   destroy: ->
     if(@music != null) and (@isSetup is true)
       @stop()
       @musicPathObserver?.dispose()
+      @musicEnabledObserver?.dispose()
       @actionObserver?.dispose()
       @debouncedActionDuringStreak?.cancel()
       @debouncedActionDuringStreak = null
       @isSetup = false
       @music = null
       @musicFiles = null
+      isPlayin = false
+      currentMusic = 0
 
   play: (streak) ->
     @setup() if !@isSetup
@@ -88,7 +94,7 @@ module.exports =
       @actionDuringStreak(streak)
 
     @isPlaying = false if (@music.paused)
-    return null if (@isPlaying) or (@isMute)
+    return null if @isPlaying
 
     if @execution is "duringStreak" and @actionLapseType is "time"
       @debouncedActionDuringStreakDuringStreak()

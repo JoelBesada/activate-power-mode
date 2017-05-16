@@ -4,11 +4,14 @@ path = require "path"
 module.exports =
   audio: null
   fileName: ""
+  isPlaying: false
+  isSetup: false
 
   setup: (combo,style) ->
     if style is "killerInstinct"
       pathtoaudio = path.join(__dirname, "../audioclips/exclamations/")
       @fileName = @killerInstinctAudio(combo)
+      @audio.pause() if @isPlaying
       @audio = new Audio(pathtoaudio + @fileName + ".wav")
     else
       exclamationPath = @getConfig "customExclamations.textsOrPath"
@@ -17,14 +20,27 @@ module.exports =
       else
         customPath = exclamationPath[0]
       @fileName = @customAudio(customPath)
+      @audio.pause() if @isPlaying
       @audio = new Audio(customPath + @fileName)
       @fileName = @fileName.substr(0, @fileName.indexOf('.'))
+
+    if not @isSetup
+      @ExclamationsEnabledObserver?.dispose()
+      @ExclamationsEnabledObserver = atom.config.observe 'activate-power-mode.comboMode.customExclamations.enabled', (enabled) =>
+        if not enabled and @isPlaying
+          @isPlaying = false
+          @audio.pause()
+          @audio.currentTime = 0
+      @isSetup = true
 
   play: (combo,style) ->
     @setup(combo,style)
 
     @audio.volume = @getConfig "exclamationVolume"
+    @isPlaying = true
     @audio.play()
+    @audio.onended = =>
+      @isPlaying = false
     return (@fileName + "!")
 
   killerInstinctAudio: (combo) ->
