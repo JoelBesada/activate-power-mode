@@ -43,7 +43,7 @@ module.exports =
     if @conf['audioclip'] is 'customAudioclip' and @conf['customAudioclip']
       pathtoaudio = @conf['customAudioclip']
     else
-      pathtoaudio = path.join(__dirname, @conf['audioclip'])
+      pathtoaudio = path.join("#{__dirname}/..", @conf['audioclip'])
     @audio = new Audio(pathtoaudio)
 
   play: (audio) ->
