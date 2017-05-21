@@ -1,5 +1,26 @@
+{CompositeDisposable} = require "atom"
+
 module.exports =
+  subscriptions: null
+  conf: []
   golden_ratio_conjugate: 0.618033988749895
+
+  init: ->
+    @initConfigSubscribers()
+
+  disable: ->
+    @subscriptions?.dispose()
+
+  observe: (key) ->
+    @subscriptions.add atom.config.observe(
+      "activate-power-mode.particles.colours.#{key}", (value) =>
+        @conf[key] = value
+    )
+
+  initConfigSubscribers: ->
+    @subscriptions = new CompositeDisposable
+    @observe 'type'
+    @observe 'fixed'
 
   hsvToRgb: (h,s,v) -> # HSV to RGB algorithm, as per wikipedia
     c = v * s
@@ -14,10 +35,13 @@ module.exports =
     if 4<=h2<5 then return [x+m,m,c+m]
     if 5<=h2<6 then return [c+m,m,x+m]
 
-  getFixedColor: ->
-    c = @getConfig "fixed"
+  getFixedColorGenerator: ->
+    c = @conf['fixed']
+    color = "rgb(#{c.red},#{c.green},#{c.blue})"
 
-    "rgb(#{c.red},#{c.green},#{c.blue})"
+    loop
+      yield color
+    return
 
   getRandomGenerator: ->
     seed = Math.random()
@@ -32,10 +56,14 @@ module.exports =
       yield "rgb(#{r},#{g},#{b})"
     return
 
-  getColorAtPosition: (editor, editorElement, screenPosition) ->
-    screenPosition = [screenPosition.row, screenPosition.column - 1]
-    bufferPosition = editor.bufferPositionForScreenPosition screenPosition
-    scope = editor.scopeDescriptorForBufferPosition bufferPosition
+  getColorAtCursorGenerator: (cursor, editorElement) ->
+    color = @getColorAtCursor cursor, editorElement
+    loop
+      yield color
+    return
+
+  getColorAtCursor: (cursor, editorElement) ->
+    scope = cursor.getScopeDescriptor()
     scope = scope.toString().replace(/\./g, '.syntax--')
 
     try
@@ -48,14 +76,11 @@ module.exports =
     else
       "rgb(255, 255, 255)"
 
-  getColor: (editor, editorElement, screenPosition) ->
-    colorType = @getConfig("type")
-    if (colorType == "random")
-      @getRandomGenerator()
-    else if colorType == "fixed"
-      @getFixedColor()
+  generateColors: (cursor, editorElement) ->
+    colorType = @conf['type']
+    if (colorType == 'random')
+      return @getRandomGenerator()
+    else if colorType == 'fixed'
+      @getFixedColorGenerator()
     else
-      @getColorAtPosition editor, editorElement, screenPosition
-
-  getConfig: (config) ->
-    atom.config.get "activate-power-mode.particles.colours.#{config}"
+      @getColorAtCursorGenerator cursor, editorElement

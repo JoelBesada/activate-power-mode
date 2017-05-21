@@ -1,26 +1,31 @@
 {CompositeDisposable} = require "atom"
-
 configSchema = require "./config-schema"
-powerEditor = require "./power-editor"
 
 module.exports = ActivatePowerMode =
   config: configSchema
   subscriptions: null
   active: false
-  powerEditor: powerEditor
 
   activate: (state) ->
-    @subscriptions = new CompositeDisposable
+    @pluginRegistry = require "./plugin-registry"
+    @flowRegistry = require "./flow-registry"
+    @effectRegistry = require "./effect-registry"
 
-    @subscriptions.add atom.commands.add "atom-workspace",
-      "activate-power-mode:toggle": => @toggle()
-      "activate-power-mode:enable": => @enable()
-      "activate-power-mode:disable": => @disable()
-      "activate-power-mode:reset-max-combo": =>
-        @powerEditor.getCombo().resetMaxStreak()
+    requestIdleCallback =>
+      @subscriptions = new CompositeDisposable
 
-    if @getConfig "autoToggle"
-      @toggle()
+      @powerEditor = require "./power-editor"
+      @pluginManager = require "./plugin-manager"
+      @powerEditor.setPluginManager @pluginManager
+      @pluginManager.init @config, @pluginRegistry, @flowRegistry, @effectRegistry
+
+      @subscriptions.add atom.commands.add "atom-workspace",
+        "activate-power-mode:toggle": => @toggle()
+        "activate-power-mode:enable": => @enable()
+        "activate-power-mode:disable": => @disable()
+
+      if @getConfig "autoToggle"
+        @toggle()
 
   deactivate: ->
     @subscriptions?.dispose()
@@ -40,3 +45,9 @@ module.exports = ActivatePowerMode =
   disable: ->
     @active = false
     @powerEditor.disable()
+
+  provideServiceV1: ->
+    if not @service
+      Service = require "./service"
+      @service = new Service(@pluginRegistry, @flowRegistry, @effectRegistry)
+    @service

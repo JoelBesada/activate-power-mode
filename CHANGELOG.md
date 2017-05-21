@@ -1,3 +1,19 @@
+### 2.0.0 ???
+* New service to register plugins, canvas effects and input flows.
+* Api to access the screen shake, audio player and the combo.
+* Events on input, pane change, add cursor, and combo streak.
+* Combo now supports multi levels (with multipliers), by default at 20, 50, 100, 200 and 500.
+* Combo shows the counter change.
+* Combo supports decrease and reset.
+* Particles manager util class to create a particle based effect.
+* Improve package activation performance with `requestIdleCallback`.
+* Non-blocking input by calling `requestIdleCallback`.
+* Commands to choose effect and flow from a list.
+* Flow from a user's file, for now `user-flow.coffee` (or .js) in your home dir.
+* Render only 1 each 3 frames.
+* Avoid calling configs each input or frame.
+* Fix issue when minimap is on the left.
+
 ### 1.4.0 2017-03-19
 * Some performance improvements
 * Fix rare bug with combo exclamations
@@ -63,7 +79,7 @@
 * Add better color detection to prevent getting gray particles when writing at the end of the line
 
 ### 0.6.0 2016-06-30
-* Code refactor, no user-facing changes. 
+* Code refactor, no user-facing changes.
 
 ### 0.5.2 2016-05-03
 * Properly dispose event listeners when disabling the plugin.
