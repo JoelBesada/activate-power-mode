@@ -4,9 +4,11 @@ module.exports =
     description: "Toggle on start."
     type: "boolean"
     default: true
+    order: 1
 
   comboMode:
     type: "object"
+    order: 2
     properties:
       enabled:
         title: "Combo Mode - Enabled"
@@ -27,13 +29,14 @@ module.exports =
         order: 2
 
       activationThreshold:
-        title: 'Combo Mode - Activation Threshold'
-        description: 'Streak threshold to activate the power mode. (To aply this settings "Combo Mode - Style" has to be Custom).'
-        type: "integer"
-        default: 50
-        minimum: 1
-        maximum: 1000
-        order: 3
+        title: "Combo Mode - Activation Threshold"
+        description: "Streak threshold to activate the power mode."
+        type: "array"
+        default: [20, 50, 100, 200, 500]
+        items:
+          type: "integer"
+          minimum: 1
+          maximum: 1000
 
       streakTimeout:
         title: "Combo Mode - Streak Timeout"
@@ -87,9 +90,97 @@ module.exports =
             default: ["Super!", "Radical!", "Fantastic!", "Great!", "OMG", "Whoah!", ":O", "Nice!", "Splendid!", "Wild!", "Grand!", "Impressive!", "Stupendous!", "Extreme!", "Awesome!"]
             order: 3
 
+  particles:
+    type: "object"
+    order: 3
+    properties:
+      enabled:
+        title: "Particles - Enabled"
+        description: "Turn the particles on/off."
+        type: "boolean"
+        default: true
+        order: 1
+
+      colours:
+        type: "object"
+        properties:
+          type:
+            title: "Colours"
+            description: "Configure colour options"
+            type: "string"
+            default: "cursor"
+            enum: [
+              {value: 'cursor', description: 'Particles will be the colour at the cursor.'}
+              {value: 'random', description: 'Particles will have random colours.'}
+              {value: 'fixed', description: 'Particles will have a fixed colour.'}
+            ]
+            order: 1
+
+          fixed:
+            title: "Fixed colour"
+            description: "Colour when fixed colour is selected"
+            type: "color"
+            default: "#fff"
+
+      totalCount:
+        type: "object"
+        properties:
+          max:
+            title: "Particles - Max Total"
+            description: "The maximum total number of particles on the screen."
+            type: "integer"
+            default: 500
+            minimum: 0
+
+      spawnCount:
+        type: "object"
+        properties:
+          min:
+            title: "Particles - Minimum Spawned"
+            description: "The minimum (randomized) number of particles spawned on input."
+            type: "integer"
+            default: 5
+
+          max:
+            title: "Particles - Maximum Spawned"
+            description: "The maximum (randomized) number of particles spawned on input."
+            type: "integer"
+            default: 15
+
+      size:
+        type: "object"
+        properties:
+          min:
+            title: "Particles - Minimum Size"
+            description: "The minimum (randomized) size of the particles."
+            type: "integer"
+            default: 2
+            minimum: 0
+
+          max:
+            title: "Particles - Maximum Size"
+            description: "The maximum (randomized) size of the particles."
+            type: "integer"
+            default: 4
+            minimum: 0
+
+      effect:
+        title: "Effect"
+        description: "Defines the effect."
+        type: "string"
+        default: ""
+        order: 7
+
   screenShake:
     type: "object"
+    order: 4
     properties:
+      enabled:
+        title: "Screen Shake - Enabled"
+        description: "Turn the shaking on/off."
+        type: "boolean"
+        default: true
+
       minIntensity:
         title: "Screen Shake - Minimum Intensity"
         description: "The minimum (randomized) intensity of the shake."
@@ -105,12 +196,6 @@ module.exports =
         default: 3
         minimum: 0
         maximum: 100
-
-      enabled:
-        title: "Screen Shake - Enabled"
-        description: "Turn the shaking on/off."
-        type: "boolean"
-        default: true
 
   playAudio:
     type: "object"
@@ -227,80 +312,8 @@ module.exports =
             type: "array"
             default: ['change', 'duringStreak', 'streak', '100']
 
-  particles:
-    type: "object"
-    properties:
-      enabled:
-        title: "Particles - Enabled"
-        description: "Turn the particles on/off."
-        type: "boolean"
-        default: true
-        order: 1
-
-      colours:
-        type: "object"
-        properties:
-          type:
-            title: "Colours"
-            description: "Configure colour options"
-            type: "string"
-            default: "cursor"
-            enum: [
-              {value: 'cursor', description: 'Particles will be the colour at the cursor.'}
-              {value: 'random', description: 'Particles will have random colours.'}
-              {value: 'fixed', description: 'Particles will have a fixed colour.'}
-            ]
-            order: 1
-
-          fixed:
-            title: "Fixed colour"
-            description: "Colour when fixed colour is selected"
-            type: "color"
-            default: "#fff"
-
-      totalCount:
-        type: "object"
-        properties:
-          max:
-            title: "Particles - Max Total"
-            description: "The maximum total number of particles on the screen."
-            type: "integer"
-            default: 500
-            minimum: 0
-
-      spawnCount:
-        type: "object"
-        properties:
-          min:
-            title: "Particles - Minimum Spawned"
-            description: "The minimum (randomized) number of particles spawned on input."
-            type: "integer"
-            default: 5
-
-          max:
-            title: "Particles - Maximum Spawned"
-            description: "The maximum (randomized) number of particles spawned on input."
-            type: "integer"
-            default: 15
-
-      size:
-        type: "object"
-        properties:
-          min:
-            title: "Particles - Minimum Size"
-            description: "The minimum (randomized) size of the particles."
-            type: "integer"
-            default: 2
-            minimum: 0
-
-          max:
-            title: "Particles - Maximum Size"
-            description: "The maximum (randomized) size of the particles."
-            type: "integer"
-            default: 4
-            minimum: 0
-
   excludedFileTypes:
+    order: 6
     type: "object"
     properties:
       excluded:
@@ -308,3 +321,15 @@ module.exports =
         description: "Use comma separated, lowercase values (i.e. \"html, cpp, css\")"
         type: "array"
         default: ["."]
+
+  flow:
+    title: "Flow"
+    description: "Defines the flow when typping."
+    type: "string"
+    default: ""
+    order: 7
+
+  plugins:
+    type: "object"
+    order: 8
+    properties: {}

@@ -4,6 +4,8 @@
 // for a full listing of what's available.
 @import "ui-variables";
 
+@power-color: #4EFFA1;
+
 @font-face {
   font-family: "Press Start 2P";
   src: url("atom://activate-power-mode/fonts/PressStart2P-Regular.ttf")  format("truetype");
@@ -11,7 +13,7 @@
 
 .power-mode-canvas {
   position: absolute;
-  z-index: 10;
+  z-index: 0;
   top: 0;
   left: 0;
   pointer-events: none;
@@ -27,12 +29,12 @@
 
   .title {
     color: white;
-    text-shadow: 2px 2px 2px #4EFFA1;
+    text-shadow: 2px 2px 2px @power-color;
     font-size: 16px;
   }
 
   .max {
-    color: #4EFFA1;
+    color: @power-color;
     font-size: 13px;
   }
 
@@ -41,15 +43,15 @@
     opacity: 0.5;
     margin-top: 10px;
     height: 8px;
-    background: #4EFFA1;
+    background: @power-color;
     width: 100%;
     transform: scaleX(0);
   }
 
   .counter {
-    margin-top: 30px;
-    font-size: 80px;
-    color: #4EFFA1;
+    margin-top: 10px;
+    font-size: 60px;
+    color: @power-color;
     line-height: 1;
 
     &.bump {
@@ -59,10 +61,10 @@
 
   .exclamations {
     position: absolute;
-    bottom: -20px;
+    bottom: -10px;
     right: 0;
     display: block;
-    color: #4EFFA1;
+    color: @power-color;
     opacity: 0.75;
     font-size: 20px;
     text-align: right;
@@ -74,24 +76,32 @@
       position: absolute;
       min-width: 200px;
       animation: exclamation 1.5s ease-out both;
+
+      &.message,
+      &.error,
+      &.level,
+      &.max-combo {
+        margin-right: 40px;
+      }
+
+      &.up,
+      &.down {
+        font-size: 15px;
+      }
+
+      &.down,
+      &.error {
+        color: #ee3c3c;
+      }
+
+      &.level,
+      &.max-combo {
+        color: #ffed4b;
+      }
     }
   }
 
-  &.reached {
-    .title {
-      text-shadow: 2px 2px 2px #00DDFF;
-    }
-
-    .counter,
-    .exclamations,
-    .max {
-      color: #00DDFF;
-    }
-
-    .bar {
-      background: #00DDFF;
-    }
-  }
+  .generate-levels(5);
 }
 
 @keyframes grow {
@@ -108,5 +118,42 @@
   100% {
     opacity: 0;
     transform: translate3D(0, 100px, 0);
+  }
+}
+
+.generate-levels(@i) when (@i > 0) {
+  @levelColor: spin(@power-color, (@i * 35));
+  &.level-@{i} {
+    .title {
+      text-shadow: 2px 2px 2px @levelColor;
+    }
+
+    .counter,
+    .exclamations,
+    .max {
+      color: @levelColor;
+    }
+
+    .bar {
+      background: @levelColor;
+    }
+  }
+  .generate-levels(@i - 1);
+}
+
+.effect-list {
+  li {
+    height:auto;
+    margin-left:auto;
+    margin-right:auto;
+    padding-bottom: 20px;
+
+    overflow: hidden;
+  }
+
+  li img {
+    max-width: 80px;
+    max-height: 80px;
+    float: right;
   }
 }
