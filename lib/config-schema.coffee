@@ -17,6 +17,17 @@ module.exports =
         default: true
         order: 1
 
+      style:
+        title: "Combo Mode - Style"
+        description: "Sets the settings to have pre-configured style or use custom settings."
+        type: "string"
+        default: 'killerInstinct'
+        enum: [
+          {value: 'killerInstinct', description: 'Killer Instinct'}
+          {value: 'custom', description: 'Custom'}
+        ]
+        order: 2
+
       activationThreshold:
         title: "Combo Mode - Activation Threshold"
         description: "Streak threshold to activate the power mode."
@@ -34,20 +45,7 @@ module.exports =
         default: 10
         minimum: 1
         maximum: 100
-
-      exclamationEvery:
-        title: "Combo Mode - Exclamation Every"
-        description: "Shows an exclamation every streak count."
-        type: "integer"
-        default: 10
-        minimum: 1
-        maximum: 100
-
-      exclamationTexts:
-        title: "Combo Mode - Exclamation Texts"
-        description: "Exclamations to show (randomized)."
-        type: "array"
-        default: ["Super!", "Radical!", "Fantastic!", "Great!", "OMG", "Whoah!", ":O", "Nice!", "Splendid!", "Wild!", "Grand!", "Impressive!", "Stupendous!", "Extreme!", "Awesome!"]
+        order: 4
 
       opacity:
         title: "Combo Mode - Opacity"
@@ -56,6 +54,41 @@ module.exports =
         default: 0.6
         minimum: 0
         maximum: 1
+        order: 5
+
+      exclamationVolume:
+        title: "Combo Mode - Exclamation Volume"
+        description: "Volume of the exclamation audio."
+        type: "number"
+        default: 0.50
+        minimum: 0.0
+        maximum: 1.0
+        order: 6
+
+      customExclamations:
+        type: "object"
+        properties:
+          enabled:
+            title: "Combo Mode Custom Exclamations - Enabled"
+            description: 'To aply this settings "Combo Mode - Style" has to be Custom'
+            type: "boolean"
+            default: true
+            order: 1
+
+          typeAndLapse:
+            title: "Combo Mode Custom Exclamations - Type and Lapse"
+            description: "types: onlyText, onlyAudio, bouth. streakCount: min 10 max 100. (let in 0 to play at endStreak)."
+            type: "array"
+            default: ["onlyText", "10"]
+            order: 2
+
+          textsOrPath:
+            title: "Combo Mode Custom Exclamations - Exclamation Texts or Path"
+            description: 'Custom exclamations to show (randomized) or Path to exclamations audiofiles. (Add "/" or, "\\" at the end of the path).
+            Note: exclamation will not apear if type is onlyText and text or path is a path also if type is onlyAudio or bouth and texts or path are texts.'
+            type: "array"
+            default: ["Super!", "Radical!", "Fantastic!", "Great!", "OMG", "Whoah!", ":O", "Nice!", "Splendid!", "Wild!", "Grand!", "Impressive!", "Stupendous!", "Extreme!", "Awesome!"]
+            order: 3
 
   particles:
     type: "object"
@@ -166,7 +199,6 @@ module.exports =
 
   playAudio:
     type: "object"
-    order: 5
     properties:
       enabled:
         title: "Play Audio - Enabled"
@@ -185,14 +217,14 @@ module.exports =
           {value: '../audioclips/typewriter.wav', description: 'Type Writer'}
           {value: 'customAudioclip', description: 'Custom Path'}
         ]
-        order: 3
+        order: 2
 
       customAudioclip:
         title: "Play Audio - Path to Audioclip"
         description: "Path to audioclip played at keystroke."
         type: "string"
-        default: 'rocksmash.wav'
-        order: 4
+        default: 'intro.wav'
+        order: 3
 
       volume:
         title: "Play Audio - Volume"
@@ -201,7 +233,84 @@ module.exports =
         default: 0.42
         minimum: 0.0
         maximum: 1.0
+        order: 4
+
+  playIntroAudio:
+    type: "object"
+    properties:
+      enabled:
+        title: "Play Intro Audio - Enabled"
+        description: "Play audio clip on/off."
+        type: "boolean"
+        default: false
+        order: 1
+
+      audioclip:
+        title: "Play Intro Audio - Audioclip"
+        description: "Which audio clip played at keystroke."
+        type: "string"
+        default: '../audioclips/intro.wav'
+        enum: [
+          {value: '../audioclips/intro.wav', description: 'Intro'}
+          {value: 'customAudioclip', description: 'Custom Path'}
+        ]
         order: 2
+
+      customAudioclip:
+        title: "Play Intro Audio - Path to Audioclip"
+        description: "Path to audioclip played at keystroke."
+        type: "string"
+        default: 'intro.wav'
+        order: 3
+
+      volume:
+        title: "Play Intro Audio - Volume"
+        description: "Volume of the audio clip played at keystroke."
+        type: "number"
+        default: 1
+        minimum: 0.0
+        maximum: 1.0
+        order: 4
+
+  playBackgroundMusic:
+    type: "object"
+    properties:
+      enabled:
+        title: "Background Music - Enabled"
+        description: "Play Background Music on/off."
+        type: "boolean"
+        default: true
+        order: 1
+
+      musicPath:
+        title: "Background Music - Path to Audio"
+        description: "Path to Music Tracks played in combo Mode."
+        type: "string"
+        default: '../audioclips/backgroundmusics/'
+        order: 2
+
+      musicVolume:
+        title: "Background Music - Volume"
+        description: "Volume of the Music Track played in combo Mode."
+        type: "number"
+        default: 0.25
+        minimum: 0.0
+        maximum: 1.0
+        order: 3
+
+      actions:
+        type: "object"
+        properties:
+          command:
+            title: "Music Player - Action"
+            description: 'Syntax "action, when, lapseType, lapse".\n
+            action: repeat, change, none\n
+            execution: duringStreak, endStreak, endMusic\n
+            lapseType: streak, time (This value is used only if execution is duringStreak)\n
+            lapse: Number Value (if lapseType is time, lapse will be in seconds) Min:10 Max:100\n
+            Note: the lapsetype and lapse values is only used in duringStreak.'
+            type: "array"
+            default: ['change', 'duringStreak', 'streak', '100']
 
   excludedFileTypes:
     order: 6

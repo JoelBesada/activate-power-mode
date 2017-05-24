@@ -1,10 +1,15 @@
 {CompositeDisposable} = require "atom"
 configSchema = require "./config-schema"
+powerEditor = require "./power-editor"
+playIntroAudio = require "./play-intro"
+
 
 module.exports = ActivatePowerMode =
   config: configSchema
   subscriptions: null
   active: false
+  powerEditor: powerEditor
+  playIntroAudio: playIntroAudio
 
   activate: (state) ->
     @pluginRegistry = require "./plugin-registry"
@@ -41,6 +46,7 @@ module.exports = ActivatePowerMode =
   enable: ->
     @active = true
     @powerEditor.enable()
+    @playIntroAudio.play()
 
   disable: ->
     @active = false

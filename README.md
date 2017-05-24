@@ -4,11 +4,13 @@ A package for Atom to replicate the effects from [codeinthedark/editor](https://
 
 ![activate-power-mode-0 4 0](https://cloud.githubusercontent.com/assets/688415/11615565/10f16456-9c65-11e5-8af4-265f01fc83a0.gif)
 
-Now with a COMBO MODE!!!
+Now with a COMBO MODE!!!, EXCLAMATION SOUNDS!!! And BACKGROUND MUSIC!!!
 
 ![activate-power-mode-combo](https://cloud.githubusercontent.com/assets/10590799/18817237/876c2d84-8321-11e6-8324-f1540604c0bd.gif)
 
 **For a list of power mode packages to other editors, check out [codeinthedark/awesome-power-mode](https://github.com/codeinthedark/awesome-power-mode).**
+
+**For a video of activate-power-mode, check out [new-features](https://youtu.be/fBr48lHVYJE).**
 
 ## Install
 
@@ -36,10 +38,16 @@ Auto enable power mode on atom start.
 
 **When enabled effects won't appear until reach the activation threshold.**
 
+* Style **killerInstinct/custom**
 * Activation Threshold
 * Streak Timeout
-* Exclamation Every
-* Exclamation Texts
+* Opacity
+* Exclamation volume
+
+### Custom Exclamations
+* **Enable/Disable**
+* Type and Lapse
+* Text or Path
 
 ### Screen Shake
 * **Enable/Disable**
@@ -49,6 +57,23 @@ Auto enable power mode on atom start.
 * **Enable/Disable**
 * Volume
 * Audioclip (Gun, Typewriter, Custom)
+* Custom Audio Path
+
+### Play Intro Audio
+* **Enable/Disable**
+* Volume
+* Audioclip (Intro, Custom)
+* Custom Audio Path
+
+### Play Background Music
+* **Enable/Disable**
+* Path to Audio
+* Volume
+
+### Play Background Music Action
+* **none/repit/change, endMusic/endStreak/duringStreak, streak/time, lapse**
+
+**The last 2 parameters are only used on duringStreak**
 
 ### Particles
 * **Enable/Disable**
@@ -62,3 +87,8 @@ With this option you can select if use the color at cursor position, random colo
 
 ### Excluded File Types
 * Array of file types to exclude
+
+## References
+* Intro Sound downloaded from [here](https://www.freesound.org/people/kantouth/sounds/104396/).
+* Exclamation Sounds downloaded from [here](http://www.killerinstinctonline.net/).
+* Background Music downloaded from [here](http://www.bensound.com).

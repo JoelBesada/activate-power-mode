@@ -2,6 +2,8 @@
 debounce = require "lodash.debounce"
 defer = require "lodash.defer"
 sample = require "lodash.sample"
+exclamationAudio = require "./play-exclamation"
+musicPlayer = require "./music-player"
 
 module.exports =
   subscriptions: null
@@ -10,6 +12,8 @@ module.exports =
   currentStreak: 0
   level: 0
   maxStreakReached: false
+  exclamationAudio: exclamationAudio
+  musicPlayer: musicPlayer
 
   setPluginManager: (pluginManager) ->
     @pluginManager = pluginManager
@@ -44,9 +48,13 @@ module.exports =
     @debouncedEndStreak = null
     @streakTimeoutObserver?.dispose()
     @opacityObserver?.dispose()
+    @comboModeStyleObserver?.dispose()
+    @exclamationsTypeAndLapseObserver?.dispose()
+    @exclamationsTextsOrPathObserver?.dispose()
     @currentStreak = 0
     @level = 0
     @maxStreakReached = false
+    @musicPlayer.destroy()
 
   createElement: (name, parent)->
     @element = document.createElement "div"
@@ -55,6 +63,7 @@ module.exports =
     @element
 
   setup: (editorElement) ->
+    @editor = atom.workspace.getActiveTextEditor() #test
     if not @container
       @maxStreak = @getMaxStreak()
       @container = @createElement "streak-container"
@@ -65,6 +74,7 @@ module.exports =
       @max.textContent = "Max #{@maxStreak}"
       @counter = @createElement "counter", @container
       @bar = @createElement "bar", @container
+      @remainingTime = @createElement "text", @container
       @exclamations = @createElement "exclamations", @container
 
       @streakTimeoutObserver?.dispose()
@@ -77,6 +87,35 @@ module.exports =
       @opacityObserver?.dispose()
       @opacityObserver = atom.config.observe 'activate-power-mode.comboMode.opacity', (value) =>
         @container?.style.opacity = value
+
+      @comboModeStyleObserver?.dispose()
+      @comboModeStyleObserver = atom.config.observe 'activate-power-mode.comboMode.style', (value) =>
+        @style = value
+
+      @exclamationsTypeAndLapseObserver?.dispose()
+      @exclamationsTypeAndLapseObserver = atom.config.observe 'activate-power-mode.comboMode.customExclamations.typeAndLapse', (value) =>
+        @exclamationType = value[0]
+        lapseValue = value.map(Number)
+        if lapseValue[1] >= 10 and lapseValue[1] <= 100 or lapseValue[1] is 0
+          @exclamationEvery = lapseValue[1]
+        else if lapseValue[1] < 10
+          @exclamationEvery = 10
+        else if lapseValue[1] > 100
+          @exclamationEvery = 100
+
+      @exclamationsTextsOrPathObserver?.dispose()
+      @exclamationsTextsOrPathObserver = atom.config.observe 'activate-power-mode.comboMode.customExclamations.textsOrPath', (value) =>
+        if(value[0].indexOf('/') > -1)  or (value[0].indexOf("\\") > -1)
+          @textsOrPathIsPath = true
+        else
+          @textsOrPathIsPath = false
+
+    if @textsOrPathIsPath and @style is "custom" and @exclamationType is "onlyText"
+      @conflict = true
+    else if not @textsOrPathIsPath and @style is "custom" and @exclamationType != "onlyText"
+      @conflict = true
+    else
+      @conflict = false
 
     @exclamations.innerHTML = ''
 
@@ -123,6 +162,23 @@ module.exports =
     if @currentStreak > @maxStreak
       @increaseMaxStreak()
 
+<<<<<<< HEAD:lib/combo-mode.coffee
+    if not @reached and (@style is "killerInstinct" and @currentStreak >= 3)
+      @reached = true
+      @container.classList.add "reached"
+    else if not @reached and (@style is "custom" and @currentStreak >= @getConfig("comboMode.activationThreshold"))
+      @reached = true
+      @container.classList.add "reached"
+
+    if @getConfig("playBackgroundMusic.enabled") and @reached
+      @musicPlayer.play @currentStreak
+
+    if @style is "custom" and @getConfig("comboMode.customExclamations.enabled")
+      if @currentStreak % @exclamationEvery is 0 and @reached and not @conflict
+        @chooseExclamation()
+
+    @refreshStreakBar()
+=======
     return if @checkLevel()
 
     if @currentStreak % @conf['exclamationEvery'] is 0
@@ -132,6 +188,7 @@ module.exports =
 
   streakDecreased: (n) ->
     @showExclamation "#{n}", 'down', false
+>>>>>>> refs/remotes/JoelBesada/master:lib/combo-renderer.coffee
 
     @checkLevel()
     if @currentStreak == 0
@@ -155,6 +212,10 @@ module.exports =
     @level
 
   endStreak: ->
+    if ((@exclamationEvery is 0 and not @conflict) or (@style is "killerInstinct")) and @reached
+      @chooseExclamation()
+    if @getConfig("playBackgroundMusic.enabled") and @reached
+      @musicPlayer.actionEndStreak()
     @currentStreak = 0
     @maxStreakReached = false
     @container.classList.add "combo-zero"
@@ -162,12 +223,21 @@ module.exports =
     @level = 0
     @container.classList.add "level-#{@level}"
     @renderStreak()
+<<<<<<< HEAD:lib/combo-mode.coffee
+    @debouncedShowExclamation?.cancel()
+
+=======
     @refreshStreakBar(0)
     @pluginManager.runOnComboEndStreak()
+>>>>>>> refs/remotes/JoelBesada/master:lib/combo-renderer.coffee
 
   renderStreak: ->
     @counter.textContent = @currentStreak
     @counter.classList.remove "bump"
+
+    defer =>
+      @counter.classList.add "bump"
+
 
     defer =>
       @counter.classList.add "bump"
@@ -185,8 +255,12 @@ module.exports =
   showExclamation: (text = null, type = 'message', trigger = true) ->
     exclamation = document.createElement "span"
     exclamation.classList.add "exclamation"
+<<<<<<< HEAD:lib/combo-mode.coffee
+    text = sample @getConfig "comboMode.customExclamations.textsOrPath" if text is null
+=======
     exclamation.classList.add type
     text = sample @conf['exclamationTexts'] if text is null
+>>>>>>> refs/remotes/JoelBesada/master:lib/combo-renderer.coffee
     exclamation.textContent = text
 
     @exclamations.appendChild exclamation
@@ -195,8 +269,28 @@ module.exports =
         @exclamations.removeChild exclamation
     , 2000
 
+<<<<<<< HEAD:lib/combo-mode.coffee
+  playExclamation: ->
+    @exclamationAudio.play(@currentStreak,@style)
+
+
+  chooseExclamation: ->
+    if @style is "custom"
+      if @exclamationType is "onlyText"
+        return @showExclamation()
+      if @exclamationType is "onlyAudio"
+        return @playExclamation()
+      if @exclamationType is "bouth"
+        return @showExclamation @playExclamation()
+    if @style is "killerInstinct"
+      @showExclamation @playExclamation()
+
+  hasReached: ->
+    @reached
+=======
     if trigger
       @pluginManager.runOnComboExclamation(text)
+>>>>>>> refs/remotes/JoelBesada/master:lib/combo-renderer.coffee
 
   getMaxStreak: ->
     maxStreak = localStorage.getItem "activate-power-mode.maxStreak"
@@ -208,8 +302,12 @@ module.exports =
     @maxStreak = @currentStreak
     @max.textContent = "Max #{@maxStreak}"
     if @maxStreakReached is false
+<<<<<<< HEAD:lib/combo-mode.coffee
+      @showExclamation "NEW MAX!!!"
+=======
       @showExclamation "NEW MAX!!!", 'max-combo', false
       @pluginManager.runOnComboMaxStreak(@maxStreak)
+>>>>>>> refs/remotes/JoelBesada/master:lib/combo-renderer.coffee
     @maxStreakReached = true
 
   resetMaxStreak: ->
@@ -218,3 +316,9 @@ module.exports =
     @maxStreak = 0
     if @max
       @max.textContent = "Max 0"
+<<<<<<< HEAD:lib/combo-mode.coffee
+
+  getConfig: (config) ->
+    atom.config.get "activate-power-mode.#{config}"
+=======
+>>>>>>> refs/remotes/JoelBesada/master:lib/combo-renderer.coffee
