@@ -37,8 +37,7 @@ module.exports =
 
       exclamationEvery:
         title: "Combo Mode - Exclamation Every"
-        description: "Shows an exclamation every streak      console.log e
- count."
+        description: "Shows an exclamation every streak count."
         type: "integer"
         default: 10
         minimum: 1
