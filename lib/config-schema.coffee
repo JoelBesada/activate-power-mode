@@ -37,7 +37,8 @@ module.exports =
 
       exclamationEvery:
         title: "Combo Mode - Exclamation Every"
-        description: "Shows an exclamation every streak count."
+        description: "Shows an exclamation every streak      console.log e
+ count."
         type: "integer"
         default: 10
         minimum: 1
@@ -224,3 +225,10 @@ module.exports =
     type: "object"
     order: 8
     properties: {}
+
+  justDeletes:
+    title: "Destruction mode"
+    order: 1
+    type: "boolean"
+    description: "Only listen to deletes"
+    default: false

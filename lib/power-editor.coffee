@@ -51,6 +51,10 @@ module.exports =
       cursor = @editor.getCursorAtScreenPosition screenPos
       return unless cursor
 
+      if @getConfig "justDeletes"
+        unless @inputHandler.hasDeleted()
+          return
+
       @pluginManager.runOnInput cursor, screenPos, @inputHandler
 
   getConfig: (config) ->
