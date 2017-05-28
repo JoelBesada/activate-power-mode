@@ -1,4 +1,4 @@
-### 2.0.0 ???
+### 2.0.0 2017-05-27
 * New service to register plugins, canvas effects and input flows.
 * Api to access the screen shake, audio player and the combo.
 * Events on input, pane change, add cursor, and combo streak.
