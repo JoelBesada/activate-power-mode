@@ -62,3 +62,13 @@ With this option you can select if use the color at cursor position, random colo
 
 ### Excluded File Types
 * Array of file types to exclude
+
+### Plugins
+Here you can Enable/Disable the registered plugins.
+
+## Customize
+You can extend the basic functionality of this package by consuming the activate-power-mode service, with this you can register your own plugins, flows and canvas effects.
+
+Check it out in the [wiki](https://github.com/JoelBesada/activate-power-mode/wiki).
+
+If you only want to change the input logic, see the [user file flow](https://github.com/JoelBesada/activate-power-mode/wiki/Flow#user-file-flow) page.
