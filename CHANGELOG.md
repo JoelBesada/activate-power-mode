@@ -1,3 +1,6 @@
+### 2.1.0 2017-06-18
+* Quick fix for Atom 1.19 beta.
+
 ### 2.0.0 2017-05-27
 * New service to register plugins, canvas effects and input flows.
 * Api to access the screen shake, audio player and the combo.

@@ -48,8 +48,7 @@ module.exports =
       @initConfigSubscribers()
 
     @scrollView = editorElement.querySelector(".scroll-view")
-    @editorContents = editorElement.querySelector(".editor-contents--private")
-    @editorContents.appendChild @canvas
+    @scrollView.appendChild @canvas
     @canvas.style.display = "block"
     @editorElement = editorElement
     @editor = editor
@@ -99,7 +98,7 @@ module.exports =
 
   calculateOffsets: ->
     return if not @scrollView
-    @offsetLeft = @scrollView.offsetLeft
+    @offsetLeft = 0
     @offsetTop = @scrollView.offsetTop
 
   updateCanvasDimesions: ->
