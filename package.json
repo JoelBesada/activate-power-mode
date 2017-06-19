@@ -1,7 +1,7 @@
 {
   "name": "activate-power-mode",
   "main": "./lib/activate-power-mode",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Activate POWER MODE to write your code in style.",
   "keywords": [],
   "repository": "https://github.com/JoelBesada/activate-power-mode",
