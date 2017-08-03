@@ -1,3 +1,4 @@
+
 module.exports = class ComboApi
   constructor: (comboRenderer) ->
     @combo = comboRenderer
@@ -20,5 +21,11 @@ module.exports = class ComboApi
     else
       null
 
+  getCurrentStreak: ->
+    if @combo.isEnable
+      @combo.getCurrentStreak()
+    else
+      null
+      
   isEnable: ->
     @combo.isEnable

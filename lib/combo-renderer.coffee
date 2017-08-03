@@ -91,6 +91,7 @@ module.exports =
   resetCounter: ->
     return if @currentStreak is 0
 
+
     @showExclamation "#{-@currentStreak}", 'down', false
     @endStreak()
 
@@ -154,6 +155,9 @@ module.exports =
   getLevel: ->
     @level
 
+  getCurrentStreak: ->
+    @currentStreak
+    
   endStreak: ->
     @currentStreak = 0
     @maxStreakReached = false
