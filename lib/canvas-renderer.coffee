@@ -3,6 +3,7 @@ random = require "lodash.random"
 colorHelper = require "./color-helper"
 
 module.exports =
+  api: null
   colorHelper: colorHelper
   subscriptions: null
   conf: []
@@ -11,13 +12,17 @@ module.exports =
   setEffectRegistry: (effectRegistry) ->
     @effectRegistry = effectRegistry
 
-  enable: ->
+  enable: (api) ->
+    @api = api
     @initConfigSubscribers()
     @colorHelper.init()
 
   init: ->
-    @effectRegistry.effect.init()
+    @effectRegistry.effect.init(@api)
     @animationOn()
+
+  getEffect: ->
+    @effectRegistry.effect
 
   resetCanvas: ->
     @animationOff()
@@ -39,6 +44,7 @@ module.exports =
     @canvas = null
     @subscriptions?.dispose()
     @colorHelper?.disable()
+    @api = null
 
   setupCanvas: (editor, editorElement) ->
     if not @canvas
