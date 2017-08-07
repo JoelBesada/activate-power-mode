@@ -1,3 +1,9 @@
+### 2.2.0 2017-08-06
+* Add `getCurrentStreak` on combo api.
+* Fix `Activation Threshold` setting not rendering.
+* Add possibility to handle plugin events on canvas effects.
+* Fix not displaying exclamation on multipliers.
+
 ### 2.1.0 2017-06-18
 * Quick fix for Atom 1.19 beta.
 

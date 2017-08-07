@@ -22,4 +22,7 @@ module.exports =
     if data['qty']
       qty = data['qty']
 
+    if data['exclamation']
+      @combo.showExclamation data['exclamation'], data['exclamation_type']
+
     @combo.modifyStreak qty
