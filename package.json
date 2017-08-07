@@ -8,7 +8,7 @@
   "author": "Joel Besada <joel@joelb.me> (http://joelb.me)",
   "license": "MIT",
   "engines": {
-    "atom": ">=1.17.0 <2.0.0"
+    "atom": ">=1.19.0 <2.0.0"
   },
   "dependencies": {
     "atom-select-list": "^0.2.0",
