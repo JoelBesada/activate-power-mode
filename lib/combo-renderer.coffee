@@ -29,6 +29,7 @@ module.exports =
     @observe 'exclamationEvery'
     @observe 'activationThreshold'
     @observe 'exclamationTexts'
+    @observe 'multiplier'
     @subscriptions.add atom.commands.add "atom-workspace",
       "activate-power-mode:reset-max-combo": => @resetMaxStreak()
 
@@ -101,7 +102,7 @@ module.exports =
     @lastStreak = performance.now()
     @debouncedEndStreak()
 
-    n = n * (@level + 1) if n > 0
+    n = n * (@level + 1) if n > 0 and @conf['multiplier']
 
     oldStreak = @currentStreak
     @currentStreak += n

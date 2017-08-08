@@ -17,6 +17,13 @@ module.exports =
         default: true
         order: 1
 
+      multiplier:
+        title: "Combo Mode - Multiplier"
+        description: "Turn the multiplier on/off. (multiplier = streak * current level)."
+        type: "boolean"
+        default: true
+        order: 2
+
       activationThreshold:
         title: "Combo Mode - Activation Threshold"
         description: "Streak threshold to activate the power mode and levels."
