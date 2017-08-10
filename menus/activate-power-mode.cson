@@ -18,11 +18,11 @@
         },
         {
           'label': 'Select Effects'
-          'command': 'activate-power-mode:Select Flow'
+          'command': 'activate-power-mode:select-flow'
         },
         {
           'label': 'Reset Max Combo'
-          'command': 'activate-power-mode:Reset Max Combo'
+          'command': 'activate-power-mode:reset-max-combo'
         }
       ]
     ]
