@@ -15,6 +15,14 @@
         {
           'label': 'Toggle'
           'command': 'activate-power-mode:toggle'
+        },
+        {
+          'label': 'Select Effects'
+          'command': 'activate-power-mode:Select Flow'
+        },
+        {
+          'label': 'Reset Max Combo'
+          'command': 'activate-power-mode:Reset Max Combo'
         }
       ]
     ]
