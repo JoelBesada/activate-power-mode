@@ -1,6 +1,5 @@
 {CompositeDisposable} = require "atom"
 debounce = require "lodash.debounce"
-defer = require "lodash.defer"
 sample = require "lodash.sample"
 
 module.exports =
@@ -174,8 +173,9 @@ module.exports =
     @counter.textContent = @currentStreak
     @counter.classList.remove "bump"
 
-    defer =>
+    setTimeout =>
       @counter.classList.add "bump"
+    , 26
 
   refreshStreakBar: (leftTimeout = @streakTimeout) ->
     scale = leftTimeout / @streakTimeout
