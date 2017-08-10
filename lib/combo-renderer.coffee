@@ -149,7 +149,7 @@ module.exports =
     if level != @level
       @container.classList.remove "level-#{@level}"
       @container.classList.add "level-#{level}"
-      @showExclamation "#{level+1}x", 'level', false
+      @showExclamation "#{level+1}x", 'level', false if @conf['multiplier']
       @pluginManager.runOnComboLevelChange(level, @level)
       @level = level
       return true
