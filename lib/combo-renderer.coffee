@@ -125,7 +125,7 @@ module.exports =
     if @currentStreak > @maxStreak
       @increaseMaxStreak()
 
-    return if @conf['multiplier'] and @checkLevel()
+    return if @checkLevel()
 
     mod = @currentStreak % @conf['exclamationEvery']
     if mod is 0 or (@currentStreak - n < @currentStreak - mod < @currentStreak)
@@ -136,7 +136,7 @@ module.exports =
   streakDecreased: (n) ->
     @showExclamation "#{n}", 'down', false
 
-    @checkLevel()  if @conf['multiplier']
+    @checkLevel()
     if @currentStreak == 0
       @container.classList.add "combo-zero"
 
