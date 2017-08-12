@@ -17,7 +17,19 @@
           'command': 'activate-power-mode:toggle'
         },
         {
+          'label': 'Enable'
+          'command': 'activate-power-mode:enable'
+        },
+        {
+          'label': 'Disable'
+          'command': 'activate-power-mode:disable'
+        },
+        {
           'label': 'Select Effects'
+          'command': 'activate-power-mode:select-effect'
+        },
+        {
+          'label': 'Select Flow'
           'command': 'activate-power-mode:select-flow'
         },
         {
