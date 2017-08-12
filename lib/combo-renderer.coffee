@@ -28,6 +28,7 @@ module.exports =
     @observe 'exclamationEvery'
     @observe 'activationThreshold'
     @observe 'exclamationTexts'
+    @observe 'multiplier'
     @subscriptions.add atom.commands.add "atom-workspace",
       "activate-power-mode:reset-max-combo": => @resetMaxStreak()
 
@@ -100,7 +101,7 @@ module.exports =
     @lastStreak = performance.now()
     @debouncedEndStreak()
 
-    n = n * (@level + 1) if n > 0
+    n = n * (@level + 1) if n > 0 and @conf['multiplier']
 
     oldStreak = @currentStreak
     @currentStreak += n
@@ -147,7 +148,7 @@ module.exports =
     if level != @level
       @container.classList.remove "level-#{@level}"
       @container.classList.add "level-#{level}"
-      @showExclamation "#{level+1}x", 'level', false
+      @showExclamation "#{level+1}x", 'level', false if @conf['multiplier']
       @pluginManager.runOnComboLevelChange(level, @level)
       @level = level
       return true
