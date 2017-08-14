@@ -1,3 +1,10 @@
+### 2.3.0 2017-08-14
+* Add setting to turn the multiplier on/off.
+* All command added to the context menu.
+* Use `will-change` for the text editor screen shake effect.
+* Avoid pointer events on combo element.
+* Fix bump effect on combo.
+
 ### 2.2.0 2017-08-06
 * Add `getCurrentStreak` on combo api.
 * Fix `Activation Threshold` setting not rendering.
