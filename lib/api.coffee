@@ -6,7 +6,7 @@ module.exports = class Api
     @combo = comboApi
 
   shakeScreen: (intensity = null) ->
-    @screenShaker.shake @editorRegistry.getEditorElement(), intensity
+    @screenShaker.shake @editorRegistry.getScrollView(), intensity
 
   playAudio: (audio) ->
     @audioPlayer.play(audio)
