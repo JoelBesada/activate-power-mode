@@ -82,7 +82,6 @@ module.exports =
 
   runOnChangePane: (editor = null, editorElement = null) ->
     @editorRegistry.setEditor editor
-    @editorRegistry.setEditorElement editorElement
 
     @pluginRegistry.onEnabled(
       (code, plugin) -> plugin.onChangePane?(editor, editorElement)
