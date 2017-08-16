@@ -5,8 +5,13 @@ module.exports =
   getEditorElement: ->
     @editorElement
 
-  setEditor: (editor) ->
-    @editor = editor
+  getScrollView: ->
+    @scrollView
 
-  setEditorElement: (editorElement) ->
-    @editorElement = editorElement
+  setEditor: (editor) ->
+    if editor
+      @editor = editor
+      @editorElement = editor.getElement()
+      @scrollView = @editorElement.querySelector(".scroll-view")
+    else
+      @editor = @editorElement = @scrollView = null
