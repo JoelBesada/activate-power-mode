@@ -16,6 +16,7 @@ module.exports =
     @api = api
     @initConfigSubscribers()
     @colorHelper.init()
+    @initResizeObserver()
 
   init: ->
     @effectRegistry.effect.init(@api)
@@ -26,6 +27,7 @@ module.exports =
 
   resetCanvas: ->
     @animationOff()
+    @resizeObserver?.disconnect()
     @canvas?.style.display = "none"
     @editor = null
     @editorElement = null
@@ -45,6 +47,13 @@ module.exports =
     @subscriptions?.dispose()
     @colorHelper?.disable()
     @api = null
+    @resizeObserver?.disconnect()
+    @resizeObserver = null
+
+  initResizeObserver: ->
+    @resizeObserver = new ResizeObserver () =>
+      @updateCanvasDimesions()
+      @calculateOffsets()
 
   setupCanvas: (editor, editorElement) ->
     if not @canvas
@@ -60,9 +69,7 @@ module.exports =
     @editor = editor
     @updateCanvasDimesions()
     @calculateOffsets()
-    window.addEventListener 'resize', =>
-      @updateCanvasDimesions()
-      @calculateOffsets()
+    @resizeObserver.observe(@scrollView)
 
     @init()
 
