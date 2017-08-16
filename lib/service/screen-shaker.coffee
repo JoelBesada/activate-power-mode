@@ -54,12 +54,10 @@ module.exports =
     x = @shakeIntensity min, max
     y = @shakeIntensity min, max
 
-    element.style.top = "#{y}px"
-    element.style.left = "#{x}px"
+    element.style.transform = "translate(#{x}px, #{y}px)"
 
     setTimeout ->
-      element.style.top = ""
-      element.style.left = ""
+      element.style.transform = ""
     , 75
 
   shakeIntensity: (min, max) ->
