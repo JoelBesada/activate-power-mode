@@ -1,3 +1,8 @@
+### 2.4.0 2017-08-16
+* Use ResizeObserver on scrollView to resize canvas.
+* Use `transform: translate()` on shake effect.
+* Fix typo in Flow settings.
+
 ### 2.3.0 2017-08-14
 * Add setting to turn the multiplier on/off.
 * All command added to the context menu.
