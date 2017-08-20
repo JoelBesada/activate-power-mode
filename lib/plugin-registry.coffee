@@ -75,9 +75,9 @@ module.exports =
     @subscriptions.add atom.config.observe(
       key, (isEnabled) =>
         console.log "El plugin observer " + plugin.name + "se ha invocado " + ++@count
-        if plugin.name? and atom.packages.isPackageDisabled(plugin.name)
+        if plugin.name? and atom.packages.isPackageDisabled(plugin.name) and isEnabled
             console.error "Yo me invoque jejeje XD"
-            return atom.config.set(key, false) if isEnabled
+            return atom.config.set(key, false)
 
         if isEnabled
           plugin.enable?(@api)
