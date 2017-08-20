@@ -22,16 +22,11 @@ module.exports =
 
     for code, plugin of @plugins
       key = "activate-power-mode.plugins.#{code}"
-      isPackage = if plugin.name? then true else false
-      continue if isPackage and @registedPlugins[code] is plugin.name
-      @registedPlugins[code] = plugin.name if isPackage
-      @addConfigForPlugin code, plugin, key
-      if isPackage
-        @observePackagePlugin code, plugin, key
-        continue
-      @observePlugin code, plugin, key
+      continue if plugin.name? and plugin.name is @registedPlugins[code]
+      @registedPlugins[code] = plugin.name if plugin.name?
 
-    @observePackage() if @plugins != null
+      @addConfigForPlugin code, plugin, key
+      @observePlugin code, plugin, key
 
   disable: ->
     @enabled = false
@@ -48,7 +43,7 @@ module.exports =
       return null if plugin.name? and @registedPlugins[code] is plugin.name
       @registedPlugins[code] = plugin.name if plugin.name?
       @addConfigForPlugin code, plugin, key
-      @observePackagePlugin code, plugin, key
+      @observePlugin code, plugin, key
 
   addConfigForPlugin: (code, plugin, key) ->
     @config.plugins.properties[code] =
@@ -63,20 +58,7 @@ module.exports =
   observePlugin: (code, plugin, key) ->
     @subscriptions.add atom.config.observe(
       key, (isEnabled) =>
-        if isEnabled
-          plugin.enable?(@api)
-          @enabledPlugins[code] = plugin
-        else
-          plugin.disable?()
-          delete @enabledPlugins[code]
-    )
-
-  observePackagePlugin: (code, plugin, key) ->
-    @subscriptions.add atom.config.observe(
-      key, (isEnabled) =>
-        console.log "El plugin observer " + plugin.name + "se ha invocado " + ++@count
         if plugin.name? and atom.packages.isPackageDisabled(plugin.name) and isEnabled
-            console.error "Yo me invoque jejeje XD"
             return atom.config.set(key, false)
 
         if isEnabled
@@ -86,17 +68,6 @@ module.exports =
           plugin.disable?()
           delete @enabledPlugins[code]
     )
-
-  observePackage: ->
-    @subscriptions.add atom.packages.onDidActivatePackage (packages) =>
-      for code, name of @registedPlugins
-        if name is packages.name
-          atom.config.set("activate-power-mode.plugins.#{code}", true) if !@isActive(code)
-
-    @subscriptions.add atom.packages.onDidDeactivatePackage (packages) =>
-      for code, name of @registedPlugins
-        if name is packages.name
-          atom.config.set("activate-power-mode.plugins.#{code}", false) if @isActive(code)
 
   onEnabled: (callback) ->
     for code, plugin of @enabledPlugins
