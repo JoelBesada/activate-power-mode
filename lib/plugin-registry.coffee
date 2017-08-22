@@ -25,7 +25,7 @@ module.exports =
       continue if plugin.name? and plugin.name is @registedPlugins[code]
       @registedPlugins[code] = plugin.name if plugin.name?
 
-      @addConfigForPlugin code, plugin, key
+      @addConfigForPlugin(code, plugin, key) if atom.config.get(key) == undefined
       @observePlugin code, plugin, key
 
   disable: ->
@@ -42,7 +42,7 @@ module.exports =
     if @enabled
       return null if plugin.name? and @registedPlugins[code] is plugin.name
       @registedPlugins[code] = plugin.name if plugin.name?
-      @addConfigForPlugin code, plugin, key
+      @addConfigForPlugin(code, plugin, key) if atom.config.get(key) == undefined
       @observePlugin code, plugin, key
 
   addConfigForPlugin: (code, plugin, key) ->
@@ -52,8 +52,7 @@ module.exports =
       description: plugin.description,
       default: true
 
-    if atom.config.get(key) == undefined
-      atom.config.set key, @config.plugins.properties[code].default
+    atom.config.set key, @config.plugins.properties[code].default
 
   observePlugin: (code, plugin, key) ->
     @subscriptions.add atom.config.observe(
