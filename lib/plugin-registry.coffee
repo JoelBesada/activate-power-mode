@@ -6,7 +6,6 @@ module.exports =
   plugins: []
   corePlugins: []
   enabledPlugins: []
-  registedPlugins: []
 
   init: (configSchema, api) ->
     @config = configSchema
@@ -22,10 +21,7 @@ module.exports =
 
     for code, plugin of @plugins
       key = "activate-power-mode.plugins.#{code}"
-      continue if plugin.name? and plugin.name is @registedPlugins[code]
-      @registedPlugins[code] = plugin.name if plugin.name?
-
-      @addConfigForPlugin(code, plugin, key) if atom.config.get(key) == undefined
+      @addConfigForPlugin(code, plugin, key)
       @observePlugin code, plugin, key
 
   disable: ->
@@ -40,12 +36,11 @@ module.exports =
     @plugins[code] = plugin
 
     if @enabled
-      return null if plugin.name? and @registedPlugins[code] is plugin.name
-      @registedPlugins[code] = plugin.name if plugin.name?
-      @addConfigForPlugin(code, plugin, key) if atom.config.get(key) == undefined
+      @addConfigForPlugin(code, plugin, key)
       @observePlugin code, plugin, key
 
   addConfigForPlugin: (code, plugin, key) ->
+    return if atom.config.get(key) == undefined
     @config.plugins.properties[code] =
       type: 'boolean',
       title: plugin.title,
