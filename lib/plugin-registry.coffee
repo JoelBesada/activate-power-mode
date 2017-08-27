@@ -40,7 +40,7 @@ module.exports =
       @observePlugin code, plugin, key
 
   addConfigForPlugin: (code, plugin, key) ->
-    return if atom.config.get(key) == undefined
+    return if atom.config.get(key) != undefined
     @config.plugins.properties[code] =
       type: 'boolean',
       title: plugin.title,
