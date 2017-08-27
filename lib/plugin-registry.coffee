@@ -66,6 +66,3 @@ module.exports =
   onEnabled: (callback) ->
     for code, plugin of @enabledPlugins
       continue if callback code, plugin
-
-  isActive: (code) ->
-    atom.config.get "activate-power-mode.plugins.#{code}"
