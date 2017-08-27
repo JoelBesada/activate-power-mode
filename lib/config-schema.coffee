@@ -44,10 +44,10 @@ module.exports =
 
       exclamationEvery:
         title: "Combo Mode - Exclamation Every"
-        description: "Shows an exclamation every streak count."
+        description: "Shows an exclamation every streak count. (Let in 0 to disable)"
         type: "integer"
         default: 10
-        minimum: 1
+        minimum: 0
         maximum: 100
 
       exclamationTexts:

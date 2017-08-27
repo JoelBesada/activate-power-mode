@@ -126,9 +126,10 @@ module.exports =
 
     return if @checkLevel()
 
-    mod = @currentStreak % @conf['exclamationEvery']
-    if mod is 0 or (@currentStreak - n < @currentStreak - mod < @currentStreak)
-      @showExclamation()
+    if @conf['exclamationEvery'] > 0
+      mod = @currentStreak % @conf['exclamationEvery']
+      if mod is 0 or (@currentStreak - n < @currentStreak - mod < @currentStreak)
+        @showExclamation()
     else
       @showExclamation "+#{n}", 'up', false
 
