@@ -52,9 +52,6 @@ module.exports =
   observePlugin: (code, plugin, key) ->
     @subscriptions.add atom.config.observe(
       key, (isEnabled) =>
-        if plugin.name? and atom.packages.isPackageDisabled(plugin.name) and isEnabled
-            return atom.config.set(key, false)
-
         if isEnabled
           plugin.enable?(@api)
           @enabledPlugins[code] = plugin
