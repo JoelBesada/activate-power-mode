@@ -12,7 +12,6 @@ module.exports =
     @api = api
 
   enable: ->
-    @count = 0
     @subscriptions = new CompositeDisposable
     @enabled = true
 
@@ -40,14 +39,14 @@ module.exports =
       @observePlugin code, plugin, key
 
   addConfigForPlugin: (code, plugin, key) ->
-    return if atom.config.get(key) != undefined
     @config.plugins.properties[code] =
       type: 'boolean',
       title: plugin.title,
       description: plugin.description,
       default: true
 
-    atom.config.set key, @config.plugins.properties[code].default
+    if atom.config.get(key) is undefined
+      atom.config.set key, @config.plugins.properties[code].default
 
   observePlugin: (code, plugin, key) ->
     @subscriptions.add atom.config.observe(
