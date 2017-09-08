@@ -20,7 +20,7 @@ module.exports =
 
     for code, plugin of @plugins
       key = "activate-power-mode.plugins.#{code}"
-      @addConfigForPlugin code, plugin, key
+      @addConfigForPlugin(code, plugin, key)
       @observePlugin code, plugin, key
 
   disable: ->
@@ -35,7 +35,7 @@ module.exports =
     @plugins[code] = plugin
 
     if @enabled
-      @addConfigForPlugin code, plugin, key
+      @addConfigForPlugin(code, plugin, key)
       @observePlugin code, plugin, key
 
   addConfigForPlugin: (code, plugin, key) ->
@@ -45,7 +45,7 @@ module.exports =
       description: plugin.description,
       default: true
 
-    if atom.config.get(key) == undefined
+    if atom.config.get(key) is undefined
       atom.config.set key, @config.plugins.properties[code].default
 
   observePlugin: (code, plugin, key) ->
