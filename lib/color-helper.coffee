@@ -2,18 +2,22 @@
 
 module.exports =
   subscriptions: null
+  key: "activate-power-mode.particles.colours"
   conf: []
   golden_ratio_conjugate: 0.618033988749895
 
   init: ->
     @initConfigSubscribers()
+    @initList()
 
   disable: ->
     @subscriptions?.dispose()
+    @colorList?.dispose()
+    @colorList = null
 
   observe: (key) ->
     @subscriptions.add atom.config.observe(
-      "activate-power-mode.particles.colours.#{key}", (value) =>
+      "#{@key}.#{key}", (value) =>
         @conf[key] = value
     )
 
@@ -98,3 +102,16 @@ module.exports =
       @getRandomSpawnGenerator()
     else
       @getColorAtCursorGenerator cursor, editorElement
+
+  selectColor: (code) ->
+    atom.config.set("#{@key}.type", code)
+
+  initList: ->
+    return if @colorList?
+
+    @colorList = require "./color-list"
+    @colorList.init this
+
+    @subscriptions.add atom.commands.add "atom-workspace",
+      "activate-power-mode:select-color": =>
+        @colorList.toggle()
