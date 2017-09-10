@@ -43,17 +43,29 @@ module.exports =
       yield color
     return
 
+  getRandomColor: (seed) ->
+    seed = Math.random()
+    seed += @golden_ratio_conjugate
+    seed = seed - (seed//1)
+    rgb = @hsvToRgb(seed,1,1)
+    r = (rgb[0]*255)//1
+    g = (rgb[1]*255)//1
+    b = (rgb[2]*255)//1
+    "rgb(#{r},#{g},#{b})"
+
   getRandomGenerator: ->
     seed = Math.random()
-    loop
-      seed += @golden_ratio_conjugate
-      seed = seed - (seed//1)
-      rgb = @hsvToRgb(seed,1,1)
-      r = (rgb[0]*255)//1
-      g = (rgb[1]*255)//1
-      b = (rgb[2]*255)//1
 
-      yield "rgb(#{r},#{g},#{b})"
+    loop
+      yield @getRandomColor seed
+    return
+
+  getRandomSpawnGenerator: ->
+    seed = Math.random()
+    color = @getRandomColor seed
+
+    loop
+      yield color
     return
 
   getColorAtCursorGenerator: (cursor, editorElement) ->
@@ -82,5 +94,7 @@ module.exports =
       return @getRandomGenerator()
     else if colorType == 'fixed'
       @getFixedColorGenerator()
+    else if colorType == 'randomSpawn'
+      @getRandomSpawnGenerator()
     else
       @getColorAtCursorGenerator cursor, editorElement

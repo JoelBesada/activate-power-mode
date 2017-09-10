@@ -84,9 +84,10 @@ module.exports =
             type: "string"
             default: "cursor"
             enum: [
-              {value: 'cursor', description: 'Particles will be the colour at the cursor.'}
-              {value: 'random', description: 'Particles will have random colours.'}
-              {value: 'fixed', description: 'Particles will have a fixed colour.'}
+              {value: 'cursor', description: 'Colour at the cursor.'}
+              {value: 'randomSpawn', description: 'Random colour per spawn.'}
+              {value: 'random', description: 'Random colours per particle.'}
+              {value: 'fixed', description: 'Fixed colour.'}
             ]
             order: 1
 
