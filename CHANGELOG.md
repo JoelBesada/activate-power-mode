@@ -1,3 +1,10 @@
+### 2.5.0 2017-09-11
+* Add possibility to disable exclamations letting `0` in `exclamationEvery` setting.
+* Add random per spawn color option.
+* Add `select-color` command with list to select color.
+* Add unregister* methods in service api.
+* Add `select-plugin` command with list to enable/disable plugins. 
+
 ### 2.4.0 2017-08-16
 * Use ResizeObserver on scrollView to resize canvas.
 * Use `transform: translate()` on shake effect.
