@@ -33,6 +33,10 @@
           'command': 'activate-power-mode:select-flow'
         },
         {
+          'label': 'Select Plugin'
+          'command': 'activate-power-mode:select-plugin'
+        },
+        {
           'label': 'Select Color'
           'command': 'activate-power-mode:select-color'
         },
