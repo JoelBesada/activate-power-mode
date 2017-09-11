@@ -26,6 +26,12 @@ module.exports =
     if atom.config.get(@key) is code
       @flow = flow
 
+  removeFlow: (code) ->
+    if atom.config.get(@key) is code
+      @flow = @flows['default']
+
+    delete @flows[code]
+
   observeFlow: ->
     @subscriptions.add atom.config.observe(
       @key, (code) =>

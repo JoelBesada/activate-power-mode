@@ -2,7 +2,7 @@
 
 module.exports =
   enabled: false
-  subscriptions: null
+  pluginSubscriptions: []
   plugins: []
   corePlugins: []
   enabledPlugins: []
@@ -12,7 +12,6 @@ module.exports =
     @api = api
 
   enable: ->
-    @subscriptions = new CompositeDisposable
     @enabled = true
 
     for code, plugin of @corePlugins
@@ -25,7 +24,9 @@ module.exports =
 
   disable: ->
     @enabled = false
-    @subscriptions?.dispose()
+    for code, subs in @pluginSubscriptions
+      subs.dispose()
+    @pluginSubscriptions = []
 
   addCorePlugin: (code, plugin) ->
     @corePlugins[code] = plugin
@@ -38,6 +39,18 @@ module.exports =
       @addConfigForPlugin code, plugin, key
       @observePlugin code, plugin, key
 
+  removePlugin: (code) ->
+    key = "activate-power-mode.plugins.#{code}"
+
+    if @enabled
+      @unobservePlugin code
+      @removeConfigForPlugin code
+
+    delete @plugins[code]
+    if @enabledPlugins[code]?
+      @enabledPlugins[code].disable?()
+      delete @enabledPlugins[code]
+
   addConfigForPlugin: (code, plugin, key) ->
     @config.plugins.properties[code] =
       type: 'boolean',
@@ -48,8 +61,11 @@ module.exports =
     if atom.config.get(key) == undefined
       atom.config.set key, @config.plugins.properties[code].default
 
+  removeConfigForPlugin: (code) ->
+    delete @config.plugins.properties[code]
+
   observePlugin: (code, plugin, key) ->
-    @subscriptions.add atom.config.observe(
+    @pluginSubscriptions[code] = atom.config.observe(
       key, (isEnabled) =>
         if isEnabled
           plugin.enable?(@api)
@@ -58,6 +74,10 @@ module.exports =
           plugin.disable?()
           delete @enabledPlugins[code]
     )
+
+  unobservePlugin: (code) ->
+    @pluginSubscriptions[code]?.dispose()
+    delete @pluginSubscriptions[code]
 
   onEnabled: (callback) ->
     for code, plugin of @enabledPlugins

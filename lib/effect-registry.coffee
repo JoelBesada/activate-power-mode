@@ -26,6 +26,14 @@ module.exports =
     if atom.config.get(@key) is code
       @effect = effect
 
+  removeEffect: (code) ->
+    if atom.config.get(@key) is code
+      @effect.disable()
+      @effect = @effects['default']
+      @effect.init()
+
+    delete @effects[code]
+
   observeEffect: ->
     @subscriptions.add atom.config.observe(
       @key, (code) =>
