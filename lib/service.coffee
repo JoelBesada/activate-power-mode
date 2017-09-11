@@ -15,5 +15,14 @@ module.exports = class Service
   registerEffect: (code, effect) ->
     @effectRegistry.addEffect code, effect
 
+  unregisterPlugin: (code) ->
+    @pluginRegistry.removePlugin code
+
+  unregisterFlow: (code) ->
+    @flowRegistry.removeFlow code
+
+  unregisterEffect: (code) ->
+    @effectRegistry.removeEffect code
+
   createParticlesEffect: (particleManager) ->
     new ParticlesEffect(particleManager)
