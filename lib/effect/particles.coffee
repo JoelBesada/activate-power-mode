@@ -1,6 +1,8 @@
 random = require "lodash.random"
 
 module.exports = class ParticlesEffect
+  subscriptions: null
+  emberEnabled: false
   particles: []
 
   constructor: (particleManager) ->
@@ -33,15 +35,19 @@ module.exports = class ParticlesEffect
       @particles.push particle
 
   createParticle: (x, y, colorGenerate, randomSize) ->
+    @emberEnabled = atom.config.settings['activate-power-mode'].particles.enableEmbers
     x: x
     y: y
     alpha: 1
     color: colorGenerate()
     size: randomSize()
     velocity:
-      x: -1 + Math.random() * 2
-      y: -3.5 + Math.random() * 2
-
+      if @emberEnabled
+        x: 5 - (Math.random() * 10 + 5)
+        y: 5 - (Math.random() * 10 + 5)
+      else
+        x: -1 + Math.random() * 2
+        y: -3.5 + Math.random() * 2
   update: ->
     return if not @particles.length
 
