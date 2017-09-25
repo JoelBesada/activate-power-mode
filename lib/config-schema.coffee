@@ -75,6 +75,13 @@ module.exports =
         default: true
         order: 1
 
+      enableEmbers:
+        title: "Ember Style"
+        description: "Particles fly around like ember sparks."
+        type: "boolean"
+        default: false
+        order: 2
+
       colours:
         type: "object"
         properties:
