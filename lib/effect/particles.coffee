@@ -1,8 +1,6 @@
 random = require "lodash.random"
 
 module.exports = class ParticlesEffect
-  subscriptions: null
-  emberEnabled: false
   particles: []
 
   constructor: (particleManager) ->
