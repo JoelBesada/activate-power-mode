@@ -25,6 +25,7 @@ module.exports =
     @subscriptions = new CompositeDisposable
     @observe 'type'
     @observe 'fixed'
+    @observe 'randomType'
 
   hsvToRgb: (h,s,v) -> # HSV to RGB algorithm, as per wikipedia
     c = v * s
@@ -47,26 +48,40 @@ module.exports =
       yield color
     return
 
-  getRandomColor: (seed) ->
-    seed = Math.random()
-    seed += @golden_ratio_conjugate
-    seed = seed - (seed//1)
-    rgb = @hsvToRgb(seed,1,1)
+  getRandomBrightColor: ->
+    @seed += @golden_ratio_conjugate
+    @seed = @seed - (@seed//1)
+    rgb = @hsvToRgb(@seed,1,1)
     r = (rgb[0]*255)//1
     g = (rgb[1]*255)//1
     b = (rgb[2]*255)//1
     "rgb(#{r},#{g},#{b})"
 
-  getRandomGenerator: ->
-    seed = Math.random()
+  getRandomAllColor: ->
+    r = Math.floor(Math.random() * 256)
+    g = Math.floor(Math.random() * 256)
+    b = Math.floor(Math.random() * 256)
+    "rgb(#{r},#{g},#{b})"
 
-    loop
-      yield @getRandomColor seed
-    return
+  getRandomGenerator: ->
+    if @conf['randomType'] == 'bright'
+      @seed = Math.random()
+
+      loop
+        yield @getRandomBrightColor()
+      return
+
+    else
+      loop
+        yield @getRandomAllColor()
+      return
 
   getRandomSpawnGenerator: ->
-    seed = Math.random()
-    color = @getRandomColor seed
+    if @conf['randomType'] == 'bright'
+      @seed = Math.random()
+      color = @getRandomBrightColor()
+    else
+      color = @getRandomAllColor()
 
     loop
       yield color
