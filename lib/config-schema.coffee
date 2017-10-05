@@ -97,6 +97,16 @@ module.exports =
             type: "color"
             default: "#fff"
 
+          randomType:
+            title: "Random colour type"
+            description: "Type of ramdom colour"
+            type: "string"
+            default: 'bright'
+            enum: [
+              {value: 'bright', description: 'Bright colours'}
+              {value: 'all', description: 'All colours'}
+            ]
+
       totalCount:
         type: "object"
         properties:
