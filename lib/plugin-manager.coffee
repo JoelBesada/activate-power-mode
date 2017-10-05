@@ -12,6 +12,7 @@ powerCanvas = require "./plugin/power-canvas"
 comboMode = require "./plugin/combo-mode"
 defaultEffect = require "./effect/default"
 defaultFlow = require "./flow/default"
+deleteFlow = require "./flow/delete"
 userFileFlow = require "./flow/user-file"
 switcher = require "./switcher"
 
@@ -21,6 +22,7 @@ module.exports =
   switcher: switcher
   defaultEffect: defaultEffect
   defaultFlow: defaultFlow
+  deleteFlow: deleteFlow
   userFileFlow: userFileFlow
   editorRegistry: editorRegistry
   screenShaker: screenShaker
@@ -58,6 +60,7 @@ module.exports =
 
   initCoreFlows: ->
     @flowRegistry.setDefaultFlow @defaultFlow
+    @flowRegistry.addFlow 'delete', @deleteFlow
     @flowRegistry.addFlow 'user-file', @userFileFlow
 
   initCoreEffects: ->
