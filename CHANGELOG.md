@@ -1,3 +1,8 @@
+### 2.6.0 2017-10-05
+* Add delete flow.
+* Improve on some settings.
+* Add new type of random colors setting.
+
 ### 2.5.0 2017-09-11
 * Add possibility to disable exclamations letting `0` in `exclamationEvery` setting.
 * Add random per spawn color option.
