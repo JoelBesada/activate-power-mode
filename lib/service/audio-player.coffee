@@ -46,10 +46,19 @@ module.exports =
       pathtoaudio = path.join("#{__dirname}/..", @conf['audioclip'])
     @audio = new Audio(pathtoaudio)
 
-  play: (audio) ->
+    pathtoaudio2 = pathtoaudio + "-enter";
+    @audio2 = new Audio(pathtoaudio2)
+
+  play: (audio, input) ->
     return if not @enabled
 
-    audio = @audio if not audio
+    if not audio
+      debugger
+      if input.isNewLine()
+        audio = @audio2;
+      else
+        audio = @audio;
+
     audio.currentTime = 0
     audio.volume = @conf['volume']
     audio.play()
