@@ -1,3 +1,6 @@
+### 2.7.0 2018-01-04
+* Handle onDidChangeText changes for multicursors.
+
 ### 2.6.0 2017-10-05
 * Add delete flow.
 * Improve on some settings.
