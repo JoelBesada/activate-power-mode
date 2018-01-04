@@ -8,5 +8,5 @@ module.exports =
     @api = api
     @throttledPlayAudio = throttle @api.playAudio.bind(@api), 100, trailing: false
 
-  onInput: ->
-    @throttledPlayAudio()
+  onInput: (cursor, screenPosition, input, data) ->
+    @throttledPlayAudio(null, input)
