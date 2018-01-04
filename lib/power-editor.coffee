@@ -34,7 +34,7 @@ module.exports =
 
     @editorElement = @editor.getElement()
 
-    @inputSubscription = @editor.getBuffer().onDidChange @handleInput.bind(this)
+    @inputSubscription = @editor.getBuffer().onDidChangeText @handleInput.bind(this)
     @cursorSubscription = @editor.observeCursors @handleCursor.bind(this)
 
     @pluginManager.runOnChangePane @editor, @editorElement
@@ -44,14 +44,15 @@ module.exports =
 
   handleInput: (e) ->
     requestIdleCallback =>
-      @inputHandler.handle e
-      return if @inputHandler.isGhost()
+      for input in e.changes
+        @inputHandler.handle input
+        return if @inputHandler.isGhost()
 
-      screenPos = @editor.screenPositionForBufferPosition @inputHandler.getPosition()
-      cursor = @editor.getCursorAtScreenPosition screenPos
-      return unless cursor
+        screenPos = @editor.screenPositionForBufferPosition @inputHandler.getPosition()
+        cursor = @editor.getCursorAtScreenPosition screenPos
+        return unless cursor
 
-      @pluginManager.runOnInput cursor, screenPos, @inputHandler
+        @pluginManager.runOnInput cursor, screenPos, @inputHandler
 
   getConfig: (config) ->
     atom.config.get "activate-power-mode.#{config}"
