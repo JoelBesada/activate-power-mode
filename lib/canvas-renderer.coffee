@@ -86,6 +86,7 @@ module.exports =
     @observe 'size.max'
 
   spawn: (cursor, screenPosition, input, size) ->
+    return if not @editorElement
     position = @calculatePositions screenPosition
     colorGenerator = @colorHelper.generateColors cursor, @editorElement
     randomSize = => @randomSize(size)
