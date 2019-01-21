@@ -100,7 +100,7 @@ module.exports =
 
           randomType:
             title: "Random colour type"
-            description: "Type of ramdom colour"
+            description: "Type of random colour"
             type: "string"
             default: 'bright'
             enum: [
